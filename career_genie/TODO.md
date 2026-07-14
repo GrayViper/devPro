@@ -1,7 +1,7 @@
 # CareerGenie Project TODO
 
 ## Remaining
-- [ ] Investigate/implement MCP server for background processing
+- [x] Investigate/implement MCP server for background processing
 - [x] Add Clerk MCP server entrypoint for local tooling
 - [x] Tech: Frontend — React.js + Tailwind CSS
 - [x] Tech: Backend — Node.js + Express.js

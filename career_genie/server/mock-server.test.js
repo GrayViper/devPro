@@ -1,7 +1,9 @@
+import path from 'path';
 import request from 'supertest';
 import { describe, it, expect } from 'vitest';
 import { app, createApp } from './mock-server.js';
 import jwt from 'jsonwebtoken';
+import { createBackgroundJobStore } from './mcp/background-mcp-server.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 
@@ -173,6 +175,26 @@ describe('server security tests', () => {
     if (statusResponse.body.job.status === 'done') {
       expect(typeof statusResponse.body.job.score).toBe('number');
     }
+  });
+
+  it('tracks resume uploads through the background job store', async () => {
+    const email = `bguser-${Date.now()}@careergenie.test`;
+    const register = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'Background User', email, password: 'BgPass!23', role: 'student' });
+    expect(register.status).toBe(201);
+
+    const token = register.body.token;
+    const studentId = register.body.user.id;
+    const submit = await request(app)
+      .post('/api/resume')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ studentId, fileName: 'resume_background.pdf', contentBase64: Buffer.from('Background job content').toString('base64') });
+
+    expect(submit.status).toBe(202);
+    const jobStore = createBackgroundJobStore({ storageFile: path.join(process.cwd(), 'server', 'mcp', 'background-jobs.json') });
+    const jobs = await jobStore.listJobs();
+    expect(jobs.some((job) => job.payload?.jobId === submit.body.jobId)).toBe(true);
   });
 
   it('returns 500 and error body for unexpected async errors', async () => {

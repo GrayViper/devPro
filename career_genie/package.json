@@ -19,7 +19,8 @@
     "test": "vitest",
     "test:ci": "vitest --run --reporter verbose",
     "test:security": "vitest --run server/mock-server.test.js",
-    "mcp:clerk": "node server/mcp/clerk-mcp-server.js"
+    "mcp:clerk": "node server/mcp/clerk-mcp-server.js",
+    "mcp:background": "node server/mcp/background-mcp-server.js"
   },
   "dependencies": {
     "@clerk/backend": "^3.11.4",

@@ -131,6 +131,11 @@ If you want me to run the benchmark now, I can start the mock server and run `np
 - Added an npm script `npm run mcp:clerk` so the server can be launched locally through the workspace.
 - Updated `TODO.md` to reflect that the Clerk MCP server entrypoint is now available.
 
+2026-07-14: Added a background-processing MCP server
+- Added `server/mcp/background-mcp-server.js` implementing queueable background-job tools for enqueueing, inspecting, listing, and gathering metrics for background jobs.
+- Added `server/mcp/background-mcp-server.test.js` to cover tool exposure and basic job-state transitions.
+- Added `npm run mcp:background` for launching the new server locally and updated `TODO.md` to mark the background-processing MCP work as complete.
+
 - 2026-07-13: Updated `README.md` with a project-specific frontend status note describing the completed React/Tailwind work and current lint status.
 
 Contact the agent

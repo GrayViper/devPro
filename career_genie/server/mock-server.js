@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import { connectMongo, getDb } from './mongo_client.js';
+import { createBackgroundJobStore } from './mcp/background-mcp-server.js';
 
 const PORT = process.env.MOCK_PORT || 5178;
 const DATA_PATH = path.join(process.cwd(), 'server', 'data.json');
@@ -135,6 +136,8 @@ export function createApp() {
 
 const app = createApp();
 export { app };
+
+const backgroundJobStore = createBackgroundJobStore({ storageFile: path.join(process.cwd(), 'server', 'mcp', 'background-jobs.json') });
 
 // In-process job queue
 const inprocQueue = [];
@@ -456,12 +459,23 @@ function setupRoutes(app) {
     data.resumeResults[jobId] = { status: 'pending', studentId, fileName, startedAt: new Date().toISOString() };
     await writeData(data);
     const job = { jobId, studentId, fileName, contentBase64 };
-    if (inprocProcessing < INPROC_CONCURRENCY) {
-      inprocProcessing += 1;
-      processInprocJob(job);
-    } else {
-      inprocQueue.push(job);
-    }
+    await backgroundJobStore.enqueueJob({ type: 'resume-analysis', payload: { jobId, studentId, fileName } }, async (queuedJob) => {
+      const backgroundJob = {
+        jobId: queuedJob.payload.jobId,
+        studentId: queuedJob.payload.studentId,
+        fileName: queuedJob.payload.fileName,
+        contentBase64,
+      };
+
+      if (inprocProcessing < INPROC_CONCURRENCY) {
+        inprocProcessing += 1;
+        processInprocJob(backgroundJob);
+      } else {
+        inprocQueue.push(backgroundJob);
+      }
+
+      return { status: 'queued', jobId: queuedJob.payload.jobId };
+    });
 
     return res.status(202).json({ jobId, status: 'pending' });
   }));
