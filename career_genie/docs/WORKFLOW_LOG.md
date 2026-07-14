@@ -1,6 +1,6 @@
 # CareerGenie Workflow Log
 
-Last updated: 2026-07-13
+Last updated: 2026-07-14
 
 Purpose
 - A running, human-readable record of changes, actions, and CI runs for the CareerGenie repository. This file is maintained by the agent and will be updated each time files are edited during the session. It contains no source code — only descriptions and status notes.
@@ -108,11 +108,19 @@ Files modified:
   - Professional glass-morphism styling consistent with existing design system.
   - Proper section IDs for anchor navigation (id="features", id="pricing", id="about", id="faq").
   - Interactive FAQ accordion that expands/collapses questions.
+
+2026-07-14 (requirements sync):
+- Added `Tech: CI/CD — GitHub Actions` to `TODO.md` after verifying the `TRD.md` explicitly specifies CI/CD via GitHub Actions as an expected deployment workflow.
+- No implementation changes were made yet; this entry tracks the task backlog alignment with the technical requirements document.
+
+2026-07-14 (CI workflow):
+- Updated `.github/workflows/ci.yml` to run `npm run lint`, `npm run build`, and `npm run test:ci` as part of the GitHub Actions CI job.
+- Added deployment configuration for Vercel and Render, including explicit SPA build/output settings for Vercel and a Render web service manifest for the backend.
+- This ensures the project can be deployed as a static frontend and a production-ready Node backend while keeping runtime secrets out of source control.
   - Visual progression from awareness → consideration → decision with multiple CTAs.
 - **Conversion funnel design**: Landing page now naturally guides users from learning about features → seeing pricing → reading testimonials → signing up.
 - **Mobile responsive**: All new sections tested and working on mobile viewports.
-- **Tests**: All 25 tests continue to pass (7 test files).
-
+- **Tests**: All 25 tests continue to pass (7 test files).- 2026-07-14: Synchronized `TODO.md` with actual Clerk integration status and documented required Clerk environment variables in `README.md`.
 Architecture:
 - Landing page now serves as the entry point for all unauthenticated users.
 - Authenticated users are routed to their respective dashboards (student/recruiter/admin).
@@ -165,6 +173,11 @@ Architecture:
 - Fixed context hook imports in `src/context/useAuth.jsx`, `src/context/useJobs.jsx`, and `src/context/useApplications.jsx` so the app build succeeds.
 - Verified the new clerk utility test passes and the Vite production build succeeds.
 
+2026-07-14: Implemented real Clerk backend session verification
+- Updated `server/mock-server.js` to verify Clerk bearer tokens with `@clerk/backend` using `CLERK_SECRET_KEY` or `CLERK_JWT_KEY`, while preserving legacy JWT token fallback and dev-only demo auth.
+- Adjusted `/auth-status` to return accurate `clerkConfigured`, `jwtConfigured`, `allowDevAuth`, and `mode` values.
+- Verified the change with `npm run test:security` and confirmed `13 passed`.
+
 Commands to run locally:
 ```bash
 # Start mock server:
@@ -184,7 +197,25 @@ If you want me to run the benchmark now, I can start the mock server and run `np
 2026-07-14: Added a background-processing MCP server
 - Added `server/mcp/background-mcp-server.js` implementing queueable background-job tools for enqueueing, inspecting, listing, and gathering metrics for background jobs.
 - Added `server/mcp/background-mcp-server.test.js` to cover tool exposure and basic job-state transitions.
+
+2026-07-14: Validated CI/CD workflow for GitHub Actions
+- Confirmed `.github/workflows/ci.yml` covers the expected pipeline steps: `npm run lint`, `npm run build`, and `npm run test:ci`.
+- Verified local CI run with the same commands: lint passed with warnings only, production build succeeded, and Vitest `test:ci` passed 25/25.
+- Marked `Tech: CI/CD — GitHub Actions` complete in `TODO.md`.
+
+2026-07-14: Aligned CI Node runtime with Clerk backend requirements
+- Updated `.github/workflows/ci.yml` to use Node 20 so the GitHub Actions runner matches `@clerk/backend`'s supported Node engine.
+- Added `engines.node` and `engines.npm` to `package.json` to make runtime requirements explicit for contributors and deployment.
+
+2026-07-14: Documented Node runtime requirements and added explicit security CI step
+- Added a local development requirements section to `README.md` specifying Node `>=20.9.0` and npm `>=9`.
+- Added a dedicated `npm run test:security` step to `.github/workflows/ci.yml` so backend security tests are visible as a separate CI job stage.
 - Added `npm run mcp:background` for launching the new server locally and updated `TODO.md` to mark the background-processing MCP work as complete.
+
+2026-07-14: Added applicant approval notifications
+- Implemented backend approval handling in `server/mock-server.js` so applicants receive a notification record when an admin approves a job they applied to.
+- Exposed the notification feed in `src/pages/ApplicationTracker.jsx` so students can see approval alerts in the app.
+- Added regression coverage in `server/mock-server.test.js` for the full approval-to-notification flow and verified the full Vitest suite passes (26 tests, 7 files).
 
 - 2026-07-13: Updated `README.md` with a project-specific frontend status note describing the completed React/Tailwind work and current lint status.
 

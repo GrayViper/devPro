@@ -11,7 +11,8 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showRoleSwitcher, setShowRoleSwitcher] = useState(true);
+  const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
+  const [showRoleSwitcher, setShowRoleSwitcher] = useState(allowDemo);
 
   const handleLogout = async () => {
     await logout();
@@ -32,7 +33,7 @@ export default function Navbar() {
   return (
     <>
       {/* Floating Demo Role Switcher Bar */}
-      {showRoleSwitcher && (
+      {allowDemo && showRoleSwitcher && (
         <div className="sticky top-0 z-50 flex items-center justify-between border-b border-indigo-500/20 bg-indigo-950/85 px-4 py-1.5 text-[11px] text-indigo-200 backdrop-blur-xl">
           <div className="flex items-center gap-1.5 font-medium">
             <Sparkles className="h-3.5 w-3.5 animate-pulse text-indigo-400" />

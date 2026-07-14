@@ -1,13 +1,51 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { useApplications } from '../context/useApplications';
 import { Link } from 'react-router-dom';
-import { Check, Calendar, CheckSquare } from 'lucide-react';
+import { Check, Calendar, CheckSquare, Bell, Mail, CheckCheck } from 'lucide-react';
 
 export default function ApplicationTracker() {
-  const { user } = useAuth();
+  const { user, getAuthToken } = useAuth();
   const { applications } = useApplications();
   const [selectedAppId, setSelectedAppId] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
+
+  const fetchNotifications = async () => {
+    if (!user?.id) return;
+    try {
+      const token = await getAuthToken();
+      const res = await fetch(`${API_BASE}/api/notifications`, {
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(Array.isArray(data.notifications) ? data.notifications : []);
+      }
+    } catch {
+      setNotifications([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [API_BASE, getAuthToken, user?.id]);
+
+  const markNotificationRead = async (notificationId) => {
+    try {
+      const token = await getAuthToken();
+      const res = await fetch(`${API_BASE}/api/notifications/${notificationId}/read`, {
+        method: 'PUT',
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(prev => prev.map(item => item.id === notificationId ? { ...item, ...data.notification } : item));
+      }
+    } catch {
+      // ignore and keep UI stable
+    }
+  };
 
   if (!user || user.role !== 'student') {
     return (
@@ -20,6 +58,7 @@ export default function ApplicationTracker() {
 
   const studentApps = applications.filter(app => app.studentId === user.id);
   const activeApp = studentApps.find(app => app.id === selectedAppId) || studentApps[0];
+  const unreadCount = notifications.filter(item => !item.read).length;
 
   // Map status names to stepper stages for visual representation
   const stages = ['Applied', 'Review', 'Interview', 'Outcome'];
@@ -39,6 +78,46 @@ export default function ApplicationTracker() {
         <h1 className="text-3xl font-display font-black text-white">Application Tracker</h1>
         <p className="text-sm text-gray-400">Track and monitor the status of your applications in real-time.</p>
       </div>
+
+      {notifications.length > 0 && (
+        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-200 shadow-sm">
+          <div className="mb-2 flex items-center justify-between gap-2 font-semibold">
+            <div className="flex items-center gap-2">
+              <Bell className="h-4 w-4" />
+              Job approval alerts
+            </div>
+            <span className="rounded-full border border-emerald-400/40 bg-emerald-500/20 px-2 py-0.5 text-[10px] uppercase tracking-[0.2em] text-emerald-100">
+              {unreadCount} unread
+            </span>
+          </div>
+          <ul className="space-y-2 text-emerald-100/90">
+            {notifications.map((item) => (
+              <li key={item.id} className="flex items-start justify-between gap-3 rounded-xl border border-emerald-400/20 bg-emerald-500/5 p-3">
+                <div className="flex min-w-0 items-start gap-2">
+                  <Mail className="mt-0.5 h-4 w-4 shrink-0" />
+                  <div className="min-w-0">
+                    <div className="font-medium">{item.subject || item.message}</div>
+                    <div className="mt-1 text-xs text-emerald-100/80">{item.message}</div>
+                    <div className="mt-1 text-[10px] uppercase tracking-[0.2em] text-emerald-200/80">
+                      {item.delivery?.channel || 'email'} • {item.read ? 'read' : 'new'}
+                    </div>
+                  </div>
+                </div>
+                {!item.read && (
+                  <button
+                    type="button"
+                    onClick={() => markNotificationRead(item.id)}
+                    className="flex items-center gap-1 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-emerald-100 transition hover:bg-emerald-400/20"
+                  >
+                    <CheckCheck className="h-3 w-3" />
+                    Mark read
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {studentApps.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">

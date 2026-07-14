@@ -17,6 +17,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [hoveredNode, setHoveredNode] = useState(null);
   const [activeTab, setActiveTab] = useState('Dashboard');
+  const [activeSection, setActiveSection] = useState('hero');
   const [openFAQ, setOpenFAQ] = useState(0);
 
   const handleStartGrowth = () => {
@@ -43,6 +44,24 @@ export default function LandingPage() {
     }
   };
 
+  // observe sections to update activeSection when scrolling
+  React.useEffect(() => {
+    const ids = ['hero', 'demo-section', 'features', 'about', 'pricing'];
+    const elements = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, { root: null, rootMargin: '0px', threshold: 0.45 });
+
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="relative min-h-screen">
       {/* Background patterns */}
@@ -52,8 +71,30 @@ export default function LandingPage() {
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blob-purple opacity-60 blur-3xl pointer-events-none"></div>
       <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blob-blue opacity-50 blur-3xl pointer-events-none"></div>
 
+      {/* Top Section Nav */}
+      <div className="z-20 sticky top-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center gap-3 py-3">
+          {[
+            { id: 'hero', label: 'Home' },
+            { id: 'demo-section', label: 'Demo' },
+            { id: 'features', label: 'Features' },
+            { id: 'about', label: 'About' },
+            { id: 'pricing', label: 'Pricing' }
+          ].map((s) => (
+            <button
+              key={s.id}
+              onClick={() => { scrollToSection(s.id); setActiveSection(s.id); }}
+              className={`px-3 py-1.5 rounded-full text-sm font-semibold transition ${activeSection === s.id ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white/5 text-gray-300 hover:bg-white/10'}`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-24 text-center sm:px-6 lg:px-8">
+        <div id="hero" />
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">
           <Sparkles className="h-3.5 w-3.5" />
           <span>NEW: AI-POWERED RESUME ANALYZER</span>
@@ -143,9 +184,9 @@ export default function LandingPage() {
               <main className="flex-grow bg-slate-950/80 p-6 flex flex-col gap-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
-                    <h2 className="text-xl font-bold text-white">Welcome back, Olivia!</h2>
-                    <p className="text-xs text-gray-400">Your mock student profile is loaded. Check out your career progress.</p>
-                  </div>
+                      <h2 className="text-xl font-bold text-white">{user && user.name ? `Welcome back, ${user.name.split(' ')[0]}!` : 'Welcome to CareerGenie'}</h2>
+                      <p className="text-xs text-gray-400">{user ? 'Your mock student profile is loaded. Check out your career progress.' : 'Create an account or view the demo to explore career tools.'}</p>
+                    </div>
                   <button 
                     onClick={() => navigate('/resume')}
                     className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition"

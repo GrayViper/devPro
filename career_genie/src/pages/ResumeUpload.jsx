@@ -7,7 +7,7 @@ import {
 import { calculateAtsScore, generateAtsSuggestions } from '../utils/resume';
 
 export default function ResumeUpload() {
-  const { user, updateUserProfile } = useAuth();
+  const { user, updateUserProfile, getAuthToken } = useAuth();
   
   const [file, setFile] = useState(null);
   const [fileBase64, setFileBase64] = useState(null);
@@ -118,7 +118,7 @@ export default function ResumeUpload() {
     (async () => {
       const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
       try {
-        const token = localStorage.getItem('cg_token');
+        const token = await getAuthToken();
         await fetch(`${API_BASE}/api/resume`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },

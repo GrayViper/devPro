@@ -9,10 +9,11 @@
 - [x] Tech: Database — MongoDB (indexes added)
 - [x] Tech: Authentication — JWT + Bcrypt
 - [x] Tech: AI — Python NLP / OpenAI API integration
-- [ ] Tech: Deployment — Vercel + Render
-- [ ] Integrate real Clerk API credentials and server-side session verification
+- [x] Tech: Deployment — Vercel + Render
+- [x] Tech: CI/CD — GitHub Actions
 
 ## Completed (all)
+- [x] Integrate real Clerk API credentials and server-side session verification
 
 - [x] Run lint
 - [x] Build project
@@ -41,6 +42,7 @@
 - [x] Harden JWT authentication
 - [x] Add persistence/MongoDB support
 - [x] Add Clerk-compatible auth session handling and demo fallback in the frontend
+- [x] Add applicant approval notifications for job applicants and surface them in the application tracker UI
 
 ## Notes
 

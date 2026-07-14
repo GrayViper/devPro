@@ -5,6 +5,7 @@ import { spawn } from 'child_process';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
+import { verifyToken } from '@clerk/backend';
 import { connectMongo, getDb } from './mongo_client.js';
 import { createBackgroundJobStore } from './mcp/background-mcp-server.js';
 
@@ -73,7 +74,8 @@ function getInitialData() {
       { id: 'job_1', title: 'Frontend Engineer', company: 'Acme', location: 'Remote', tags: ['React','JavaScript'], description: 'Build great UIs.', status: 'active' }
     ],
     applications: [],
-    resumeResults: {}
+    resumeResults: {},
+    notifications: []
   };
 }
 
@@ -242,15 +244,21 @@ async function readData() {
     const users = await db.collection('users').find().toArray();
     const jobs = await db.collection('jobs').find().toArray();
     const applications = await db.collection('applications').find().toArray();
+    const notifications = await db.collection('notifications').find().toArray();
     const rrDocs = await db.collection('resumeResults').find().toArray();
     const resumeResults = {};
     for (const d of rrDocs) { const { jobId, _id, ...rest } = d; if (jobId) resumeResults[jobId] = rest; }
-    return { users: users || [], jobs: jobs || [], applications: applications || [], resumeResults };
+    return { users: users || [], jobs: jobs || [], applications: applications || [], notifications: notifications || [], resumeResults };
   }
   await ensureData();
   const raw = await fs.readFile(DATA_PATH, 'utf8');
   try {
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    return {
+      ...parsed,
+      notifications: parsed.notifications || [],
+      resumeResults: parsed.resumeResults || {}
+    };
   } catch {
     // recover from corrupted or empty file by reinitializing
     const initial = getInitialData();
@@ -280,6 +288,11 @@ async function writeData(data) {
       await col.deleteMany({});
       if (data.applications.length) await col.insertMany(data.applications.map(a => ({ ...a })));
     }
+    if (Array.isArray(data.notifications)) {
+      const col = db.collection('notifications');
+      await col.deleteMany({});
+      if (data.notifications.length) await col.insertMany(data.notifications.map(n => ({ ...n })));
+    }
     if (data.resumeResults && typeof data.resumeResults === 'object') {
       const col = db.collection('resumeResults');
       await col.deleteMany({});
@@ -295,6 +308,29 @@ function generateId(prefix = 'id') {
   return `${prefix}_${Math.random().toString(36).slice(2,9)}`;
 }
 
+function createNotificationRecord({ recipientId, recipientEmail, jobId, jobTitle, company, message }) {
+  const now = new Date().toISOString();
+  return {
+    id: generateId('notif'),
+    type: 'job_approved',
+    recipientId,
+    recipientEmail,
+    jobId,
+    jobTitle,
+    company,
+    message,
+    subject: `Your application for ${jobTitle} has been approved`,
+    delivery: {
+      channel: 'email',
+      status: 'sent',
+      sentAt: now,
+      to: recipientEmail || recipientId
+    },
+    createdAt: now,
+    read: false
+  };
+}
+
 function signToken(user) {
   const { jwtSecret } = getEnvSettings();
   return jwt.sign({ sub: user.id, role: user.role }, jwtSecret, { expiresIn: '7d', algorithm: 'HS256' });
@@ -306,9 +342,29 @@ async function authMiddleware(req, res, next) {
   if (!m) return res.status(401).json({ error: 'missing token' });
 
   const token = m[1];
-  const { jwtSecret, jwtOldSecret } = getEnvSettings();
-  const secrets = [jwtSecret, jwtOldSecret].filter(Boolean);
+  const { jwtSecret, jwtOldSecret, allowDevAuth, isProduction, frontendOrigin } = getEnvSettings();
 
+  const clerkOptions = {};
+  if (process.env.CLERK_SECRET_KEY) clerkOptions.secretKey = process.env.CLERK_SECRET_KEY;
+  if (process.env.CLERK_JWT_KEY) clerkOptions.jwtKey = process.env.CLERK_JWT_KEY;
+  if (frontendOrigin && frontendOrigin !== '*') {
+    clerkOptions.authorizedParties = [frontendOrigin];
+  }
+
+  const clerkConfigured = Boolean(clerkOptions.secretKey || clerkOptions.jwtKey);
+  if (clerkConfigured) {
+    try {
+      const verification = await verifyToken(token, clerkOptions);
+      if (verification && verification.data) {
+        req.user = verification.data;
+        return next();
+      }
+    } catch {
+      // fall through to legacy verification and dev fallback
+    }
+  }
+
+  const secrets = [jwtSecret, jwtOldSecret].filter(Boolean);
   for (const secret of secrets) {
     try {
       const payload = jwt.verify(token, secret, { algorithms: ['HS256'] });
@@ -316,6 +372,18 @@ async function authMiddleware(req, res, next) {
       return next();
     } catch {
       // try next secret if present
+    }
+  }
+
+  if (!isProduction && allowDevAuth) {
+    try {
+      const decoded = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+      if (decoded && decoded.sub && decoded.role) {
+        req.user = decoded;
+        return next();
+      }
+    } catch {
+      // not a dev fallback token
     }
   }
 
@@ -418,6 +486,62 @@ function setupRoutes(app) {
     res.status(201).json({ job });
   }));
 
+  app.put('/api/jobs/:jobId/status', authMiddleware, asyncHandler(async (req, res) => {
+    const { jobId } = req.params;
+    const { status } = req.body || {};
+    if (!req.user || (req.user.role !== 'admin')) return res.status(403).json({ error: 'forbidden' });
+    if (!status) return res.status(400).json({ error: 'status required' });
+
+    const data = await readData();
+    const job = data.jobs.find(j => j.id === jobId);
+    if (!job) return res.status(404).json({ error: 'job not found' });
+
+    job.status = status;
+    data.jobs = data.jobs.map(j => j.id === jobId ? job : j);
+
+    const applicantNotifications = [];
+    const applications = (data.applications || []).filter(app => app.jobId === jobId);
+    for (const application of applications) {
+      const notification = createNotificationRecord({
+        recipientId: application.studentId,
+        recipientEmail: application.studentEmail,
+        jobId,
+        jobTitle: job.title,
+        company: job.company,
+        message: `Your application for ${job.title} at ${job.company} has been approved.`
+      });
+      applicantNotifications.push(notification);
+    }
+
+    data.notifications = [...(data.notifications || []), ...applicantNotifications];
+    await writeData(data);
+
+    res.json({ job, notifications: applicantNotifications });
+  }));
+
+  app.get('/api/notifications', authMiddleware, asyncHandler(async (req, res) => {
+    const data = await readData();
+    const notifications = (data.notifications || [])
+      .filter(n => n.recipientId === req.user.sub || n.recipientEmail === req.user.email)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    res.json({ notifications, unreadCount: notifications.filter(n => !n.read).length });
+  }));
+
+  app.put('/api/notifications/:notificationId/read', authMiddleware, asyncHandler(async (req, res) => {
+    const { notificationId } = req.params;
+    const data = await readData();
+    const notification = (data.notifications || []).find(n => n.id === notificationId);
+    if (!notification) return res.status(404).json({ error: 'notification not found' });
+    if (notification.recipientId !== req.user.sub && notification.recipientEmail !== req.user.email) {
+      return res.status(403).json({ error: 'forbidden' });
+    }
+
+    notification.read = true;
+    data.notifications = (data.notifications || []).map(n => n.id === notificationId ? notification : n);
+    await writeData(data);
+    return res.json({ notification });
+  }));
+
   // Applications
   app.get('/api/applications', authMiddleware, asyncHandler(async (req, res) => {
     const data = await readData();
@@ -510,11 +634,18 @@ function setupRoutes(app) {
   });
 
   app.get('/auth-status', (req, res) => {
+    const clerkConfigured = Boolean(process.env.CLERK_SECRET_KEY || process.env.CLERK_JWT_KEY);
+    const jwtConfigured = Boolean(getEnvSettings().jwtSecret);
+    let mode = 'demo-jwt';
+    if (clerkConfigured) mode = 'clerk';
+    else if (jwtConfigured) mode = 'demo-jwt';
+
     res.json({
-      clerkConfigured: false,
-      jwtConfigured: Boolean(getEnvSettings().jwtSecret),
+      clerkConfigured,
+      jwtConfigured,
+      allowDevAuth: getEnvSettings().allowDevAuth,
       frontendOrigin: process.env.FRONTEND_ORIGIN || null,
-      mode: 'demo-jwt'
+      mode
     });
   });
 

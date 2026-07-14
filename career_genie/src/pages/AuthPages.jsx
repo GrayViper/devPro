@@ -11,11 +11,15 @@ export default function AuthPages() {
   const location = useLocation();
   const isLogin = location.pathname === '/login';
   const { isSignedIn, user, isLoaded } = useUser();
+  const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [role, setRole] = useState('student'); // student, recruiter, admin
+  const [major, setMajor] = useState('');
+  const [institution, setInstitution] = useState('');
+  const [graduationYear, setGraduationYear] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
@@ -24,7 +28,6 @@ export default function AuthPages() {
 
     const clerkUser = normalizeClerkUser(user, user.publicMetadata?.role || role);
     localStorage.setItem('clerk_session', JSON.stringify(clerkUser));
-    localStorage.setItem('cg_token', `clerk-${user.id}`);
     localStorage.setItem('cg_user', JSON.stringify(clerkUser));
 
     const nextPath = clerkUser.role === 'student' ? '/dashboard/student' : clerkUser.role === 'recruiter' ? '/dashboard/recruiter' : '/admin';
@@ -32,17 +35,19 @@ export default function AuthPages() {
   }, [isLoaded, isSignedIn, user, navigate, role]);
 
   const handleClerkDemo = () => {
+    if (!allowDemo) return;
+
     const demoUser = normalizeClerkUser({
       id: 'clerk_demo',
       firstName: 'Clerk',
       lastName: 'User',
       emailAddresses: [{ emailAddress: 'clerk@example.com' }],
-      publicMetadata: { role }
+      publicMetadata: { role },
+      demo: true
     }, role);
 
     clearClerkSessionStorage();
     localStorage.setItem('clerk_session', JSON.stringify(demoUser));
-    localStorage.setItem('cg_token', `clerk-${demoUser.id}`);
     localStorage.setItem('cg_user', JSON.stringify(demoUser));
     window.location.href = role === 'student' ? '/dashboard/student' : role === 'recruiter' ? '/dashboard/recruiter' : '/admin';
   };
@@ -79,7 +84,8 @@ export default function AuthPages() {
         return;
       }
       try {
-        const u = await signup(name, email, password, role);
+        const extra = role === 'student' ? { major: major || null, institution: institution || null, graduationYear: graduationYear || null } : {};
+        const u = await signup(name, email, password, role, extra);
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
@@ -135,12 +141,42 @@ export default function AuthPages() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Olivia Chen"
+                    placeholder="Example: Olivia Chan"
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
                   />
                 </div>
               </div>
             )}
+
+                  {/* Academic details for students */}
+                  {!isLogin && role === 'student' && (
+                    <div className="space-y-3">
+                      <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Academic Details</label>
+                      <div className="grid grid-cols-1 gap-2">
+                        <input
+                          type="text"
+                          value={institution}
+                          onChange={(e) => setInstitution(e.target.value)}
+                          placeholder="Institution (e.g., University of XYZ)"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+                        />
+                        <input
+                          type="text"
+                          value={major}
+                          onChange={(e) => setMajor(e.target.value)}
+                          placeholder="Major (e.g., Computer Science)"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+                        />
+                        <input
+                          type="number"
+                          value={graduationYear}
+                          onChange={(e) => setGraduationYear(e.target.value)}
+                          placeholder="Graduation Year (e.g., 2026)"
+                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+                        />
+                      </div>
+                    </div>
+                  )}
 
             {/* Email Field */}
             <div className="space-y-1.5">
@@ -235,14 +271,16 @@ export default function AuthPages() {
               </SignInButton>
             )}
 
-            <button
-              type="button"
-              onClick={handleClerkDemo}
-              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300 shadow-lg shadow-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/10 sm:text-sm"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>Use demo session</span>
-            </button>
+            {allowDemo && (
+              <button
+                type="button"
+                onClick={handleClerkDemo}
+                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300 shadow-lg shadow-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/10 sm:text-sm"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Use demo session</span>
+              </button>
+            )}
 
             {/* Submit Button */}
             <button

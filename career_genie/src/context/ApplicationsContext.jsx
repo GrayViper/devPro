@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/useAuth';
 import { ApplicationsContext } from './ApplicationsContextValue';
 
 const INITIAL_APPLICATIONS = [
@@ -71,11 +72,14 @@ export const ApplicationsProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : INITIAL_APPLICATIONS;
   });
 
+  const { getAuthToken } = useAuth();
+
   // fetch applications from mock API on mount
   useEffect(() => {
     const fetchApps = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/applications`);
+        const token = await getAuthToken();
+        const res = await fetch(`${API_BASE}/api/applications`, { headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
         const data = await res.json();
         if (res.ok && Array.isArray(data.applications)) {
           setApplications(data.applications);
@@ -92,7 +96,7 @@ export const ApplicationsProvider = ({ children }) => {
     localStorage.setItem('cg_applications', JSON.stringify(applications));
   }, [applications]);
 
-  const applyToJob = (job, student, matchScore) => {
+  const applyToJob = async (job, student, matchScore) => {
     const isAlreadyApplied = applications.some(app => app.jobId === job.id && app.studentId === student.id);
     if (isAlreadyApplied) return { success: false, message: 'You have already applied for this role.' };
 
@@ -109,33 +113,33 @@ export const ApplicationsProvider = ({ children }) => {
       matchScore
     };
 
-    // Try to persist to mock API, fallback to local state on failure
+    const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const createLocalApplication = () => ({
+      id: `app_${Math.random().toString(36).substr(2, 9)}`,
+      ...payload,
+      date: todayStr,
+      status: 'Applied'
+    });
+
     try {
-      const token = localStorage.getItem('cg_token');
-      fetch(`${API_BASE}/api/applications`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
-          body: JSON.stringify(payload)
-        }).then(async (res) => {
-        if (res.ok) {
-          const data = await res.json();
-          setApplications(prev => [data.application, ...prev]);
-        } else {
-          // fallback local create
-          const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          const newApp = { id: `app_${Math.random().toString(36).substr(2, 9)}`, ...payload, date: todayStr, status: 'Applied' };
-          setApplications(prev => [newApp, ...prev]);
-        }
-      }).catch(() => {
-        const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const newApp = { id: `app_${Math.random().toString(36).substr(2, 9)}`, ...payload, date: todayStr, status: 'Applied' };
-        setApplications(prev => [newApp, ...prev]);
+      const token = await getAuthToken();
+      const res = await fetch(`${API_BASE}/api/applications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify(payload)
       });
 
-      return { success: true };
+      if (res.ok) {
+        const data = await res.json();
+        setApplications(prev => [data.application, ...prev]);
+        return { success: true, application: data.application };
+      }
+
+      const newApp = createLocalApplication();
+      setApplications(prev => [newApp, ...prev]);
+      return { success: true, application: newApp };
     } catch {
-      const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      const newApp = { id: `app_${Math.random().toString(36).substr(2, 9)}`, ...payload, date: todayStr, status: 'Applied' };
+      const newApp = createLocalApplication();
       setApplications(prev => [newApp, ...prev]);
       return { success: true, application: newApp };
     }

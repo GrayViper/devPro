@@ -1,24 +1,38 @@
 {
   "users": [
     {
-      "id": "usr_tb4uabo",
+      "id": "usr_p5qqljf",
+      "name": "Read Notify User",
+      "email": "readnotify-1784048468989@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$MYIAD4L9M9tc0xNwTNBXWuV0AC.yI83Xq3R/UaG7QpBaxH0erlA92"
+    },
+    {
+      "id": "usr_mj3v15m",
+      "name": "Notify User",
+      "email": "notifyuser-1784048468663@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$SIAJ/Dw6.T//KXD3muAt5.4NGV48gIqDIp4iZQ681cz8DqVGNeEcK"
+    },
+    {
+      "id": "usr_8nhscv0",
       "name": "Background User",
-      "email": "bguser-1784016473020@careergenie.test",
+      "email": "bguser-1784048468373@careergenie.test",
       "role": "student",
-      "passwordHash": "$2a$12$Y51lU7D122cNc0DJa1mqveI7QsWsJQekK3IfO75jsPdlGPp0nMUrm"
+      "passwordHash": "$2a$12$.eYgmKy2tf63Tsu8.CS3..O0VN55bVKhjzuW3YkGV62PDVDu7/aHe"
     },
     {
-      "id": "usr_67dzk8p",
+      "id": "usr_qocgrzg",
       "name": "AI User",
-      "email": "aiuser-1784016471251@careergenie.test",
+      "email": "aiuser-1784048467484@careergenie.test",
       "role": "student",
-      "passwordHash": "$2a$12$SYhYH.GW9y2y1cZ6aLcgVOHumNtnliuBUpMiRqsXDlX9FJEUX4lsq",
+      "passwordHash": "$2a$12$Sd7aa41cqMF7vUmfurw/xe/AHZsFuXmFdOTFCZbGJsb1QwE71JBte",
       "resumeUploaded": true,
       "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
+      "resumeScore": 60,
       "skills": [],
       "feedback": {
-        "score": 66,
+        "score": 60,
         "strengths": [
           "Resume has a clear structure and readable content."
         ],
@@ -32,1046 +46,28 @@
           "Include more backend, database, or API implementation details if relevant."
         ]
       },
-      "atsScore": 62
+      "atsScore": 56
     },
     {
-      "id": "usr_coj0yr1",
+      "id": "usr_11bxrfk",
       "name": "Fail User",
-      "email": "failuser-1784016469949@careergenie.test",
+      "email": "failuser-1784048466942@careergenie.test",
       "role": "student",
-      "passwordHash": "$2a$12$PVqMt3aXK/P9rWbutmqm2.1GN6A0ce5u0jYqgA/0iJA0w/2aNovie"
+      "passwordHash": "$2a$12$KdSa/gv8X0Gj5T.D8rutL.eCyg.SKQQAhBYOIACLTDLqxyFPmQley"
     },
     {
-      "id": "usr_68iazwn",
+      "id": "usr_7mtcla6",
       "name": "Login User",
-      "email": "loginuser-1784016468627@careergenie.test",
+      "email": "loginuser-1784048466379@careergenie.test",
       "role": "student",
-      "passwordHash": "$2a$12$dnFfFPikVnjUHQ8xiKXW1Offm1ePN3JTtH3XO6AAFK5pJq6rCm9HW"
+      "passwordHash": "$2a$12$rVwkrzioRA2HPWbNLTFcoOKUZKKKU9marnNCdEAGzYMQU4ydKEF4C"
     },
     {
-      "id": "usr_yaatpqt",
+      "id": "usr_r3ycg5a",
       "name": "New User",
-      "email": "newuser-1784016467920@careergenie.test",
+      "email": "newuser-1784048466084@careergenie.test",
       "role": "student",
-      "passwordHash": "$2a$12$v89JVW8aOQhAO5aICD38gePgSKU5bkAurFu2r82W0dHFWWpYJ2MZy"
-    },
-    {
-      "id": "usr_0g80c1w",
-      "name": "Background User",
-      "email": "bguser-1784016012119@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$pU23tAl9yNc6qD67YE0U3.qSPJnNS7fbp4aeOIYN5vbqcnMTHP1y2"
-    },
-    {
-      "id": "usr_jiulj1w",
-      "name": "AI User",
-      "email": "aiuser-1784016010355@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$3mjaVB.mh5DE8ybvMIajgeP79gaJlm87bz/J.L4AKYWq82vavZi5G",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_v7fpcd0",
-      "name": "Fail User",
-      "email": "failuser-1784016009022@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$bvciIzn4ciyqPp6JkCh5guOfpFbGu5PAm4yEz/TwmMh697qi3kIqu"
-    },
-    {
-      "id": "usr_kbhci9y",
-      "name": "Login User",
-      "email": "loginuser-1784016007616@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$4jHuXFi/A86OM.ydR.sFzu.DLjV7nLXs5PtxjoVQ6EwodptiDEglC"
-    },
-    {
-      "id": "usr_vqoyqzr",
-      "name": "New User",
-      "email": "newuser-1784016006858@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$j9qTw5W9tx/NIgvyZbfmMuBOPoTQWiw6IIDrOXlUYijsvVuXPLOv."
-    },
-    {
-      "id": "usr_az3oltz",
-      "name": "Background User",
-      "email": "bguser-1784012968555@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$yKTVnNmO4yd4BiKzDq8KVuG.Q7D/mZTOBWRIRpRfeXsm38JoXMW0u"
-    },
-    {
-      "id": "usr_uw5rxqu",
-      "name": "AI User",
-      "email": "aiuser-1784012967150@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$QfDGojASEQ86YAoGxkUUt.WkueVWnvYbuSBNkO1KObZY3hP0esAA6",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_koo5etc",
-      "name": "Fail User",
-      "email": "failuser-1784012965877@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$m2yfP32BqPBDYdiGiKU/.uHhCrkcZHVeMoHhmsb/yGITO2qdUQVZm"
-    },
-    {
-      "id": "usr_09bllni",
-      "name": "Login User",
-      "email": "loginuser-1784012964665@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$6B9LxJCW6DaIMnqOCthi6.JRTvOHrLXszr3A/ogYyOhUxbvvYlhiq"
-    },
-    {
-      "id": "usr_v9l204w",
-      "name": "New User",
-      "email": "newuser-1784012964045@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$vMRh2GDkBk38XVxXGo0L5ulSlI2tZK0yI/MEJBIfLQLD7T1zMCtKC"
-    },
-    {
-      "id": "usr_n5o1kzp",
-      "name": "Background User",
-      "email": "bguser-1784012925814@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$7lHgYwSDmctWZqKATVaieuFL9Ruh/YAOjsc6L6lzQnGsTxKDJi6bK"
-    },
-    {
-      "id": "usr_gjekhk2",
-      "name": "AI User",
-      "email": "aiuser-1784012924622@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$IslGmnGBoHA3DbUxUmPFFOM6fZ6ogvFjLlOryVSkRiZuGfWjoTVyO",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_axla5s4",
-      "name": "Fail User",
-      "email": "failuser-1784012923396@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$8cr61h5wj6isdeHYQj67o.JvxhG3ucNCqvkJmfRYTM4tagt0ohQAa"
-    },
-    {
-      "id": "usr_z6maj2i",
-      "name": "Login User",
-      "email": "loginuser-1784012922182@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$vQSsEl6pGenYJ4pcp4tOP.6McKmXRvmIW1ScN0YAgLOTfegS7a7t6"
-    },
-    {
-      "id": "usr_somek2x",
-      "name": "New User",
-      "email": "newuser-1784012921556@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$0XcAaGh4bb/jHwwRVi6iHOFba8mQ5PSE8WgUnNSQcesKXBGVXj2pS"
-    },
-    {
-      "id": "usr_0oxilp5",
-      "name": "Background User",
-      "email": "bguser-1784012917153@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$/ztNrvXvfzMhwAaDzL6iv.WxCxF/u5JKMy5Mlxytc/wtW2wrnh2n6"
-    },
-    {
-      "id": "usr_5drryhp",
-      "name": "AI User",
-      "email": "aiuser-1784012915395@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$thOvEZjwvuZaFQrKj9y4jeTG.qz8IVDWTrePmMSmcSnt29HNGvpti",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_e6dfbx6",
-      "name": "Fail User",
-      "email": "failuser-1784012914107@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$9xnnGr0yGmqlxiZJLX3cveL1SljAhoBohdz.n7iQvNQLx6hq.ZAp."
-    },
-    {
-      "id": "usr_0wa0i2x",
-      "name": "Login User",
-      "email": "loginuser-1784012912864@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$UUv/j62oXRX1/VLt2fxCMOwvbtCzI8kk/b6ddD1qq4OgCofvByfOy"
-    },
-    {
-      "id": "usr_jkr0ef2",
-      "name": "New User",
-      "email": "newuser-1784012912243@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$uuf4.KrXektPYUDzY2kuLuONmtep9Awscsx6eICOjiHA1HLdkRH9m"
-    },
-    {
-      "id": "usr_dx5qmra",
-      "name": "AI User",
-      "email": "aiuser-1784012658728@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$5XUj/iF03JK1g5oA5LRNkOZ4hsWGDWvN/9rxyQyigKRlXGYGFgCcm",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_bsjqo93",
-      "name": "Fail User",
-      "email": "failuser-1784012657439@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$CzslMUTp44S5aEuFdS.GAOWSjK/kmPtlAVCbX6RkEqGfzMKh.twfa"
-    },
-    {
-      "id": "usr_ymdspxv",
-      "name": "Login User",
-      "email": "loginuser-1784012656240@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$4qmVyk/OAmDovoPdgT.7ce2WyDQDjGZD2f36LfHuxutUyJYUYTZO."
-    },
-    {
-      "id": "usr_9x1z8gx",
-      "name": "New User",
-      "email": "newuser-1784012655585@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$6VrVIOk8xUOQ49K466XSR.WDaL2hE2PvmeGurh1X9j8/yz6xc3jne"
-    },
-    {
-      "id": "usr_js1rawc",
-      "name": "AI User",
-      "email": "aiuser-1784011933396@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$d70zin5ThXTo32ywhnbi.eeWLUkrzjtm5DeFbZp4b.8Ts4WhgGS5G",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_yt67so8",
-      "name": "Fail User",
-      "email": "failuser-1784011932069@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Qs8oLMJJNcvYEiYshoEZUuNZxwBZ.iY.BCykZQNv5jwTSGMQ3flSi"
-    },
-    {
-      "id": "usr_zv4ulih",
-      "name": "Login User",
-      "email": "loginuser-1784011930759@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$0EW.OuxtUa1csOA5Z6sn0Ojb1m57Ua.ml1a4dTG8Dk0NL9GHtmszW"
-    },
-    {
-      "id": "usr_tom3dtv",
-      "name": "New User",
-      "email": "newuser-1784011930078@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$IWCOrccuTnYw1m/0/VlehuWagbU5MSSi1DqZHDctZTCTXz.3kP8Lq"
-    },
-    {
-      "id": "usr_r92yewb",
-      "name": "AI User",
-      "email": "aiuser-1784011301613@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$ahN0MH3rfsx58Yp4qPxeBesSLe8seSwEhAigOXH2fkeQSNbqavbQ6",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_kkh741c",
-      "name": "Fail User",
-      "email": "failuser-1784011300349@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$oz79DSuCuzmBU67dS8PM5.XStjpj1/DhJ6mryqiVrPoj8D7cDXS92"
-    },
-    {
-      "id": "usr_jvl2hvj",
-      "name": "Login User",
-      "email": "loginuser-1784011299130@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$THWk1u2QlINKSCahc91aGu8uGHK0.WOMr1HAs5/fSybKMwpkczlla"
-    },
-    {
-      "id": "usr_l90qw6w",
-      "name": "New User",
-      "email": "newuser-1784011298496@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$eGwVNIaYutqRP/e6w4xLHuirAgSRwmBrJgOnLZOLly1D7kleC/h36"
-    },
-    {
-      "id": "usr_ece3yzh",
-      "name": "AI User",
-      "email": "aiuser-1784011276067@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$QpZYQ78t4QTiK8NaYr4CsO8rDKUNm/xxfdziryZUAZi2ELEcSMDuy",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_si6ggba",
-      "name": "Fail User",
-      "email": "failuser-1784011274788@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$ikDQpTJZJijmLAG.8L2otuPfTZyqTEGobSzmqpAPdslCmHRsNMIB6"
-    },
-    {
-      "id": "usr_k7eev79",
-      "name": "Login User",
-      "email": "loginuser-1784011273558@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$OJ6JD6AtPBvyE0PfgNMDl.CEQ7yd7MDXQjWkMS7bqJuLvvyYXC7EG"
-    },
-    {
-      "id": "usr_uyqk3zz",
-      "name": "New User",
-      "email": "newuser-1784011272915@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$P6tVh9KpP1f10.Hu0/E6I.S5GBP7PAH7Ch4jhppYjA9uxPFXSVtZC"
-    },
-    {
-      "id": "usr_3h470q8",
-      "name": "AI User",
-      "email": "aiuser-1784010781529@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$G5hV4.jbZEiviWV1NjLIseDvrNHbnGaHbb0pDr0ijVUg.uDC/OA/C",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_c511ecf",
-      "name": "Fail User",
-      "email": "failuser-1784010780229@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$GeYkxL02a9F449h8cBFSYecXYK5reycfFLv8qmuy/0KgeayPk9mBq"
-    },
-    {
-      "id": "usr_5b5nwoz",
-      "name": "Login User",
-      "email": "loginuser-1784010779028@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$/eipoi65B4BlOHFFc8SxXOwI6RbmGBitrvssbqEdip5bZmIQKLtOC"
-    },
-    {
-      "id": "usr_2u92xpj",
-      "name": "New User",
-      "email": "newuser-1784010778404@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$O0G3f9z7IAve1yvRf6o44uNEx3EvLXLWjJCRvY2QwSsQtkD4Vovd6"
-    },
-    {
-      "id": "usr_27bcpto",
-      "name": "AI User",
-      "email": "aiuser-1784010737524@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$vpbbjhSQ2tnSQjX9dLR3MefMEEL.CDjpqkrmjk/lrwqeHVJ6R7OoK",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_r3wr87j",
-      "name": "Fail User",
-      "email": "failuser-1784010736273@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$AxzeeKm4Uyt4lI3aDO/EBeest0B0LgEIu6TVP3Ak6MHD0rGzLNztO"
-    },
-    {
-      "id": "usr_5chv28c",
-      "name": "Login User",
-      "email": "loginuser-1784010735067@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$KyM9gWwai.FnbPsNSmW30OvsfxnjJgEEeDuj4FAll8mKdN8ulWte."
-    },
-    {
-      "id": "usr_gboerfp",
-      "name": "New User",
-      "email": "newuser-1784010734440@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$IKEgJJD74pDz4PE1bYAmVO2rjVCAx0mFwk91vT31nHF8ceUfstHYa"
-    },
-    {
-      "id": "usr_mvi3m7i",
-      "name": "AI User",
-      "email": "aiuser-1784010551636@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$vIgG9xjLsidDhumTNglCBuQTlGo2Xpd4kdCyEjmrBRmehun4po49u",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_cvj5xmj",
-      "name": "Fail User",
-      "email": "failuser-1784010550355@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$B4IgXNsE2FkhVBu5ouZFH.KVDlbwDWTbyvxv1oYO2c2cwx0FZ/8Te"
-    },
-    {
-      "id": "usr_zlmoqu0",
-      "name": "Login User",
-      "email": "loginuser-1784010549134@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$wRPMws.QdDNWcJ/KzHGj3.B2xDIquAJxTXAq2WGniNtIw1gMqkzpO"
-    },
-    {
-      "id": "usr_43gx7u2",
-      "name": "New User",
-      "email": "newuser-1784010548524@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Awtt3YJ2xgv.hkcN0eSBAe/5krQfWwmjqTAMsi7gk5V4rnwxNeJnC"
-    },
-    {
-      "id": "usr_23edgi6",
-      "name": "AI User",
-      "email": "aiuser-1784010481976@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$7vLsCShHEK8Erbmx5HYgZeJ6IMahO6lUA3um9Vx1X/TFgpFbruTsW",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_3807syi",
-      "name": "Fail User",
-      "email": "failuser-1784010480722@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$AkAbaF4cMzfU1.LeGG3W6OE6/47qGUmWqDKnUY4HYBb0vYZH/WDhm"
-    },
-    {
-      "id": "usr_1xgmq4r",
-      "name": "Login User",
-      "email": "loginuser-1784010479503@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$lDiTrjCvjxPYIfIEVAfwTO27f.i1CXbXcKzBX4KW6wdL6FfsQI0jC"
-    },
-    {
-      "id": "usr_iklb8rs",
-      "name": "New User",
-      "email": "newuser-1784010478856@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$SMWC4ZM1euH..GPrP2/g3u6fkv1/Oc1V.Ml9mSggTdk9M.Z8JcQNi"
-    },
-    {
-      "id": "usr_fkx2m4g",
-      "name": "AI User",
-      "email": "aiuser-1784010474190@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$bEdHXLVU4gGgLpReXDhxZORHnUzGxka3aQqMs/56OZ0GT0tv/56My",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_6ejg959",
-      "name": "Fail User",
-      "email": "failuser-1784010472964@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$xp5R1jEHqI19YWuUWMHDfOjarGzIAnuqRmf6JaJRfmn0ZNauXFC.G"
-    },
-    {
-      "id": "usr_oahqs2e",
-      "name": "Login User",
-      "email": "loginuser-1784010471734@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$cJ66DB2x/IgM/gp0FZLZKeacSySX4bIIlg/SR/rSpZ5nvLb9HUE5u"
-    },
-    {
-      "id": "usr_4ogpilc",
-      "name": "New User",
-      "email": "newuser-1784010471071@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$hsHUsSFtkSXqNkifWjDLSuLQgLp8BitgwWGUCPWDewzJj0LLurnYO"
-    },
-    {
-      "id": "usr_cp4v4yb",
-      "name": "AI User",
-      "email": "aiuser-1784010432015@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Jra3.dlqG8ScV5eWNsjyEurWqn1lGUnfP8gqmeEL3S0oN98SBj1UO",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_sb0q28a",
-      "name": "Fail User",
-      "email": "failuser-1784010430733@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Wru1QjsSKtO/kduBKyn7EO2KrSDnxDdLTrqUfcpHfQ7ZStatiuJPW"
-    },
-    {
-      "id": "usr_i5hxj5c",
-      "name": "Login User",
-      "email": "loginuser-1784010429474@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Nc1e7TtJxmC7XCgCC8V4Guy1pn96ORNSHsfQwDX0AtL1T6zECqlL6"
-    },
-    {
-      "id": "usr_18yho54",
-      "name": "New User",
-      "email": "newuser-1784010428835@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$a31b8TInXzp6vA3FRxxEbODAqg8aA6EjqQ0xACwGWhzup5xWgo4hK"
-    },
-    {
-      "id": "usr_6xnni66",
-      "name": "AI User",
-      "email": "aiuser-1784008758548@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$gJUNJ2j4F8ZVC6AHXG0SB.XYLrabIwai1QCTnDZ.PgOivdyjCvLMK",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_66l0mg0",
-      "name": "Fail User",
-      "email": "failuser-1784008757329@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$/f2ravREXK0rgpRzWMH97OPO1AKJDzOgSHfCyVuESr7wetDFsp3FS"
-    },
-    {
-      "id": "usr_t4isabc",
-      "name": "Login User",
-      "email": "loginuser-1784008756100@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$F.2.ytTB6/cf/xCik7J3eOtL33Syf9X5mt9dLu95Xr6tfk9I1U50O"
-    },
-    {
-      "id": "usr_kkwelsn",
-      "name": "New User",
-      "email": "newuser-1784008755410@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$2ojXUjYcMS6UR2nOHUGIXue5QLD4lyidXvVQ5ElXCS4yYHS19s3QO"
-    },
-    {
-      "id": "usr_v9xigfs",
-      "name": "AI User",
-      "email": "aiuser-1784008284439@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$tMRMxKayF/g/wSc0KtrDtuNy2mTZ/nbTWOZJTH9wko/XuxGMxT2Z2",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_99sfug0",
-      "name": "Fail User",
-      "email": "failuser-1784008283202@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$J24FyTnP2488durIYNgtjelrDIgxs6rUc66.VG/zEW2WX0CbvMdM2"
-    },
-    {
-      "id": "usr_pql388a",
-      "name": "Login User",
-      "email": "loginuser-1784008281967@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$QYeXu5WMOM48DIsa04qHneaFVfdtKsA.NIyLIUkCAvkIUMsHzzgFa"
-    },
-    {
-      "id": "usr_t9lysrm",
-      "name": "New User",
-      "email": "newuser-1784008281337@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Cw2sVMQbQ7rKC1gUNcLp2OSymB7W2grcmh28zkZwIn2Kn34lzso5O"
-    },
-    {
-      "id": "usr_pebmjws",
-      "name": "AI User",
-      "email": "aiuser-1784001089906@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$9X09kpMH.qAA2qonOi8Xte7y7QXLCTbh56z0paQdVcJzGqmGRX0P6",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_vf55xnj",
-      "name": "Fail User",
-      "email": "failuser-1784001089364@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$uH8C66VIYNm2G4w.ljhF/eB2hYoz2XIik.zZnbPqhRSV3.8.CDQEu"
-    },
-    {
-      "id": "usr_3mpy6ey",
-      "name": "Login User",
-      "email": "loginuser-1784001088844@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$.wqS8LlXnbs01DcSIt3UYeOLdqB6v/mFyaxD5x4LnZ1DLujkkFPKG"
-    },
-    {
-      "id": "usr_teflbyx",
-      "name": "New User",
-      "email": "newuser-1784001088577@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$UlXDmPZvI2PzB7iavKlBEeDNefbbnWSbRTyY3b6WyNPLFXDkLpfTq"
-    },
-    {
-      "id": "usr_9fb94cj",
-      "name": "AI User",
-      "email": "aiuser-1784000831199@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$lSWnJFDgmrTI/0LfmE.cmOHLAkSwl20vpC3BHSDHM2542YrHM7SZG",
-      "resumeUploaded": true,
-      "resumeName": "resume_ai.pdf",
-      "resumeScore": 66,
-      "skills": [],
-      "feedback": {
-        "score": 66,
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      },
-      "atsScore": 62
-    },
-    {
-      "id": "usr_95za0vi",
-      "name": "Fail User",
-      "email": "failuser-1784000829971@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$9AsJ9rr8T2tjgW0g0LynLOBnvarL99Si05S50gIXeAUibP1vA/UZ."
-    },
-    {
-      "id": "usr_rsy0fxa",
-      "name": "Login User",
-      "email": "loginuser-1784000828744@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$b0XRcClHjqrEMEmqoWvZfujbS9KAPAWsoyEvrU38Klmuy.5VexKDO"
-    },
-    {
-      "id": "usr_ejat3l7",
-      "name": "New User",
-      "email": "newuser-1784000828132@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$b4.5zkqe89jnPkPPoN6Mfegw2MBn0JrttBaxujSLzw.1.2b6N53s."
-    },
-    {
-      "id": "usr_4qyavhv",
-      "name": "Fail User",
-      "email": "failuser-1784000765519@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$IXutE5WM3q9veOYyG2nomurVD6yCG8.dhE5Zc2/5QClifytTzkV56"
-    },
-    {
-      "id": "usr_3707cee",
-      "name": "Login User",
-      "email": "loginuser-1784000764205@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$DIDm1ORT4dTX4Q5l.V9R1eZgh/t/trUIDnVXA5L8txkqY4pMv7c8q"
-    },
-    {
-      "id": "usr_09i0j1v",
-      "name": "New User",
-      "email": "newuser-1784000763554@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$bHpz.Dk4stLEZoj/JDDxxexY3SZ.2RoX5hDer0D4s7i0/Xt4JKJlu"
-    },
-    {
-      "id": "usr_4fugz6p",
-      "name": "Fail User",
-      "email": "failuser-1784000635980@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$HwCjhJJY6MwZsJFeKtQVpO..rPOhWZ1aDh39HbsQyEfUaQXn5j.ZC"
-    },
-    {
-      "id": "usr_cnekvq5",
-      "name": "Login User",
-      "email": "loginuser-1784000634676@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$YLjNIOpuvW2W5lxHvY5v9O97nrg.kRZAPsSpnbef6hr7RCySyL62G"
-    },
-    {
-      "id": "usr_7tag72e",
-      "name": "New User",
-      "email": "newuser-1784000634016@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$ihrnLIL09qR3cK4WzNqUoO43PtZW8oXY63SEzA5HamIBF2rvhJ6TS"
-    },
-    {
-      "id": "usr_q8d541d",
-      "name": "Fail User",
-      "email": "failuser-1784000601913@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$HVuWV2.OUJ/h0BFkIQAI5u3xFfHNv6Ny13QuRme3/.hUtWdqG6fai"
-    },
-    {
-      "id": "usr_w0z50pa",
-      "name": "Login User",
-      "email": "loginuser-1784000600609@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$/yaAvgttm9OMVERC7rnObulmfat5B42eBVpLkqcxd.5f8ZzGhhuLG"
-    },
-    {
-      "id": "usr_h6k2wp6",
-      "name": "New User",
-      "email": "newuser-1784000599952@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$lr/fIERZKO.8zGqicsvlr.6gvZ./uB4jOJHfJZZrNWygi7syAjJja"
-    },
-    {
-      "id": "usr_0986kkl",
-      "name": "Fail User",
-      "email": "failuser-1784000340751@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$.SL4AbzlAMEaAZFEOuXGPeDBQ3MqGQz9whTvQdl4ldCBeKiHYVXJy"
-    },
-    {
-      "id": "usr_vw5kmye",
-      "name": "Login User",
-      "email": "loginuser-1784000340206@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$qi0h1rTaZ5VqzwNqrct8QOiytgjOrVQpsUjfmhUe/GgbeJdr5i.NO"
-    },
-    {
-      "id": "usr_9e75zxs",
-      "name": "New User",
-      "email": "newuser-1784000339938@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$GzDXD2W0PV5be1wsqr.50On8IXOX9ENA/4UnzkgTvjVckeNn1owDy"
-    },
-    {
-      "id": "usr_k9oaqtq",
-      "name": "Fail User",
-      "email": "failuser-1784000155527@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$Zm.ZUz5vhWoePILvNQqUn.1TafDoTAqPossQL5tK/S4iBcsT6VHTm"
-    },
-    {
-      "id": "usr_h2w4yb2",
-      "name": "Login User",
-      "email": "loginuser-1784000154971@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$1JZh4/m6ludfOdU1AH1qyOcA0gz7OUgpdLwfF8GyXBsJVqfSNE6ee"
-    },
-    {
-      "id": "usr_f2m55ln",
-      "name": "New User",
-      "email": "newuser-1784000154703@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$P9wI26q7BeaRo6esP5Y0uOfH.JKzrO.3BwVFtUVgBtzo3aQ3HJ..C"
-    },
-    {
-      "id": "usr_3kx0xt3",
-      "name": "Fail User",
-      "email": "failuser-1784000134255@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$IHusyN0VowXxMa3P1PIFkOGECpxsuv6PvtP/WdxIZT4GiEAqBHI0S"
-    },
-    {
-      "id": "usr_a4x3zis",
-      "name": "Login User",
-      "email": "loginuser-1784000133705@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$x36F0KLqGf/gECVIr.lpBO2i8GeYTMCfS9fMp1ERFvqo3SO7FYrfe"
-    },
-    {
-      "id": "usr_jhxfu4g",
-      "name": "New User",
-      "email": "newuser-1784000133430@careergenie.test",
-      "role": "student",
-      "passwordHash": "$2a$12$h8VuFYUmBMPsFLkV9QLBNe9HRqMGSzlwNYqSi5jq4y./omZjeOyri"
+      "passwordHash": "$2a$12$N7NumcLpHwE/rxS1ba1zX.6szdMdq1NI0efjH4pdtZzFcOSXcwFJq"
     },
     {
       "id": "usr_student",
@@ -1103,7 +99,39 @@
   ],
   "jobs": [
     {
-      "id": "job_s7yujd1",
+      "id": "job_1xal12h",
+      "title": "Read Receipt Job",
+      "company": "NotifyCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "Needs approval",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "status": "active"
+    },
+    {
+      "id": "job_swws9xj",
+      "title": "Approved Job",
+      "company": "NotifyCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "Needs approval",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "status": "active"
+    },
+    {
+      "id": "job_o7ddo47",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -1119,7 +147,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_aymngua",
+      "id": "job_pd0v4q0",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -1135,1236 +163,20 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_nv0aqfk",
-      "title": "Rotated Job",
-      "company": "RotateCo",
+      "id": "job_jmj3fya",
+      "title": "Approved Job",
+      "company": "NotifyCo",
       "location": "Remote",
       "type": "Full-time",
       "tags": [],
-      "description": "",
+      "description": "Needs approval",
       "salary": "Competitive",
       "deadline": "TBD",
       "posterId": null,
       "posterName": null,
-      "logo": "R",
+      "logo": "N",
       "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_7raoaqy",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_ifb06yv",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_9080a6j",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_s5b5ghr",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_zdcol53",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_tbu9h4e",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_7kwuu15",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_t69xe7m",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_03nv6cn",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_1nqllwi",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_sm4h3je",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_c71sv56",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_n69wjmx",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_2t1civ7",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_m358t0u",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_mncyrd5",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_gf0axhs",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_x5o3pu2",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_dx0de2m",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_k5yf8kh",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_00hj6qz",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_kh981rz",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_wb4qc5t",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_a4wjd82",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_h7iqu0w",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_c40vkqn",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_olb9y7i",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_mw2ch4i",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_861oow0",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_38yf4jx",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_onv578n",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_cg7ai84",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_hocu5g4",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_u2j8kyj",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_1c1r4xw",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_tswkdh8",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_6fuezqo",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_ctrqzzg",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_2sjokwd",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_47r6yvg",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_sv3fbr4",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_xeohck6",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_lfpg7pa",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_kur16vu",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_03vnc2q",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_jhrpi3r",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_1b40vz6",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_xk0clws",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_6m0hn2x",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_99pngff",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_4eop76g",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_mtxixw2",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_5tvrong",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_qghulbj",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_x6jfm59",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_vdy2hmm",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_db85mza",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_q6xri56",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_qna3y8v",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_u5o315l",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_h17zf6i",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_qor04xf",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_stvnopz",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_xh3k9nj",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_l46p3k8",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_02qqqmt",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_2obzc4g",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_t728em8",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_90wd1u6",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_uja2aw0",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_1e0h0cp",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_n5h9owx",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_0r7iy8m",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_nu8ro8m",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_a999zjs",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_g94qjj9",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
+      "status": "active"
     },
     {
       "id": "job_1",
@@ -2379,455 +191,176 @@
       "status": "active"
     }
   ],
-  "applications": [],
-  "resumeResults": {
-    "scan_qglxzra": {
-      "status": "done",
-      "studentId": "usr_9fb94cj",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T03:47:12.086Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
+  "applications": [
+    {
+      "id": "app_1yub27z",
+      "studentId": "usr_p5qqljf",
+      "studentName": "Read Notify User",
+      "studentEmail": "readnotify-1784048468989@careergenie.test",
+      "studentSkills": [],
+      "jobId": "job_1xal12h",
+      "jobTitle": "Read Receipt Job",
+      "company": "NotifyCo",
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "date": "Jul 14, 2026",
+      "status": "Applied",
+      "matchScore": 0,
+      "history": [
+        {
+          "status": "Applied",
+          "date": "Jul 14, 2026",
+          "comment": "Application submitted."
+        }
+      ]
     },
-    "scan_fj6d6j1": {
-      "status": "done",
-      "studentId": "usr_pebmjws",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T03:51:30.357Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
+    {
+      "id": "app_tlnkmbs",
+      "studentId": "usr_mj3v15m",
+      "studentName": "Notify User",
+      "studentEmail": "notifyuser-1784048468663@careergenie.test",
+      "studentSkills": [],
+      "jobId": "job_swws9xj",
+      "jobTitle": "Approved Job",
+      "company": "NotifyCo",
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "date": "Jul 14, 2026",
+      "status": "Applied",
+      "matchScore": 0,
+      "history": [
+        {
+          "status": "Applied",
+          "date": "Jul 14, 2026",
+          "comment": "Application submitted."
+        }
+      ]
     },
-    "scan_bvwtge3": {
-      "status": "done",
-      "studentId": "usr_v9xigfs",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T05:51:26.024Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_56wpbdf": {
-      "status": "done",
-      "studentId": "usr_6xnni66",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T05:59:20.083Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_ghilh4e": {
-      "status": "done",
-      "studentId": "usr_cp4v4yb",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:27:13.527Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_vq9u199": {
-      "status": "done",
-      "studentId": "usr_fkx2m4g",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:27:55.497Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_ceqvnxy": {
-      "status": "done",
-      "studentId": "usr_23edgi6",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:28:03.027Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_yi630m2": {
-      "status": "done",
-      "studentId": "usr_mvi3m7i",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:29:13.274Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_2ktwcqc": {
-      "status": "done",
-      "studentId": "usr_27bcpto",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:32:18.956Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_lqffgxq": {
-      "status": "done",
-      "studentId": "usr_3h470q8",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:33:03.146Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_160shnu": {
-      "status": "done",
-      "studentId": "usr_ece3yzh",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:41:18.227Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_xdwl89n": {
-      "status": "done",
-      "studentId": "usr_r92yewb",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:41:43.142Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_uo1dasl": {
-      "status": "done",
-      "studentId": "usr_js1rawc",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T06:52:15.088Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_4vo3p3z": {
-      "status": "done",
-      "studentId": "usr_dx5qmra",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T07:04:20.190Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_wjup57c": {
-      "status": "done",
-      "studentId": "usr_5drryhp",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T07:08:37.038Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_eiprbj4": {
-      "status": "pending",
-      "studentId": "usr_0oxilp5",
-      "fileName": "resume_background.pdf",
-      "startedAt": "2026-07-14T07:08:37.764Z"
-    },
-    "scan_60g1e9f": {
-      "status": "done",
-      "studentId": "usr_gjekhk2",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T07:08:45.689Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_rmh63so": {
-      "status": "pending",
-      "studentId": "usr_n5o1kzp",
-      "fileName": "resume_background.pdf",
-      "startedAt": "2026-07-14T07:08:46.429Z"
-    },
-    "scan_0qrsu49": {
-      "status": "done",
-      "studentId": "usr_uw5rxqu",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T07:09:28.492Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_7lre9y3": {
-      "status": "pending",
-      "studentId": "usr_az3oltz",
-      "fileName": "resume_background.pdf",
-      "startedAt": "2026-07-14T07:09:29.166Z"
-    },
-    "scan_7v4u90l": {
-      "status": "done",
-      "studentId": "usr_jiulj1w",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T08:00:12.102Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_wcgvudd": {
-      "status": "pending",
-      "studentId": "usr_0g80c1w",
-      "fileName": "resume_background.pdf",
-      "startedAt": "2026-07-14T08:00:12.738Z"
-    },
-    "scan_fvs3rcs": {
-      "status": "done",
-      "studentId": "usr_67dzk8p",
-      "fileName": "resume_ai.pdf",
-      "score": 66,
-      "finishedAt": "2026-07-14T08:07:52.903Z",
-      "analysis": {
-        "skills": [],
-        "strengths": [
-          "Resume has a clear structure and readable content."
-        ],
-        "weaknesses": [
-          "No automated testing frameworks explicitly mentioned.",
-          "Limited container deployment or cloud infrastructure detail."
-        ],
-        "suggestions": [
-          "Add a section that mentions testing tools or automation practices.",
-          "Consider adding a Docker/Kubernetes or cloud deployment example.",
-          "Include more backend, database, or API implementation details if relevant."
-        ]
-      }
-    },
-    "scan_tasj1t3": {
-      "status": "pending",
-      "studentId": "usr_tb4uabo",
-      "fileName": "resume_background.pdf",
-      "startedAt": "2026-07-14T08:07:53.628Z"
+    {
+      "id": "app_1o2xam9",
+      "studentId": "usr_21lizdg",
+      "studentName": "Notify User",
+      "studentEmail": "notifyuser-1784047776054@careergenie.test",
+      "studentSkills": [],
+      "jobId": "job_jmj3fya",
+      "jobTitle": "Approved Job",
+      "company": "NotifyCo",
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "date": "Jul 14, 2026",
+      "status": "Applied",
+      "matchScore": 0,
+      "history": [
+        {
+          "status": "Applied",
+          "date": "Jul 14, 2026",
+          "comment": "Application submitted."
+        }
+      ]
     }
-  }
+  ],
+  "resumeResults": {
+    "scan_w9r8mjw": {
+      "status": "done",
+      "studentId": "usr_8wkaxc4",
+      "fileName": "resume_ai.pdf",
+      "score": 60,
+      "finishedAt": "2026-07-14T16:49:36.399Z",
+      "analysis": {
+        "skills": [],
+        "strengths": [
+          "Resume has a clear structure and readable content."
+        ],
+        "weaknesses": [
+          "No automated testing frameworks explicitly mentioned.",
+          "Limited container deployment or cloud infrastructure detail."
+        ],
+        "suggestions": [
+          "Add a section that mentions testing tools or automation practices.",
+          "Consider adding a Docker/Kubernetes or cloud deployment example.",
+          "Include more backend, database, or API implementation details if relevant."
+        ]
+      }
+    },
+    "scan_newm7gu": {
+      "status": "done",
+      "studentId": "usr_qocgrzg",
+      "fileName": "resume_ai.pdf",
+      "score": 60,
+      "finishedAt": "2026-07-14T17:01:08.962Z",
+      "analysis": {
+        "skills": [],
+        "strengths": [
+          "Resume has a clear structure and readable content."
+        ],
+        "weaknesses": [
+          "No automated testing frameworks explicitly mentioned.",
+          "Limited container deployment or cloud infrastructure detail."
+        ],
+        "suggestions": [
+          "Add a section that mentions testing tools or automation practices.",
+          "Consider adding a Docker/Kubernetes or cloud deployment example.",
+          "Include more backend, database, or API implementation details if relevant."
+        ]
+      }
+    },
+    "scan_85qt145": {
+      "status": "pending",
+      "studentId": "usr_8nhscv0",
+      "fileName": "resume_background.pdf",
+      "startedAt": "2026-07-14T17:01:08.647Z"
+    }
+  },
+  "notifications": [
+    {
+      "id": "notif_pd374ml",
+      "type": "job_approved",
+      "recipientId": "usr_21lizdg",
+      "recipientEmail": "notifyuser-1784047776054@careergenie.test",
+      "jobId": "job_jmj3fya",
+      "jobTitle": "Approved Job",
+      "company": "NotifyCo",
+      "message": "Your application for Approved Job at NotifyCo has been approved.",
+      "createdAt": "2026-07-14T16:49:36.464Z",
+      "read": false
+    },
+    {
+      "id": "notif_dav4md4",
+      "type": "job_approved",
+      "recipientId": "usr_mj3v15m",
+      "recipientEmail": "notifyuser-1784048468663@careergenie.test",
+      "jobId": "job_swws9xj",
+      "jobTitle": "Approved Job",
+      "company": "NotifyCo",
+      "message": "Your application for Approved Job at NotifyCo has been approved.",
+      "subject": "Your application for Approved Job has been approved",
+      "delivery": {
+        "channel": "email",
+        "status": "sent",
+        "sentAt": "2026-07-14T17:01:08.983Z",
+        "to": "notifyuser-1784048468663@careergenie.test"
+      },
+      "createdAt": "2026-07-14T17:01:08.983Z",
+      "read": false
+    },
+    {
+      "id": "notif_k0cg26q",
+      "type": "job_approved",
+      "recipientId": "usr_p5qqljf",
+      "recipientEmail": "readnotify-1784048468989@careergenie.test",
+      "jobId": "job_1xal12h",
+      "jobTitle": "Read Receipt Job",
+      "company": "NotifyCo",
+      "message": "Your application for Read Receipt Job at NotifyCo has been approved.",
+      "subject": "Your application for Read Receipt Job has been approved",
+      "delivery": {
+        "channel": "email",
+        "status": "sent",
+        "sentAt": "2026-07-14T17:01:09.269Z",
+        "to": "readnotify-1784048468989@careergenie.test"
+      },
+      "createdAt": "2026-07-14T17:01:09.269Z",
+      "read": true
+    }
+  ]
 }

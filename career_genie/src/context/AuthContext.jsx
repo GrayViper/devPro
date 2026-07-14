@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useClerk } from '@clerk/react';
+import { useClerk as useClerkAuth } from '@clerk/react';
 import { AuthContext } from './AuthContextValue';
 import { clearClerkSessionStorage, normalizeClerkUser } from '../utils/clerk';
 
@@ -51,14 +51,10 @@ const MOCK_USERS = {
 };
 
 export const AuthProvider = ({ children }) => {
-  const { signOut, isLoaded: clerkLoaded } = useClerk();
+  const { signOut, isLoaded: clerkLoaded, isSignedIn: clerkSignedIn, getToken, user: clerkUser } = useClerkAuth();
 
-  // Default to student for a seamless first-time preview of the dashboard
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('cg_user');
-    return saved ? JSON.parse(saved) : MOCK_USERS.student;
-  });
-
+  // Default to no user (require explicit signin). Do not auto-restore from saved localStorage.
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -89,24 +85,32 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
       const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
       if (isNetworkError) {
-        // Fallback to in-memory mock if the auth server is unreachable
-        const fallback = (email && email.toLowerCase() === 'david@stripe.com') ? MOCK_USERS.recruiter : (email && email.toLowerCase() === 'admin@careergenie.com' ? MOCK_USERS.admin : MOCK_USERS.student);
-        setUser(fallback);
-        try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch {}
-        return fallback;
+        // Only enable fallback demo users when explicitly allowed via env flag
+        const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
+        if (allowDemo) {
+          const fallback = {
+            ...((email && email.toLowerCase() === 'david@stripe.com') ? MOCK_USERS.recruiter : (email && email.toLowerCase() === 'admin@careergenie.com' ? MOCK_USERS.admin : MOCK_USERS.student)),
+            demo: true
+          };
+          setUser(fallback);
+          try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch {}
+          return fallback;
+        }
+        // otherwise surface network error to caller so no silent demo login occurs
+        throw new Error('Network error: unable to reach auth server');
       }
       // Re-throw non-network errors with the original message
       throw error;
     }
   };
 
-  const signup = async (name, email, password, role) => {
+  const signup = async (name, email, password, role, extra = {}) => {
     setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role })
+        body: JSON.stringify({ name, email, password, role, ...extra })
       });
       const data = await res.json();
       setLoading(false);
@@ -117,25 +121,42 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setLoading(false);
       const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
-      
-      // For network errors or any signup issues, create a fallback in-memory user
-      const newUser = {
-        id: `usr_${Math.random().toString(36).substr(2, 9)}`,
-        name,
-        email,
-        role,
-        skills: role === 'student' ? ['JavaScript', 'HTML/CSS'] : [],
-        resumeUploaded: false
-      };
-      setUser(newUser);
-      try { localStorage.setItem('cg_token', btoa(JSON.stringify({ sub: newUser.id, role: newUser.role, name: newUser.name }))); } catch {}
-      
-      // For non-network errors, still return the user but keep the error context
-      if (!isNetworkError) {
-        throw new Error(`Account created with demo mode: ${error.message}`);
+      // For network errors, only create a fallback when demo mode is explicitly enabled
+      const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
+      if (isNetworkError && allowDemo) {
+        const newUser = {
+          id: `usr_${Math.random().toString(36).substr(2, 9)}`,
+          name,
+          email,
+          role,
+          skills: role === 'student' ? ['JavaScript', 'HTML/CSS'] : [],
+          resumeUploaded: false,
+          demo: true,
+          // include any academic details if provided
+          major: extra.major || null,
+          graduationYear: extra.graduationYear || null,
+          institution: extra.institution || null
+        };
+        setUser(newUser);
+        try { localStorage.setItem('cg_token', btoa(JSON.stringify({ sub: newUser.id, role: newUser.role, name: newUser.name }))); } catch {}
+        return newUser;
       }
-      return newUser;
+
+      // For any other error, surface the original error so caller can handle it
+      throw error;
     }
+  };
+
+  const getAuthToken = async () => {
+    if (clerkLoaded && clerkSignedIn && typeof getToken === 'function') {
+      try {
+        const token = await getToken();
+        if (token) return token;
+      } catch {
+        // ignore Clerk token retrieval failures and fallback to local token
+      }
+    }
+    return localStorage.getItem('cg_token');
   };
 
   const logout = async () => {
@@ -175,7 +196,7 @@ export const AuthProvider = ({ children }) => {
   const fetchProfile = async (userId) => {
     const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
     try {
-      const token = localStorage.getItem('cg_token');
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/api/users/${userId}`, { headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
       const data = await res.json();
       if (res.ok && data.user) {
@@ -191,7 +212,7 @@ export const AuthProvider = ({ children }) => {
   const saveProfile = async (userId, updates) => {
     const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
     try {
-      const token = localStorage.getItem('cg_token');
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/api/users/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
@@ -216,15 +237,38 @@ export const AuthProvider = ({ children }) => {
     const saved = localStorage.getItem('cg_user');
     const clerkSession = localStorage.getItem('clerk_session');
 
-    if (clerkSession) {
+    const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
+    const parseJson = (value) => {
       try {
-        const parsed = JSON.parse(clerkSession);
-        const normalized = normalizeClerkUser(parsed.user || parsed, parsed.role || 'student');
-        setUser(normalized);
-        return;
+        return JSON.parse(value);
       } catch {
-        localStorage.removeItem('clerk_session');
+        return null;
       }
+    };
+
+    const savedUser = saved ? parseJson(saved) : null;
+    const clerkSessionData = clerkSession ? parseJson(clerkSession) : null;
+    const clerkSessionIsDemo = clerkSessionData?.demo === true;
+    const savedUserIsDemo = savedUser?.demo === true;
+
+    if (!allowDemo && (savedUserIsDemo || clerkSessionIsDemo)) {
+      localStorage.removeItem('cg_user');
+      localStorage.removeItem('cg_token');
+      localStorage.removeItem('clerk_session');
+    }
+
+    if (clerkLoaded && clerkSignedIn && clerkUser) {
+      const normalized = normalizeClerkUser(clerkUser, clerkUser.publicMetadata?.role || 'student');
+      setUser(normalized);
+      localStorage.setItem('clerk_session', JSON.stringify(normalized));
+      localStorage.setItem('cg_user', JSON.stringify(normalized));
+      return;
+    }
+
+    if (clerkSessionData && (!clerkSessionIsDemo || allowDemo)) {
+      const normalized = normalizeClerkUser(clerkSessionData.user || clerkSessionData, clerkSessionData.role || 'student');
+      setUser(normalized);
+      return;
     }
 
     if (!saved && token) {
@@ -242,13 +286,14 @@ export const AuthProvider = ({ children }) => {
         }
         if (payload && payload.sub) {
           // try to fetch a full profile from the mock API
+          // Do NOT fallback to the token payload automatically — this prevents silent demo logins.
           fetchProfile(payload.sub).then((fetched) => {
-            if (!fetched) {
-              // fallback to token payload
-              setUser({ id: payload.sub, name: payload.name || payload.sub, role: payload.role || 'student', email: `${payload.name || 'user'}@careergenie.com` });
+            if (fetched) {
+              setUser(fetched);
             }
+            // if no profile is fetched, do nothing and require explicit sign-in
           }).catch(() => {
-            setUser({ id: payload.sub, name: payload.name || payload.sub, role: payload.role || 'student', email: `${payload.name || 'user'}@careergenie.com` });
+            // ignore errors and require explicit sign-in
           });
         }
       } catch {
@@ -261,7 +306,7 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, switchRole, updateUserProfile, fetchProfile, saveProfile, loading }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, switchRole, updateUserProfile, fetchProfile, saveProfile, getAuthToken, loading }}>
       {children}
     </AuthContext.Provider>
   );

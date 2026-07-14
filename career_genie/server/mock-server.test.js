@@ -5,7 +5,7 @@ import { app, createApp } from './mock-server.js';
 import jwt from 'jsonwebtoken';
 import { createBackgroundJobStore } from './mcp/background-mcp-server.js';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
+const getJwtSecret = () => process.env.JWT_SECRET || 'dev-secret';
 
 describe('server security tests', () => {
  
@@ -17,7 +17,7 @@ describe('server security tests', () => {
   });
 
   it('rejects invalid token algorithm', async () => {
-    const badToken = jwt.sign({ sub: 'usr_student', role: 'student' }, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS384' });
+    const badToken = jwt.sign({ sub: 'usr_student', role: 'student' }, getJwtSecret(), { expiresIn: '1h', algorithm: 'HS384' });
     const res = await request(app)
       .post('/api/jobs')
       .set('Authorization', `Bearer ${badToken}`)
@@ -27,7 +27,7 @@ describe('server security tests', () => {
   });
 
   it('allows valid token to access protected route', async () => {
-    const recruiterToken = jwt.sign({ sub: 'usr_recruiter', role: 'recruiter' }, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' });
+    const recruiterToken = jwt.sign({ sub: 'usr_recruiter', role: 'recruiter' }, getJwtSecret(), { expiresIn: '1h', algorithm: 'HS256' });
     const res = await request(app)
       .post('/api/jobs')
       .set('Authorization', `Bearer ${recruiterToken}`)
@@ -195,6 +195,98 @@ describe('server security tests', () => {
     const jobStore = createBackgroundJobStore({ storageFile: path.join(process.cwd(), 'server', 'mcp', 'background-jobs.json') });
     const jobs = await jobStore.listJobs();
     expect(jobs.some((job) => job.payload?.jobId === submit.body.jobId)).toBe(true);
+  });
+
+  it('sends an applicant notification when a job is approved', async () => {
+    const studentEmail = `notifyuser-${Date.now()}@careergenie.test`;
+    const studentRegister = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'Notify User', email: studentEmail, password: 'NotifyPass!23', role: 'student' });
+    expect(studentRegister.status).toBe(201);
+    const studentToken = studentRegister.body.token;
+    const studentId = studentRegister.body.user.id;
+
+    const recruiterToken = jwt.sign({ sub: 'usr_recruiter', role: 'recruiter' }, getJwtSecret(), { expiresIn: '1h', algorithm: 'HS256' });
+    const createJob = await request(app)
+      .post('/api/jobs')
+      .set('Authorization', `Bearer ${recruiterToken}`)
+      .send({ title: 'Approved Job', company: 'NotifyCo', description: 'Needs approval' });
+    expect(createJob.status).toBe(201);
+    const jobId = createJob.body.job.id;
+
+    const apply = await request(app)
+      .post('/api/applications')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ studentId, studentName: 'Notify User', studentEmail, jobId, jobTitle: 'Approved Job', company: 'NotifyCo' });
+    expect(apply.status).toBe(201);
+
+    const adminToken = jwt.sign({ sub: 'usr_admin', role: 'admin' }, getJwtSecret(), { expiresIn: '1h', algorithm: 'HS256' });
+    const approve = await request(app)
+      .put(`/api/jobs/${jobId}/status`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'active' });
+    expect(approve.status).toBe(200);
+    expect(approve.body.notifications).toBeDefined();
+    expect(approve.body.notifications.length).toBeGreaterThan(0);
+    expect(approve.body.notifications[0].recipientEmail).toBe(studentEmail);
+
+    const notificationsRes = await request(app)
+      .get('/api/notifications')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(notificationsRes.status).toBe(200);
+    expect(notificationsRes.body.notifications.some(n => n.type === 'job_approved')).toBe(true);
+  });
+
+  it('marks applicant notifications as read and keeps email delivery metadata', async () => {
+    const studentEmail = `readnotify-${Date.now()}@careergenie.test`;
+    const studentRegister = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'Read Notify User', email: studentEmail, password: 'ReadPass!23', role: 'student' });
+    expect(studentRegister.status).toBe(201);
+    const studentToken = studentRegister.body.token;
+    const studentId = studentRegister.body.user.id;
+
+    const recruiterToken = jwt.sign({ sub: 'usr_recruiter', role: 'recruiter' }, getJwtSecret(), { expiresIn: '1h', algorithm: 'HS256' });
+    const createJob = await request(app)
+      .post('/api/jobs')
+      .set('Authorization', `Bearer ${recruiterToken}`)
+      .send({ title: 'Read Receipt Job', company: 'NotifyCo', description: 'Needs approval' });
+    expect(createJob.status).toBe(201);
+    const jobId = createJob.body.job.id;
+
+    const apply = await request(app)
+      .post('/api/applications')
+      .set('Authorization', `Bearer ${studentToken}`)
+      .send({ studentId, studentName: 'Read Notify User', studentEmail, jobId, jobTitle: 'Read Receipt Job', company: 'NotifyCo' });
+    expect(apply.status).toBe(201);
+
+    const adminToken = jwt.sign({ sub: 'usr_admin', role: 'admin' }, getJwtSecret(), { expiresIn: '1h', algorithm: 'HS256' });
+    const approve = await request(app)
+      .put(`/api/jobs/${jobId}/status`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'active' });
+    expect(approve.status).toBe(200);
+    expect(approve.body.notifications[0].delivery?.channel).toBe('email');
+
+    const notificationsRes = await request(app)
+      .get('/api/notifications')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(notificationsRes.status).toBe(200);
+    const notification = notificationsRes.body.notifications.find((item) => item.type === 'job_approved');
+    expect(notification).toBeDefined();
+    expect(notification.read).toBe(false);
+
+    const markReadRes = await request(app)
+      .put(`/api/notifications/${notification.id}/read`)
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(markReadRes.status).toBe(200);
+    expect(markReadRes.body.notification.read).toBe(true);
+
+    const refreshed = await request(app)
+      .get('/api/notifications')
+      .set('Authorization', `Bearer ${studentToken}`);
+    expect(refreshed.status).toBe(200);
+    expect(refreshed.body.notifications.find((item) => item.id === notification.id).read).toBe(true);
   });
 
   it('returns 500 and error body for unexpected async errors', async () => {

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '../context/useAuth';
 import { JobsContext } from './JobsContextValue';
 
 const INITIAL_JOBS = [
@@ -135,7 +136,7 @@ export const JobsProvider = ({ children }) => {
   // Fetch jobs from mock API and replace local list if available
   const fetchJobs = async () => {
     try {
-      const token = localStorage.getItem('cg_token');
+      const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/api/jobs`, { headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
       const data = await res.json();
       if (res.ok && data.jobs && Array.isArray(data.jobs)) {
@@ -161,6 +162,8 @@ export const JobsProvider = ({ children }) => {
       // network error - keep local jobs
     }
   };
+
+  const { getAuthToken } = useAuth();
 
   useEffect(() => {
     fetchJobs();
