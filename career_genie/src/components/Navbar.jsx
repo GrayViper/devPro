@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { 
   Menu, X, LogOut, User, Briefcase, FileText, 
-  CheckSquare, Shield, Sparkles 
+  CheckSquare, Shield, Sparkles, Bell 
 } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, logout, switchRole } = useAuth();
+  const { user, logout, switchRole, getAuthToken } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
   const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
   const [showRoleSwitcher, setShowRoleSwitcher] = useState(allowDemo);
+  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
   const handleLogout = async () => {
     await logout();
@@ -29,6 +31,35 @@ export default function Navbar() {
   };
 
   const isActive = (path) => location.pathname === path;
+
+  useEffect(() => {
+    const fetchNotificationCount = async () => {
+      if (!user?.id || user.role !== 'student') {
+        setNotificationCount(0);
+        return;
+      }
+
+      try {
+        const token = await getAuthToken();
+        const res = await fetch(`${API_BASE}/api/notifications`, {
+          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setNotificationCount(typeof data.unreadCount === 'number' ? data.unreadCount : 0);
+        }
+      } catch {
+        setNotificationCount(0);
+      }
+    };
+
+    void fetchNotificationCount();
+    const interval = window.setInterval(() => {
+      void fetchNotificationCount();
+    }, 15000);
+
+    return () => window.clearInterval(interval);
+  }, [API_BASE, getAuthToken, user?.id, user?.role]);
 
   return (
     <>
@@ -128,6 +159,18 @@ export default function Navbar() {
                   >
                     <CheckSquare className="w-4 h-4" />
                     Applications
+                  </Link>
+                  <Link 
+                    to="/applications" 
+                    className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-sm font-medium text-emerald-200 transition-colors hover:bg-emerald-500/20"
+                  >
+                    <Bell className="w-4 h-4" />
+                    Alerts
+                    {notificationCount > 0 && (
+                      <span className="rounded-full bg-emerald-400 px-2 py-0.5 text-[10px] font-semibold text-slate-950">
+                        {notificationCount}
+                      </span>
+                    )}
                   </Link>
                 </>
               ) : user.role === 'recruiter' ? (
@@ -231,6 +274,17 @@ export default function Navbar() {
                     <Link to="/resume" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Resume AI</Link>
                     <Link to="/jobs" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Find Jobs</Link>
                     <Link to="/applications" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Applications</Link>
+                    <Link to="/applications" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between rounded-md px-3 py-2 text-base font-medium text-emerald-200">
+                      <span className="flex items-center gap-2">
+                        <Bell className="h-4 w-4" />
+                        Alerts
+                      </span>
+                      {notificationCount > 0 && (
+                        <span className="rounded-full bg-emerald-400 px-2 py-0.5 text-[10px] font-semibold text-slate-950">
+                          {notificationCount}
+                        </span>
+                      )}
+                    </Link>
                   </>
                 )}
                 {user.role === 'recruiter' && (

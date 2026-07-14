@@ -1,7 +1,7 @@
 import path from 'path';
 import request from 'supertest';
-import { describe, it, expect } from 'vitest';
-import { app, createApp } from './mock-server.js';
+import { describe, it, expect, vi } from 'vitest';
+import { app, createApp, sendApprovalEmailNotification } from './mock-server.js';
 import jwt from 'jsonwebtoken';
 import { createBackgroundJobStore } from './mcp/background-mcp-server.js';
 
@@ -235,6 +235,7 @@ describe('server security tests', () => {
       .set('Authorization', `Bearer ${studentToken}`);
     expect(notificationsRes.status).toBe(200);
     expect(notificationsRes.body.notifications.some(n => n.type === 'job_approved')).toBe(true);
+    expect(notificationsRes.body.unreadCount).toBeGreaterThan(0);
   });
 
   it('marks applicant notifications as read and keeps email delivery metadata', async () => {
@@ -287,6 +288,42 @@ describe('server security tests', () => {
       .set('Authorization', `Bearer ${studentToken}`);
     expect(refreshed.status).toBe(200);
     expect(refreshed.body.notifications.find((item) => item.id === notification.id).read).toBe(true);
+    expect(refreshed.body.unreadCount).toBe(0);
+  });
+
+  it('sends approval notifications through the email delivery layer when configured', async () => {
+    const originalApiKey = process.env.RESEND_API_KEY;
+    const originalFromEmail = process.env.RESEND_FROM_EMAIL;
+    const originalFetch = global.fetch;
+
+    process.env.RESEND_API_KEY = 're_test_key';
+    process.env.RESEND_FROM_EMAIL = 'CareerGenie <alerts@careergenie.app>';
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({ id: 'email_123' })
+    });
+    global.fetch = fetchMock;
+
+    try {
+      const result = await sendApprovalEmailNotification({
+        recipientEmail: 'student@example.com',
+        jobTitle: 'Product Designer',
+        company: 'CareerGenie',
+        message: 'Your application was approved.'
+      });
+
+      expect(result.status).toBe('sent');
+      expect(result.provider).toBe('resend');
+      expect(fetchMock).toHaveBeenCalled();
+      const [url, options] = fetchMock.mock.calls[0];
+      expect(url).toBe('https://api.resend.com/emails');
+      expect(options.method).toBe('POST');
+      expect(options.headers.Authorization).toContain('Bearer');
+    } finally {
+      if (originalFetch) global.fetch = originalFetch; else delete global.fetch;
+      if (originalApiKey === undefined) delete process.env.RESEND_API_KEY; else process.env.RESEND_API_KEY = originalApiKey;
+      if (originalFromEmail === undefined) delete process.env.RESEND_FROM_EMAIL; else process.env.RESEND_FROM_EMAIL = originalFromEmail;
+    }
   });
 
   it('returns 500 and error body for unexpected async errors', async () => {

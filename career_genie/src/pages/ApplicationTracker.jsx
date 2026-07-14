@@ -28,7 +28,12 @@ export default function ApplicationTracker() {
   };
 
   useEffect(() => {
-    fetchNotifications();
+    void fetchNotifications();
+    const interval = window.setInterval(() => {
+      void fetchNotifications();
+    }, 15000);
+
+    return () => window.clearInterval(interval);
   }, [API_BASE, getAuthToken, user?.id]);
 
   const markNotificationRead = async (notificationId) => {

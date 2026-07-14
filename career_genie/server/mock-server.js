@@ -308,8 +308,43 @@ function generateId(prefix = 'id') {
   return `${prefix}_${Math.random().toString(36).slice(2,9)}`;
 }
 
-function createNotificationRecord({ recipientId, recipientEmail, jobId, jobTitle, company, message }) {
+async function sendApprovalEmailNotification({ recipientEmail, jobTitle, company, message }) {
+  const apiKey = process.env.RESEND_API_KEY;
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'CareerGenie <alerts@careergenie.app>';
+
+  if (!apiKey) {
+    return { status: 'queued', provider: 'mock', message: 'Email delivery skipped because RESEND_API_KEY is not configured.' };
+  }
+
+  const payload = {
+    from: fromEmail,
+    to: [recipientEmail],
+    subject: `Your application for ${jobTitle} has been approved`,
+    html: `<p>${message}</p><p>Company: ${company}</p>`,
+    text: `${message}\nCompany: ${company}`
+  };
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => '');
+    throw new Error(`Resend delivery failed: ${response.status} ${errorText}`.trim());
+  }
+
+  const data = await response.json().catch(() => ({}));
+  return { status: 'sent', provider: 'resend', messageId: data.id || null };
+}
+
+async function createNotificationRecord({ recipientId, recipientEmail, jobId, jobTitle, company, message }) {
   const now = new Date().toISOString();
+  const deliveryResult = await sendApprovalEmailNotification({ recipientEmail, jobTitle, company, message });
   return {
     id: generateId('notif'),
     type: 'job_approved',
@@ -322,14 +357,18 @@ function createNotificationRecord({ recipientId, recipientEmail, jobId, jobTitle
     subject: `Your application for ${jobTitle} has been approved`,
     delivery: {
       channel: 'email',
-      status: 'sent',
+      status: deliveryResult.status,
+      provider: deliveryResult.provider,
       sentAt: now,
-      to: recipientEmail || recipientId
+      to: recipientEmail || recipientId,
+      messageId: deliveryResult.messageId || null
     },
     createdAt: now,
     read: false
   };
 }
+
+export { sendApprovalEmailNotification };
 
 function signToken(user) {
   const { jwtSecret } = getEnvSettings();
@@ -502,7 +541,7 @@ function setupRoutes(app) {
     const applicantNotifications = [];
     const applications = (data.applications || []).filter(app => app.jobId === jobId);
     for (const application of applications) {
-      const notification = createNotificationRecord({
+      const notification = await createNotificationRecord({
         recipientId: application.studentId,
         recipientEmail: application.studentEmail,
         jobId,

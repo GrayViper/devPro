@@ -5,8 +5,9 @@ import { useAuth } from '../context/useAuth';
 import { useApplications } from '../context/useApplications';
 import { 
   ArrowLeft, MapPin, DollarSign, Sparkles, 
-  CheckCircle, ArrowRight, Loader2, Bookmark 
+  CheckCircle, ArrowRight, Loader2, Bookmark, BookmarkCheck 
 } from 'lucide-react';
+import { getDeadlineInsight, getSavedJobs, toggleSavedJob } from '../utils/studentJourney';
 
 export default function JobDetailsPage() {
   const { id } = useParams();
@@ -18,6 +19,7 @@ export default function JobDetailsPage() {
   const [applying, setApplying] = useState(false);
   const [applySuccess, setApplySuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [savedJobIds, setSavedJobIds] = useState(() => getSavedJobs());
 
   const job = getJobById(id);
 
@@ -35,6 +37,8 @@ export default function JobDetailsPage() {
 
   const userSkills = user?.role === 'student' ? user.skills : [];
   const matchScore = calculateMatchScore(job.skills, userSkills);
+  const deadlineInsight = getDeadlineInsight(job.deadline);
+  const saved = savedJobIds.includes(job.id);
 
   // Check if student is already applied
   const isApplied = applications.some(app => app.jobId === job.id && app.studentId === user?.id);
@@ -111,6 +115,18 @@ export default function JobDetailsPage() {
             <div className="space-y-2 text-xs">
               <h3 className="text-sm font-bold text-white uppercase tracking-wider">Role Overview</h3>
               <p className="text-gray-300 leading-relaxed text-sm">{job.description}</p>
+            </div>
+
+            <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-200">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-300">Deadline signal</div>
+                  <div className="mt-1 font-semibold">{deadlineInsight.label}</div>
+                </div>
+                <div className="rounded-full border border-amber-400/20 bg-amber-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.24em] text-amber-200">
+                  {deadlineInsight.urgent ? 'Urgent' : 'Watchlist'}
+                </div>
+              </div>
             </div>
 
             {/* Requirements */}
@@ -202,11 +218,11 @@ export default function JobDetailsPage() {
             ) : (
               <div className="flex gap-2.5">
                 <button
-                  onClick={() => alert('Saved to roles')}
-                  className="p-3.5 border border-white/10 hover:border-white/20 text-gray-400 hover:text-white rounded-xl transition-colors cursor-pointer"
-                  title="Bookmark Role"
+                  onClick={() => setSavedJobIds(toggleSavedJob(job.id))}
+                  className={`p-3.5 rounded-xl border transition-colors ${saved ? 'border-emerald-400/30 bg-emerald-500/10 text-emerald-300' : 'border-white/10 text-gray-400 hover:border-white/20 hover:text-white'}`}
+                  title={saved ? 'Remove bookmark' : 'Bookmark role'}
                 >
-                  <Bookmark className="w-4 h-4" />
+                  {saved ? <BookmarkCheck className="w-4 h-4" /> : <Bookmark className="w-4 h-4" />}
                 </button>
                 <button
                   onClick={handleApply}

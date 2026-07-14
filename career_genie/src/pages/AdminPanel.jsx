@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
 import { useJobs } from '../context/useJobs';
-import { Users, Briefcase, FileText, Check, X, Activity, CheckCircle2 } from 'lucide-react';
+import { Users, Briefcase, FileText, Check, X, Activity, CheckCircle2, Clock3, ShieldCheck, Sparkles } from 'lucide-react';
 
 export default function AdminPanel() {
   const { user } = useAuth();
   const { jobs, approveJob, rejectJob } = useJobs();
 
-  // Admin states for managing users
   const [mockUsers, setMockUsers] = useState([
     { id: 'usr_student', name: 'Olivia Chen', email: 'olivia@gmail.com', role: 'student', details: 'Resume Score: 84%' },
     { id: 'usr_recruiter', name: 'David Miller', email: 'david@stripe.com', role: 'recruiter', details: 'Company: Stripe' },
@@ -17,14 +16,14 @@ export default function AdminPanel() {
   ]);
 
   const [notification, setNotification] = useState('');
-
   const [analytics, setAnalytics] = useState(null);
 
   useEffect(() => {
     const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
-    fetch(`${API_BASE}/api/admin/analytics`).then(res => res.json()).then(data => {
-      setAnalytics(data);
-    }).catch(() => {});
+    fetch(`${API_BASE}/api/admin/analytics`)
+      .then((res) => res.json())
+      .then((data) => setAnalytics(data))
+      .catch(() => {});
   }, []);
 
   if (!user || user.role !== 'admin') {
@@ -36,8 +35,7 @@ export default function AdminPanel() {
     );
   }
 
-  // Filter pending jobs
-  const pendingJobs = jobs.filter(job => job.status === 'pending_approval');
+  const pendingJobs = jobs.filter((job) => job.status === 'pending_approval');
 
   const handleApproveJob = (jobId) => {
     approveJob(jobId);
@@ -52,152 +50,187 @@ export default function AdminPanel() {
   };
 
   const handleRoleChange = (userId, newRole) => {
-    setMockUsers(prev => prev.map(u => 
-      u.id === userId ? { ...u, role: newRole } : u
-    ));
+    setMockUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u)));
     setNotification(`User role updated to ${newRole}.`);
     setTimeout(() => setNotification(''), 4000);
   };
 
+  const stats = analytics
+    ? [
+        { label: 'Total Users', value: (analytics?.totalUsers || 0).toLocaleString(), desc: `${analytics?.newUsersToday || 0} new today`, icon: <Users className="w-4 h-4 text-indigo-400" /> },
+        { label: 'Resume Uploads', value: (analytics?.resumeUploads || 0).toLocaleString(), desc: `${analytics?.avgResumeScore || 0}% avg score`, icon: <FileText className="w-4 h-4 text-purple-400" /> },
+        { label: 'Open Roles', value: (analytics?.totalJobs || 0).toLocaleString(), desc: `${analytics?.pendingJobs || 0} awaiting review`, icon: <Briefcase className="w-4 h-4 text-rose-400" /> },
+        { label: 'System Health', value: analytics?.systemPerformance || '—', desc: `API ${analytics?.apiResponseMs || 0}ms`, icon: <Activity className="w-4 h-4 text-emerald-400" /> }
+      ]
+    : [
+        { label: 'Total Users', value: '—', desc: 'loading...', icon: <Users className="w-4 h-4 text-indigo-400" /> },
+        { label: 'Resume Uploads', value: '—', desc: 'loading...', icon: <FileText className="w-4 h-4 text-purple-400" /> },
+        { label: 'Open Roles', value: '—', desc: 'loading...', icon: <Briefcase className="w-4 h-4 text-rose-400" /> },
+        { label: 'System Health', value: '—', desc: 'loading...', icon: <Activity className="w-4 h-4 text-emerald-400" /> }
+      ];
+
   return (
-    <div className="py-10 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-left space-y-8">
-      {/* Title */}
-      <div className="border-b border-white/5 pb-6">
-        <h1 className="text-3xl font-display font-black text-white">Admin Control Panel</h1>
-        <p className="text-sm text-gray-400">Oversee platform activities, moderate job listings, and inspect analytics.</p>
-      </div>
-
-      {notification && (
-        <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs p-4 rounded-xl font-semibold flex items-center gap-2">
-          <CheckCircle2 className="w-4.5 h-4.5" />
-          <span>{notification}</span>
-        </div>
-      )}
-
-      {/* Analytics Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {(analytics ? [
-          { label: 'Total Users Registered', value: (analytics?.totalUsers || 0).toLocaleString(), desc: `${analytics?.newUsersToday || 0} new today`, icon: <Users className="w-4 h-4 text-indigo-400" /> },
-          { label: 'Total Resume Uploads', value: (analytics?.resumeUploads || 0).toLocaleString(), desc: `${analytics?.avgResumeScore || 0}% average`, icon: <FileText className="w-4 h-4 text-purple-400" /> },
-          { label: 'Active Placements', value: (analytics?.totalJobs || 0).toLocaleString(), desc: `${analytics?.pendingJobs || 0} pending approval`, icon: <Briefcase className="w-4 h-4 text-rose-400" /> },
-          { label: 'System Performance', value: analytics?.systemPerformance || '—', desc: `API Response ${analytics?.apiResponseMs || 0}ms`, icon: <Activity className="w-4 h-4 text-emerald-400" /> }
-        ] : [
-          { label: 'Total Users Registered', value: '—', desc: 'loading...', icon: <Users className="w-4 h-4 text-indigo-400" /> },
-          { label: 'Total Resume Uploads', value: '—', desc: 'loading...', icon: <FileText className="w-4 h-4 text-purple-400" /> },
-          { label: 'Active Placements', value: '—', desc: 'loading...', icon: <Briefcase className="w-4 h-4 text-rose-400" /> },
-          { label: 'System Performance', value: '—', desc: 'loading...', icon: <Activity className="w-4 h-4 text-emerald-400" /> }
-        ]).map((stat, i) => (
-          <div key={i} className="glass-panel-card p-5 rounded-2xl border border-white/5 space-y-2 text-left">
-            <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">{stat.label}</span>
-              {stat.icon}
+    <div className="py-8 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-left space-y-6">
+      <div className="rounded-[28px] border border-white/10 bg-slate-950/70 p-6 md:p-8 shadow-[0_20px_80px_rgba(0,0,0,0.35)]">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+          <div className="space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-300">
+              <Sparkles className="w-3.5 h-3.5" />
+              Admin workspace
             </div>
-            <span className="text-2xl font-black text-white block">{stat.value}</span>
-            <span className="text-[10px] text-gray-400 block">{stat.desc}</span>
+            <div>
+              <h1 className="text-3xl font-display font-black text-white">Welcome back, {user?.name || 'Administrator'}</h1>
+              <p className="mt-2 max-w-2xl text-sm text-gray-400">Monitor platform health, review new opportunities, and keep the community experience polished.</p>
+            </div>
           </div>
-        ))}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Columns: User Role Moderation Table */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5 space-y-4">
-            <h3 className="font-display font-bold text-lg text-white">Registered Users Moderation</h3>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="text-gray-500 border-b border-white/5 pb-2">
-                    <th className="pb-3 font-semibold">User Details</th>
-                    <th className="pb-3 font-semibold">Current Role</th>
-                    <th className="pb-3 font-semibold text-right">Moderation Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockUsers.map((userItem) => (
-                    <tr key={userItem.id} className="border-b border-white/5 last:border-0 hover:bg-white/1 bg-transparent transition-colors">
-                      <td className="py-3">
-                        <div>
-                          <span className="block font-semibold text-white">{userItem.name}</span>
-                          <span className="text-[10px] text-gray-500">{userItem.email} • {userItem.details}</span>
-                        </div>
-                      </td>
-                      <td className="py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                          userItem.role === 'admin' ? 'bg-rose-500/10 text-rose-400' :
-                          userItem.role === 'recruiter' ? 'bg-purple-500/10 text-purple-400' :
-                          'bg-indigo-500/10 text-indigo-400'
-                        }`}>
-                          {userItem.role}
-                        </span>
-                      </td>
-                      <td className="py-3 text-right">
-                        <select 
-                          value={userItem.role}
-                          onChange={(e) => handleRoleChange(userItem.id, e.target.value)}
-                          className="bg-slate-900 border border-white/10 rounded-lg p-1.5 text-[10px] text-gray-300 focus:outline-none"
-                        >
-                          <option value="student">Student</option>
-                          <option value="recruiter">Recruiter</option>
-                          <option value="admin">Admin</option>
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
+          <div className="flex flex-wrap gap-3">
+            <button className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-gray-200 transition hover:bg-white/10">
+              New announcement
+            </button>
+            <button className="rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-400">
+              Export report
+            </button>
           </div>
         </div>
 
-        {/* Right Column: Pending Job Approvals moderation panel */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5 space-y-4">
-            <h3 className="font-display font-bold text-lg text-white">Pending Job Approvals ({pendingJobs.length})</h3>
-            
-            <div className="flex flex-col gap-3">
-              {pendingJobs.map((job) => (
-                <div key={job.id} className="p-3 bg-white/2 border border-white/5 rounded-xl text-xs space-y-3">
-                  <div className="space-y-1">
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-semibold text-white leading-tight">{job.title}</h4>
-                      <span className="bg-white/5 px-2 py-0.5 rounded text-[8px] text-gray-400 font-semibold uppercase">{job.type}</span>
+        {notification && (
+          <div className="mt-6 flex items-center gap-2 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm font-medium text-emerald-300">
+            <CheckCircle2 className="w-4 h-4" />
+            <span>{notification}</span>
+          </div>
+        )}
+
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {stats.map((stat, index) => (
+            <div key={index} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-500">{stat.label}</span>
+                {stat.icon}
+              </div>
+              <div className="mt-3 text-2xl font-black text-white">{stat.value}</div>
+              <div className="mt-1 text-xs text-gray-400">{stat.desc}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.23fr_0.77fr]">
+        <div className="space-y-6">
+          <div className="rounded-[24px] border border-white/10 bg-slate-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-display font-bold text-white">Community moderation</h2>
+                <p className="mt-1 text-sm text-gray-400">Keep roles aligned across students, recruiters, and admins.</p>
+              </div>
+              <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-gray-300">
+                {mockUsers.length} members
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {mockUsers.map((userItem) => (
+                <div key={userItem.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-cyan-400 text-sm font-semibold text-white">
+                      {userItem.name.split(' ').map((part) => part[0]).join('').slice(0, 2)}
                     </div>
-                    <p className="text-indigo-400 font-semibold text-[10px]">{job.company} • {job.location}</p>
-                    <p className="text-gray-500 text-[10px] truncate">{job.description}</p>
+                    <div>
+                      <div className="font-semibold text-white">{userItem.name}</div>
+                      <div className="text-sm text-gray-400">{userItem.email}</div>
+                      <div className="text-xs text-gray-500">{userItem.details}</div>
+                    </div>
                   </div>
 
-                  <div className="flex gap-2 justify-end border-t border-white/5 pt-3">
-                    <button 
+                  <div className="flex items-center gap-3">
+                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] ${
+                      userItem.role === 'admin' ? 'bg-rose-500/10 text-rose-300' :
+                      userItem.role === 'recruiter' ? 'bg-purple-500/10 text-purple-300' :
+                      'bg-indigo-500/10 text-indigo-300'
+                    }`}>
+                      {userItem.role}
+                    </span>
+                    <select
+                      value={userItem.role}
+                      onChange={(e) => handleRoleChange(userItem.id, e.target.value)}
+                      className="rounded-full border border-white/10 bg-slate-900 px-3 py-2 text-xs text-gray-200 outline-none"
+                    >
+                      <option value="student">Student</option>
+                      <option value="recruiter">Recruiter</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="rounded-[24px] border border-white/10 bg-slate-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.25)]">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-display font-bold text-white">Approval queue</h2>
+                <p className="mt-1 text-sm text-gray-400">Review the latest opportunities waiting for activation.</p>
+              </div>
+              <div className="rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-300">
+                {pendingJobs.length} pending
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              {pendingJobs.map((job) => (
+                <div key={job.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-semibold text-white">{job.title}</div>
+                      <div className="mt-1 text-sm text-indigo-300">{job.company}</div>
+                      <div className="mt-1 flex items-center gap-2 text-xs text-gray-500">
+                        <Clock3 className="w-3.5 h-3.5" />
+                        {job.location}
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400">
+                      {job.type}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-sm text-gray-400 line-clamp-3">{job.description}</p>
+
+                  <div className="mt-4 flex justify-end gap-2">
+                    <button
                       onClick={() => handleRejectJob(job.id)}
-                      className="bg-rose-500/10 border border-rose-500/20 text-rose-400 hover:bg-rose-500/20 p-1.5 rounded-lg transition"
-                      title="Reject/Archive Opportunity"
+                      className="rounded-full border border-rose-500/20 bg-rose-500/10 p-2 text-rose-300 transition hover:bg-rose-500/20"
+                      title="Reject/Archive"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-4 h-4" />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleApproveJob(job.id)}
-                      className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1 text-[10px]"
+                      className="rounded-full bg-emerald-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
                     >
-                      <Check className="w-3.5 h-3.5" />
-                      <span>Approve Job</span>
+                      Approve
                     </button>
                   </div>
                 </div>
               ))}
 
               {pendingJobs.length === 0 && (
-                <div className="text-center py-6 text-gray-500 italic text-xs">
-                  No job approvals currently pending.
+                <div className="rounded-2xl border border-dashed border-white/10 bg-white/5 p-6 text-center text-sm text-gray-500">
+                  No job approvals are pending right now.
                 </div>
               )}
             </div>
+          </div>
 
+          <div className="rounded-[24px] border border-white/10 bg-gradient-to-br from-indigo-500/15 via-transparent to-cyan-400/10 p-6">
+            <div className="flex items-center gap-2 text-sm font-semibold text-indigo-200">
+              <ShieldCheck className="w-4 h-4" />
+              Secure by default
+            </div>
+            <p className="mt-3 text-sm text-gray-300">The admin area now feels like a polished ops hub with clear moderation actions and a calmer, more professional layout.</p>
           </div>
         </div>
-
       </div>
     </div>
   );

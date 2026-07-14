@@ -3,7 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { useJobs } from '../context/useJobs';
 import { useApplications } from '../context/useApplications';
-import { FileText, Briefcase, ChevronRight, ArrowUpRight, Plus, Trash2, Edit2, AlertTriangle } from 'lucide-react';
+import { FileText, Briefcase, ChevronRight, ArrowUpRight, Plus, Trash2, Edit2, AlertTriangle, Sparkles, Target, TrendingUp, Clock3, CheckCircle2 } from 'lucide-react';
+import { getNextSteps, getSavedJobs } from '../utils/studentJourney';
 
 export default function StudentDashboard() {
   const { user, updateUserProfile } = useAuth();
@@ -21,357 +22,260 @@ export default function StudentDashboard() {
       <div className="py-20 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
         <p className="text-gray-400 mb-6">Please log in as a student to access this dashboard.</p>
-        <button onClick={() => navigate('/login')} className="bg-indigo-600 px-6 py-2 rounded-lg text-white font-semibold">
+        <button onClick={() => navigate('/login')} className="rounded-full bg-indigo-600 px-6 py-2 font-semibold text-white">
           Go to Login
         </button>
       </div>
     );
   }
 
-  // Get active applications for this user
-  const studentApps = applications.filter(app => app.studentId === user.id);
+  const studentApps = applications.filter((app) => app.studentId === user.id);
 
-  // Filter jobs that are active, and calculate match scores
   const matchedJobs = jobs
-    .filter(job => job.status === 'active')
-    .map(job => {
-      const matchScore = calculateMatchScore(job.skills, user.skills);
-      return { ...job, matchScore };
-    })
+    .filter((job) => job.status === 'active')
+    .map((job) => ({
+      ...job,
+      matchScore: calculateMatchScore(job.skills, user.skills)
+    }))
     .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, 3); // top 3 matches
+    .slice(0, 3);
+
+  const profileStrength = Math.min(100, (user.resumeUploaded ? 38 : 0) + (user.skills?.length ? 24 : 0) + (studentApps.length ? 18 : 0) + 20);
+  const resumeScore = user.resumeScore || 78;
+  const savedJobsCount = getSavedJobs().length;
+  const nextSteps = getNextSteps({ resumeUploaded: user.resumeUploaded, skills: user.skills || [], applications: studentApps, savedJobsCount, notificationCount: 0 });
 
   const handleSaveProfile = (e) => {
     e.preventDefault();
     updateUserProfile({
       major: editedMajor,
-      graduationYear: parseInt(editedGradYear)
+      graduationYear: parseInt(editedGradYear, 10)
     });
     setIsEditingProfile(false);
   };
 
   const handleAddSkill = (e) => {
     e.preventDefault();
-    if (newSkill.trim() && !user.skills.includes(newSkill.trim())) {
-      const updatedSkills = [...user.skills, newSkill.trim()];
-      updateUserProfile({ skills: updatedSkills });
+    const trimmed = newSkill.trim();
+    if (trimmed && !user.skills.includes(trimmed)) {
+      updateUserProfile({ skills: [...user.skills, trimmed] });
       setNewSkill('');
     }
   };
 
   const handleRemoveSkill = (skillToRemove) => {
-    const updatedSkills = user.skills.filter(s => s !== skillToRemove);
-    updateUserProfile({ skills: updatedSkills });
+    updateUserProfile({ skills: user.skills.filter((s) => s !== skillToRemove) });
   };
 
   return (
-    <div className="py-10 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-left space-y-8">
-      {/* Welcome Banner */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-white/5 pb-6">
-        <div>
-          <h1 className="text-3xl font-display font-black text-white">Welcome back, {user.name}!</h1>
-          <p className="text-sm text-gray-400">Here's your career trajectory at a glance.</p>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="rounded-[30px] border border-white/10 bg-slate-950/70 p-6 shadow-[0_20px_80px_rgba(0,0,0,0.3)] md:p-8">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-400/20 bg-indigo-400/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-indigo-300">
+              <Sparkles className="h-3.5 w-3.5" />
+              Student workspace
+            </div>
+            <h1 className="mt-3 text-3xl font-display font-black text-white">Welcome back, {user.name}.</h1>
+            <p className="mt-2 max-w-2xl text-sm text-gray-400">
+              Your opportunities are ready. Review your fit, improve your profile, and stay on top of every application.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Link to="/resume" className="inline-flex items-center gap-2 rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-500">
+              <FileText className="h-4 w-4" />
+              AI Resume Review
+            </Link>
+            <Link to="/jobs" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-gray-200 transition hover:bg-white/10">
+              <Briefcase className="h-4 w-4" />
+              Explore jobs
+            </Link>
+          </div>
         </div>
-        <div className="flex gap-3">
-          <Link 
-            to="/resume" 
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition shadow-lg shadow-indigo-600/10"
-          >
-            <FileText className="w-4 h-4" />
-            <span>AI Resume Reviewer</span>
-          </Link>
-          <Link 
-            to="/jobs" 
-            className="glass-panel text-white hover:text-white border border-white/10 hover:border-white/20 font-bold px-4 py-2.5 rounded-xl text-xs flex items-center gap-1.5 transition"
-          >
-            <Briefcase className="w-4 h-4" />
-            <span>Explore Internships</span>
-          </Link>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-4">
+          {[
+            { label: 'Profile strength', value: `${profileStrength}%`, desc: 'Resume + skills + activity', icon: <Target className="h-4 w-4 text-indigo-400" /> },
+            { label: 'Top match', value: `${matchedJobs[0]?.matchScore || 0}%`, desc: 'Best fit opportunity', icon: <TrendingUp className="h-4 w-4 text-cyan-400" /> },
+            { label: 'Applications', value: studentApps.length, desc: 'In progress or pending', icon: <Briefcase className="h-4 w-4 text-purple-400" /> },
+            { label: 'Resume score', value: `${resumeScore}%`, desc: 'Current readiness snapshot', icon: <FileText className="h-4 w-4 text-emerald-400" /> }
+          ].map((stat, index) => (
+            <div key={index} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-500">{stat.label}</span>
+                {stat.icon}
+              </div>
+              <div className="mt-3 text-2xl font-black text-white">{stat.value}</div>
+              <div className="mt-1 text-xs text-gray-400">{stat.desc}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column: Profile Card & Skill Tag Editor */}
+      <div className="mt-6 grid grid-cols-1 gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-6">
-          {/* Profile Card */}
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5 space-y-5">
-            <div className="flex justify-between items-start">
-              <h3 className="font-display font-bold text-lg text-white">Academic Details</h3>
-              <button 
-                onClick={() => setIsEditingProfile(!isEditingProfile)}
-                className="text-indigo-400 hover:text-indigo-300 transition"
-              >
-                <Edit2 className="w-4 h-4" />
+          <div className="rounded-[24px] border border-white/10 bg-slate-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-xl font-display font-bold text-white">Your profile snapshot</h2>
+                <p className="mt-1 text-sm text-gray-400">Keep your details polished so the platform can match you better.</p>
+              </div>
+              <button onClick={() => setIsEditingProfile(!isEditingProfile)} className="rounded-full border border-white/10 bg-white/5 p-2 text-indigo-300 transition hover:bg-white/10">
+                <Edit2 className="h-4 w-4" />
               </button>
             </div>
 
             {isEditingProfile ? (
-              <form onSubmit={handleSaveProfile} className="space-y-3">
+              <form onSubmit={handleSaveProfile} className="mt-5 space-y-3">
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Major</label>
-                  <input 
-                    type="text" 
-                    value={editedMajor} 
-                    onChange={(e) => setEditedMajor(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-white"
-                  />
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-500">Major</label>
+                  <input type="text" value={editedMajor} onChange={(e) => setEditedMajor(e.target.value)} className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none" />
                 </div>
                 <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-1">Graduation Year</label>
-                  <input 
-                    type="number" 
-                    value={editedGradYear} 
-                    onChange={(e) => setEditedGradYear(e.target.value)}
-                    className="w-full bg-slate-900 border border-white/10 rounded-lg p-2 text-xs text-white"
-                  />
+                  <label className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-500">Graduation year</label>
+                  <input type="number" value={editedGradYear} onChange={(e) => setEditedGradYear(e.target.value)} className="w-full rounded-xl border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none" />
                 </div>
                 <div className="flex gap-2">
-                  <button type="submit" className="bg-indigo-600 px-3 py-1.5 rounded-lg text-[10px] font-bold text-white">Save</button>
-                  <button type="button" onClick={() => setIsEditingProfile(false)} className="bg-white/5 px-3 py-1.5 rounded-lg text-[10px] text-gray-400">Cancel</button>
+                  <button type="submit" className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Save</button>
+                  <button type="button" onClick={() => setIsEditingProfile(false)} className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-300">Cancel</button>
                 </div>
               </form>
             ) : (
-              <div className="space-y-3 text-sm">
-                <div>
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Degree & Major</span>
-                  <span className="text-white font-medium">{user.major || 'Computer Science'}</span>
+              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-500">Degree & major</div>
+                  <div className="mt-2 text-sm font-semibold text-white">{user.major || 'Computer Science'}</div>
                 </div>
-                <div>
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Expected Graduation</span>
-                  <span className="text-white font-medium">Class of {user.graduationYear || '2026'}</span>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gray-500">Expected graduation</div>
+                  <div className="mt-2 text-sm font-semibold text-white">Class of {user.graduationYear || '2026'}</div>
                 </div>
               </div>
             )}
-          </div>
 
-          {/* Skills Editor Card */}
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5 space-y-4">
-            <h3 className="font-display font-bold text-lg text-white">My Skills & Keywords</h3>
-            <p className="text-xs text-gray-400 leading-relaxed">
-              These keywords are extracted from your resume and matched against jobs. Add/delete skills to view updated compatibility scores.
-            </p>
-
-            <form onSubmit={handleAddSkill} className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="e.g. Docker, PyTorch" 
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                className="flex-grow bg-slate-900 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500"
-              />
-              <button type="submit" className="bg-indigo-600 hover:bg-indigo-500 p-2 rounded-lg text-white transition">
-                <Plus className="w-4 h-4" />
-              </button>
-            </form>
-
-            <div className="flex flex-wrap gap-1.5 pt-2">
-              {user.skills?.map((skill) => (
-                <span 
-                  key={skill}
-                  className="bg-white/5 border border-white/5 rounded-full px-2.5 py-1 text-xs text-gray-300 flex items-center gap-1 hover:border-rose-500/20 hover:text-white transition group"
-                >
-                  <span>{skill}</span>
-                  <button 
-                    type="button" 
-                    onClick={() => handleRemoveSkill(skill)}
-                    className="opacity-40 group-hover:opacity-100 text-gray-500 hover:text-rose-400 transition"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                </span>
-              ))}
-              {(!user.skills || user.skills.length === 0) && (
-                <span className="text-xs text-gray-500 italic">No skills listed yet. Add skills or upload a resume.</span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Center/Right Columns: Resume AI Insights, Applications, and Job Matches */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Resume AI Summary Card */}
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5">
-            {user.resumeUploaded ? (
-              <div className="flex flex-col md:flex-row justify-between gap-6">
-                <div className="space-y-4 flex-grow">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                      <FileText className="w-4.5 h-4.5" />
-                    </div>
-                    <div>
-                      <h3 className="font-display font-bold text-lg text-white">AI Resume Analysis</h3>
-                      <p className="text-[10px] text-gray-400 font-mono">{user.resumeName}</p>
-                    </div>
-                  </div>
-                  
-                  {/* Actionable recommendations */}
-                  <div className="space-y-2">
-                    <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Top Recommendation</span>
-                    <p className="text-xs text-gray-300 flex items-start gap-1.5 leading-relaxed">
-                      <AlertTriangle className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
-                      <span>{user.feedback?.suggestions[0]}</span>
-                    </p>
-                  </div>
-                  
-                  <Link 
-                    to="/resume" 
-                    className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 pt-2 transition-colors"
-                  >
-                    <span>View full analysis report</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-
-                {/* Circular Score Gauge */}
-                <div className="flex flex-col items-center justify-center flex-shrink-0 bg-slate-900/40 p-4 rounded-xl border border-white/5">
-                  <div className="relative w-24 h-24 flex items-center justify-center">
-                    <svg className="w-full h-full transform -rotate-90">
-                      <circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,0.03)" strokeWidth="8" fill="transparent" />
-                      <circle 
-                        cx="48" cy="48" r="40" 
-                        stroke="#6366f1" strokeWidth="8" fill="transparent" 
-                        strokeDasharray={251.2}
-                        strokeDashoffset={251.2 - (251.2 * user.resumeScore) / 100}
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                    <div className="absolute flex flex-col items-center justify-center text-center">
-                      <span className="text-2xl font-black text-white leading-none">{user.resumeScore}%</span>
-                      <span className="text-[9px] text-indigo-400 uppercase font-bold mt-0.5">Rating</span>
-                    </div>
-                  </div>
-                  <span className="text-[10px] text-gray-400 font-semibold mt-3">Overall Strength</span>
-                </div>
+            <div className="mt-6 rounded-[20px] border border-white/10 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-white">Skills & keywords</h3>
+                <span className="text-xs text-gray-500">{user.skills?.length || 0} tracked</span>
               </div>
-            ) : (
-              <div className="text-center py-6 space-y-4">
-                <FileText className="w-12 h-12 text-gray-500 mx-auto" />
-                <div>
-                  <h3 className="font-display font-bold text-lg text-white">No Resume Uploaded</h3>
-                  <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
-                    Upload your resume to get instant NLP parsing, compatibility suggestions, and accurate matching alignment scores.
-                  </p>
-                </div>
-                <button 
-                  onClick={() => navigate('/resume')}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition"
-                >
-                  Upload Resume
+
+              <form onSubmit={handleAddSkill} className="mt-4 flex gap-2">
+                <input type="text" placeholder="Add a skill" value={newSkill} onChange={(e) => setNewSkill(e.target.value)} className="flex-1 rounded-full border border-white/10 bg-slate-900/80 px-3 py-2 text-sm text-white outline-none" />
+                <button type="submit" className="rounded-full bg-indigo-600 p-2 text-white">
+                  <Plus className="h-4 w-4" />
                 </button>
-              </div>
-            )}
-          </div>
+              </form>
 
-          {/* Job matches summary */}
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5 space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-display font-bold text-lg text-white">Top Personalized Matches</h3>
-              <Link to="/jobs" className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-0.5 transition-colors">
-                <span>View all listings</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+              <div className="mt-4 flex flex-wrap gap-2">
+                {user.skills?.map((skill) => (
+                  <span key={skill} className="flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/70 px-2.5 py-1 text-xs text-gray-300">
+                    {skill}
+                    <button type="button" onClick={() => handleRemoveSkill(skill)} className="text-gray-500 transition hover:text-rose-400">
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+                {(!user.skills || user.skills.length === 0) && <span className="text-sm text-gray-500">No skills added yet.</span>}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div className="rounded-[24px] border border-white/10 bg-slate-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-display font-bold text-white">Best-fit opportunities</h2>
+                <p className="mt-1 text-sm text-gray-400">Highly aligned options selected for your profile.</p>
+              </div>
+              <Link to="/jobs" className="text-sm font-semibold text-indigo-300 transition hover:text-indigo-200">
+                View all
               </Link>
             </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
               {matchedJobs.map((job) => (
-                <div 
-                  key={job.id} 
-                  className="glass-panel p-4 rounded-xl border border-white/5 hover:border-indigo-500/20 transition flex flex-col justify-between"
-                >
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-start gap-1">
-                      <span className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white text-[10px] ${job.logoBg}`}>
-                        {job.logo}
-                      </span>
-                      <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${
-                        job.matchScore >= 80 ? 'bg-indigo-500/10 text-indigo-400' :
-                        job.matchScore >= 60 ? 'bg-purple-500/10 text-purple-400' :
-                        'bg-blue-500/10 text-blue-400'
-                      }`}>
-                        {job.matchScore}% Match
-                      </span>
-                    </div>
-                    <div className="text-left">
-                      <h4 className="text-xs font-bold text-white truncate">{job.title}</h4>
-                      <p className="text-[10px] text-gray-400">{job.company} • {job.type}</p>
-                    </div>
+                <div key={job.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-start justify-between">
+                    <span className={`flex h-8 w-8 items-center justify-center rounded-xl text-[10px] font-black text-white ${job.logoBg}`}>{job.logo}</span>
+                    <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${job.matchScore >= 80 ? 'bg-indigo-500/10 text-indigo-300' : job.matchScore >= 60 ? 'bg-purple-500/10 text-purple-300' : 'bg-cyan-500/10 text-cyan-300'}`}>
+                      {job.matchScore}%
+                    </span>
                   </div>
-                  <Link 
-                    to={`/jobs/${job.id}`}
-                    className="text-[10px] font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-0.5 mt-4 transition-colors"
-                  >
-                    <span>View compatibility details</span>
-                    <ArrowUpRight className="w-3 h-3" />
+                  <div className="mt-3">
+                    <div className="text-sm font-semibold text-white">{job.title}</div>
+                    <div className="mt-1 text-xs text-gray-400">{job.company}</div>
+                  </div>
+                  <Link to={`/jobs/${job.id}`} className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-indigo-300">
+                    See details
+                    <ArrowUpRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Active applications tracking card */}
-          <div className="glass-panel-card p-6 rounded-2xl border border-white/5 space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-display font-bold text-lg text-white">Active Applications ({studentApps.length})</h3>
-              <Link to="/applications" className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-0.5 transition-colors">
-                <span>Open Application Tracker</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+          <div className="rounded-[24px] border border-white/10 bg-slate-950/70 p-6 shadow-[0_20px_60px_rgba(0,0,0,0.2)]">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-display font-bold text-white">Application tracker</h2>
+                <p className="mt-1 text-sm text-gray-400">Stay aware of where each application stands.</p>
+              </div>
+              <Link to="/applications" className="text-sm font-semibold text-indigo-300 transition hover:text-indigo-200">
+                Open tracker
               </Link>
             </div>
-            
+
             {studentApps.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead>
-                    <tr className="text-gray-500 border-b border-white/5">
-                      <th className="pb-3 font-semibold">Company & Role</th>
-                      <th className="pb-3 font-semibold">Date Applied</th>
-                      <th className="pb-3 font-semibold">Match Score</th>
-                      <th className="pb-3 font-semibold">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {studentApps.map((app) => (
-                      <tr key={app.id} className="border-b border-white/5 last:border-0 hover:bg-white/1 bg-transparent transition-colors">
-                        <td className="py-3.5 font-semibold text-white flex items-center gap-2">
-                          <span className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white text-[9px] ${app.logoBg}`}>
-                            {app.logo}
-                          </span>
-                          <div>
-                            <span className="block font-semibold">{app.jobTitle}</span>
-                            <span className="text-[10px] text-gray-500">{app.company}</span>
-                          </div>
-                        </td>
-                        <td className="py-3.5 text-gray-400">{app.date}</td>
-                        <td className="py-3.5">
-                          <span className="font-semibold text-indigo-400">{app.matchScore}%</span>
-                        </td>
-                        <td className="py-3.5">
-                          <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-semibold ${
-                            app.status === 'Offer' ? 'bg-emerald-500/10 text-emerald-400' :
-                            app.status === 'Rejected' ? 'bg-rose-500/10 text-rose-400' :
-                            app.status === 'Interview' ? 'bg-purple-500/10 text-purple-400' :
-                            app.status === 'Review' ? 'bg-amber-500/10 text-amber-400' :
-                            'bg-blue-500/10 text-blue-400'
-                          }`}>
-                            {app.status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="mt-5 space-y-3">
+                {studentApps.map((app) => (
+                  <div key={app.id} className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 p-4 md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl text-[10px] font-black text-white ${app.logoBg}`}>{app.logo}</div>
+                      <div>
+                        <div className="text-sm font-semibold text-white">{app.jobTitle}</div>
+                        <div className="text-xs text-gray-400">{app.company}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-full border border-white/10 bg-slate-900/70 px-2.5 py-1 text-[10px] text-gray-400">
+                        {app.date}
+                      </div>
+                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-semibold ${app.status === 'Offer' ? 'bg-emerald-500/10 text-emerald-300' : app.status === 'Rejected' ? 'bg-rose-500/10 text-rose-300' : app.status === 'Interview' ? 'bg-purple-500/10 text-purple-300' : app.status === 'Review' ? 'bg-amber-500/10 text-amber-300' : 'bg-cyan-500/10 text-cyan-300'}`}>
+                        {app.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : (
-              <div className="text-center py-6 text-xs text-gray-500 italic">
-                No active applications. Explore available jobs and submit an application.
+              <div className="mt-6 rounded-2xl border border-dashed border-white/10 bg-white/5 p-8 text-center text-sm text-gray-500">
+                You have not applied to any roles yet. Start exploring opportunities to build momentum.
               </div>
             )}
           </div>
 
+          <div className="rounded-[24px] border border-indigo-400/20 bg-gradient-to-br from-indigo-500/10 via-slate-950/80 to-cyan-400/10 p-6">
+            <div className="flex items-center gap-2 text-sm font-semibold text-indigo-200">
+              <Clock3 className="h-4 w-4" />
+              Suggested next step
+            </div>
+            <div className="mt-4 space-y-3">
+              {nextSteps.map((step) => (
+                <div key={step.id} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+                  <div className={`mt-0.5 rounded-full p-1 ${step.completed ? 'bg-emerald-500/10 text-emerald-300' : 'bg-white/10 text-gray-400'}`}>
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-semibold text-white">{step.title}</div>
+                    <div className="text-xs text-gray-400">{step.detail}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-
       </div>
     </div>
   );
