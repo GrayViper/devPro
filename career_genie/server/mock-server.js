@@ -81,7 +81,9 @@ function getEnvSettings() {
   const isProduction = process.env.NODE_ENV === 'production';
   const jwtSecret = process.env.JWT_SECRET || (isProduction ? null : 'dev-secret');
   const jwtOldSecret = process.env.JWT_OLD_SECRET || null;
-  const allowDevAuth = process.env.ALLOW_DEV_AUTH === '1';
+  // In dev mode, allow role-based login for testing different roles (admin, recruiter, student)
+  // In production, always require explicit credentials
+  const allowDevAuth = isProduction ? (process.env.ALLOW_DEV_AUTH === '1') : (process.env.ALLOW_DEV_AUTH !== '0');
   const frontendOrigin = process.env.FRONTEND_ORIGIN || (isProduction ? null : '*');
 
   if (isProduction && !jwtSecret) {
@@ -362,16 +364,21 @@ function setupRoutes(app) {
     }
 
     const { isProduction, allowDevAuth } = getEnvSettings();
-    if (isProduction || !allowDevAuth) {
-      return res.status(401).json({ error: 'invalid credentials' });
+    
+    // Dev-mode fallback: allow login by role without password when explicitly enabled
+    // This helps with demoing and testing different roles
+    if (!isProduction && allowDevAuth) {
+      const fallbackUser = role ? data.users.find(u => u.role === role) : null;
+      if (fallbackUser) {
+        const token = signToken(fallbackUser);
+        const safe = { ...fallbackUser }; delete safe.passwordHash;
+        return res.json({ user: safe, token });
+      }
     }
 
-    // fallback dev mode: allow login by role without password when explicitly enabled
-    const fallbackUser = role ? data.users.find(u => u.role === role) : null;
-    if (fallbackUser) {
-      const token = signToken(fallbackUser);
-      const safe = { ...fallbackUser }; delete safe.passwordHash;
-      return res.json({ user: safe, token });
+    // In dev mode without ALLOW_DEV_AUTH, provide helpful error
+    if (!isProduction && !allowDevAuth && email) {
+      return res.status(401).json({ error: 'account not found; please sign up or use demo session' });
     }
 
     return res.status(401).json({ error: 'invalid credentials' });

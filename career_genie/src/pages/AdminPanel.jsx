@@ -77,10 +77,10 @@ export default function AdminPanel() {
       {/* Analytics Summary */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {(analytics ? [
-          { label: 'Total Users Registered', value: analytics.totalUsers.toLocaleString(), desc: `${analytics.newUsersToday} new today`, icon: <Users className="w-4 h-4 text-indigo-400" /> },
-          { label: 'Total Resume Uploads', value: analytics.resumeUploads.toLocaleString(), desc: `${analytics.avgResumeScore}% average`, icon: <FileText className="w-4 h-4 text-purple-400" /> },
-          { label: 'Active Placements', value: analytics.totalJobs.toLocaleString(), desc: `${analytics.pendingJobs} pending approval`, icon: <Briefcase className="w-4 h-4 text-rose-400" /> },
-          { label: 'System Performance', value: analytics.systemPerformance, desc: `API Response ${analytics.apiResponseMs}ms`, icon: <Activity className="w-4 h-4 text-emerald-400" /> }
+          { label: 'Total Users Registered', value: (analytics?.totalUsers || 0).toLocaleString(), desc: `${analytics?.newUsersToday || 0} new today`, icon: <Users className="w-4 h-4 text-indigo-400" /> },
+          { label: 'Total Resume Uploads', value: (analytics?.resumeUploads || 0).toLocaleString(), desc: `${analytics?.avgResumeScore || 0}% average`, icon: <FileText className="w-4 h-4 text-purple-400" /> },
+          { label: 'Active Placements', value: (analytics?.totalJobs || 0).toLocaleString(), desc: `${analytics?.pendingJobs || 0} pending approval`, icon: <Briefcase className="w-4 h-4 text-rose-400" /> },
+          { label: 'System Performance', value: analytics?.systemPerformance || '—', desc: `API Response ${analytics?.apiResponseMs || 0}ms`, icon: <Activity className="w-4 h-4 text-emerald-400" /> }
         ] : [
           { label: 'Total Users Registered', value: '—', desc: 'loading...', icon: <Users className="w-4 h-4 text-indigo-400" /> },
           { label: 'Total Resume Uploads', value: '—', desc: 'loading...', icon: <FileText className="w-4 h-4 text-purple-400" /> },

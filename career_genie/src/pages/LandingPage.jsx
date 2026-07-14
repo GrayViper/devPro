@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
-import { Sparkles, ArrowRight, FileText, Briefcase, Shield, Check } from 'lucide-react';
+import { Sparkles, ArrowRight, FileText, Briefcase, Shield, Check, ChevronDown } from 'lucide-react';
 
 const CHART_NODES_DATA = [
   { cx: 40, cy: 130, date: 'May 21, 2026', info: 'Tooling Setup: Skill score +10' },
@@ -17,6 +17,7 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [hoveredNode, setHoveredNode] = useState(null);
   const [activeTab, setActiveTab] = useState('Dashboard');
+  const [openFAQ, setOpenFAQ] = useState(0);
 
   const handleStartGrowth = () => {
     if (user) {
@@ -30,6 +31,13 @@ export default function LandingPage() {
 
   const handleViewDemo = () => {
     const el = document.getElementById('demo-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -460,6 +468,131 @@ export default function LandingPage() {
             className="relative bg-white hover:bg-gray-100 text-slate-950 font-bold px-8 py-4 rounded-xl text-xs sm:text-sm tracking-wider uppercase transition shadow-xl"
           >
             Create Free Account
+          </button>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-center z-10 relative">
+        <p className="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-2">SUCCESS STORIES</p>
+        <h2 className="font-display font-bold text-3xl sm:text-5xl text-white mb-12">
+          Loved by students and recruiters.
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              quote: "CareerGenie's AI analysis helped me improve my resume score from 62 to 92 in just two weeks. I got interviews at Google and Stripe!",
+              author: "Olivia Chen",
+              role: "Recent Grad, Software Engineer",
+              avatar: "OC"
+            },
+            {
+              quote: "As a recruiter, I love how the platform instantly matches qualified candidates. We've cut hiring time by 40% and found amazing talent faster.",
+              author: "David Miller",
+              role: "Hiring Manager, Figma",
+              avatar: "DM"
+            },
+            {
+              quote: "The placement dashboard gives us complete visibility into student-to-role mapping. Game changer for placement coordination.",
+              author: "Alex Mercer",
+              role: "Admin, University Career Center",
+              avatar: "AM"
+            }
+          ].map((testimonial, i) => (
+            <div key={i} className="glass-panel-card p-8 rounded-2xl border border-white/5 flex flex-col">
+              <div className="flex gap-1 mb-6">
+                {[...Array(5)].map((_, j) => (
+                  <span key={j} className="text-lg">⭐</span>
+                ))}
+              </div>
+              <p className="text-gray-300 italic text-sm leading-relaxed mb-6 flex-grow">
+                "{testimonial.quote}"
+              </p>
+              <div className="flex items-center gap-3 pt-6 border-t border-white/5">
+                <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">
+                  {testimonial.avatar}
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-white text-sm">{testimonial.author}</div>
+                  <div className="text-gray-500 text-xs">{testimonial.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 px-4 max-w-4xl mx-auto sm:px-6 lg:px-8 z-10 relative">
+        <p className="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-2 text-center">FAQ</p>
+        <h2 className="font-display font-bold text-3xl sm:text-5xl text-white mb-12 text-center">
+          Frequently asked questions.
+        </h2>
+        <div className="space-y-4">
+          {[
+            {
+              question: "How does the AI resume analyzer work?",
+              answer: "Our proprietary NLP engine parses your resume to extract skills, experience, and qualifications. It then benchmarks your profile against job descriptions and industry standards, providing a comprehensive score and actionable improvement suggestions."
+            },
+            {
+              question: "Is my data secure and private?",
+              answer: "Yes, absolutely. We use enterprise-grade encryption (AES-256) for all data at rest and TLS 1.3 for data in transit. We never share your resume or personal information with third parties without your explicit consent."
+            },
+            {
+              question: "Can recruiters see my resume?",
+              answer: "Only if you opt-in! You have complete control over your profile visibility. You can choose to be discoverable to recruiters, or keep your profile private while searching for jobs independently."
+            },
+            {
+              question: "What if I'm not a student?",
+              answer: "CareerGenie works for anyone building their career! Whether you're a recent grad, career changer, or experienced professional, our platform adapts to your skill level and helps you find your next opportunity."
+            },
+            {
+              question: "How often is the job market updated?",
+              answer: "We pull real-time job postings from 500+ employers and aggregators. New opportunities appear on your dashboard as soon as they're posted and match your profile."
+            },
+            {
+              question: "Do you offer bulk organization accounts?",
+              answer: "Yes! Universities and enterprises can reach out to our sales team at sales@careergenie.com for custom plans, SSO integration, and dedicated account management."
+            }
+          ].map((item, i) => (
+            <div key={i} className="glass-panel border border-white/5 rounded-lg overflow-hidden">
+              <button
+                onClick={() => setOpenFAQ(openFAQ === i ? -1 : i)}
+                className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/5 transition"
+              >
+                <span className="font-semibold text-white text-left text-sm">{item.question}</span>
+                <ChevronDown className={`w-5 h-5 text-indigo-400 flex-shrink-0 transition ${openFAQ === i ? 'rotate-180' : ''}`} />
+              </button>
+              {openFAQ === i && (
+                <div className="px-6 py-4 border-t border-white/5 bg-white/3">
+                  <p className="text-gray-400 text-sm leading-relaxed">{item.answer}</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Footer CTA Section */}
+      <section className="py-20 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-center z-10 relative border-t border-white/5">
+        <h2 className="font-display font-black text-3xl sm:text-5xl text-white mb-6">
+          Your career starts here.
+        </h2>
+        <p className="text-gray-400 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
+          Get started with a free account and see your AI resume analysis in minutes.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button 
+            onClick={handleStartGrowth}
+            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-indigo-600/30"
+          >
+            Sign Up Free
+          </button>
+          <button 
+            onClick={() => scrollToSection('faq')}
+            className="border border-white/20 hover:border-white/40 text-white font-semibold px-8 py-4 rounded-xl transition"
+          >
+            Learn More
           </button>
         </div>
       </section>

@@ -52,17 +52,30 @@ export default function AuthPages() {
     setError('');
 
     if (isLogin) {
+      if (!email.trim() || !password.trim()) {
+        setError('Email and password are required.');
+        return;
+      }
       try {
         const u = await login(email, password, role);
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
-      } catch {
-        setError('Invalid credentials. Please try again.');
+      } catch (err) {
+        const errorMsg = err.message || 'Invalid credentials';
+        if (errorMsg.toLowerCase().includes('not found') || errorMsg.toLowerCase().includes('unregistered')) {
+          setError('Account not found. Please sign up first or try with a demo account.');
+        } else {
+          setError('Invalid credentials. Try using the demo session or sign up.');
+        }
       }
     } else {
       if (!name.trim()) {
         setError('Please enter your name.');
+        return;
+      }
+      if (!email.trim() || !password.trim()) {
+        setError('Email and password are required.');
         return;
       }
       try {
@@ -70,8 +83,9 @@ export default function AuthPages() {
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
-      } catch {
-        setError('Registration failed. Please check details.');
+      } catch (err) {
+        const errorMsg = err.message || 'Registration failed';
+        setError(`Sign up failed: ${errorMsg}. You can use the demo session to explore.`);
       }
     }
   };

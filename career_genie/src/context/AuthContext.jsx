@@ -88,14 +88,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setLoading(false);
       const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
-      if (!isNetworkError) {
-        throw error;
+      if (isNetworkError) {
+        // Fallback to in-memory mock if the auth server is unreachable
+        const fallback = (email && email.toLowerCase() === 'david@stripe.com') ? MOCK_USERS.recruiter : (email && email.toLowerCase() === 'admin@careergenie.com' ? MOCK_USERS.admin : MOCK_USERS.student);
+        setUser(fallback);
+        try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch {}
+        return fallback;
       }
-      // Fallback to in-memory mock if the auth server is unreachable
-      const fallback = (email && email.toLowerCase() === 'david@stripe.com') ? MOCK_USERS.recruiter : (email && email.toLowerCase() === 'admin@careergenie.com' ? MOCK_USERS.admin : MOCK_USERS.student);
-      setUser(fallback);
-      try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch {}
-      return fallback;
+      // Re-throw non-network errors with the original message
+      throw error;
     }
   };
 
@@ -113,8 +114,11 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       if (data.token) localStorage.setItem('cg_token', data.token);
       return data.user;
-    } catch {
+    } catch (error) {
       setLoading(false);
+      const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
+      
+      // For network errors or any signup issues, create a fallback in-memory user
       const newUser = {
         id: `usr_${Math.random().toString(36).substr(2, 9)}`,
         name,
@@ -125,6 +129,11 @@ export const AuthProvider = ({ children }) => {
       };
       setUser(newUser);
       try { localStorage.setItem('cg_token', btoa(JSON.stringify({ sub: newUser.id, role: newUser.role, name: newUser.name }))); } catch {}
+      
+      // For non-network errors, still return the user but keep the error context
+      if (!isNetworkError) {
+        throw new Error(`Account created with demo mode: ${error.message}`);
+      }
       return newUser;
     }
   };
