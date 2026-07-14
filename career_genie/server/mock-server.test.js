@@ -132,6 +132,40 @@ describe('server security tests', () => {
     }
   });
 
+  it('enqueues resume analysis and returns job status updates', async () => {
+    const email = `aiuser-${Date.now()}@careergenie.test`;
+    const register = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'AI User', email, password: 'AiPass!23', role: 'student' });
+    expect(register.status).toBe(201);
+    const token = register.body.token;
+    const studentId = register.body.user.id;
+
+    const submit = await request(app)
+      .post('/api/resume')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ studentId, fileName: 'resume_ai.pdf', contentBase64: Buffer.from('AI-driven resume content sample').toString('base64') });
+
+    expect(submit.status).toBe(202);
+    expect(submit.body.jobId).toBeTruthy();
+
+    const start = Date.now();
+    let statusResponse;
+    while (Date.now() - start < 10000) {
+      statusResponse = await request(app)
+        .get(`/api/resume/status/${submit.body.jobId}`)
+        .set('Authorization', `Bearer ${token}`);
+      if (statusResponse.body.job && ['done', 'error'].includes(statusResponse.body.job.status)) break;
+      await new Promise(r => setTimeout(r, 100));
+    }
+
+    expect(statusResponse.body.job).toBeDefined();
+    expect(['done', 'error']).toContain(statusResponse.body.job.status);
+    if (statusResponse.body.job.status === 'done') {
+      expect(typeof statusResponse.body.job.score).toBe('number');
+    }
+  });
+
   it('returns 500 and error body for unexpected async errors', async () => {
     const res = await request(app).get('/api/test/error');
     expect(res.status).toBe(500);

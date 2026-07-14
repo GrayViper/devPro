@@ -7,7 +7,7 @@
 - [x] Tech: Database — MongoDB
 - [x] Tech: Database — MongoDB (indexes added)
 - [x] Tech: Authentication — JWT + Bcrypt
-- [ ] Tech: AI — Python NLP / OpenAI API integration
+- [x] Tech: AI — Python NLP / OpenAI API integration
 - [ ] Tech: Deployment — Vercel + Render
 
 ## Completed (all)

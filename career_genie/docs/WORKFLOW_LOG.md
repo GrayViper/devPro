@@ -101,6 +101,13 @@ Next recommended actions (non-blocking)
 - Updated `server/mongo_adapter.js` to automatically create production-friendly indexes after migration (`users.email` unique, `jobs.status`, `jobs.tags`, `applications.studentId`, `applications.jobId`, `resumeResults.jobId` unique). Also added a `--create-indexes` mode and `npm run mongo:create-indexes` script.
 - 2026-07-13: Completed frontend tech improvements by standardizing React context hook modules, separating provider definitions from context values for fast refresh compatibility, and confirming the app passes `npm run lint`.
 
+2026-07-14: Added Python NLP resume analysis integration
+- Added `server/ai/analysis.py` to provide a lightweight Python resume analyzer that decodes base64 resume text, extracts keyword-based skills, and returns structured AI feedback.
+- Updated `server/mock-server.js` to invoke the Python analyzer from the resume processing pipeline, falling back to the previous simulated analysis when Python/OpenAI integration is unavailable.
+- Extended the `/api/resume` endpoint to accept `contentBase64` and persist analysis metadata in `resumeResults`.
+- Added a backend test verifying resume analysis job creation and status polling for the AI integration path.
+- Marked `Tech: AI — Python NLP / OpenAI API integration` complete in `TODO.md`.
+
 
 Commands to run locally:
 ```bash

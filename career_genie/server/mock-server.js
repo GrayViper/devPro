@@ -144,7 +144,9 @@ const INPROC_CONCURRENCY = Number(process.env.INPROC_CONCURRENCY) || 3;
 async function processInprocJob(job) {
   const { jobId, studentId, fileName, contentBase64 } = job;
   try {
-    const delay = 1500 + Math.floor(Math.random() * 2500);
+    const delay = process.env.NODE_ENV === 'test'
+      ? 100
+      : 1500 + Math.floor(Math.random() * 2500);
     await new Promise(r => setTimeout(r, delay));
     const analysis = await tryAnalyzeResume(contentBase64, fileName);
     const score = Number.isFinite(analysis.score) ? analysis.score : 70;
