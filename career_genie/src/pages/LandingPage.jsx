@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { 
-  Sparkles, Shield, Briefcase, FileText, ArrowRight, Check, Award, ArrowUpRight 
-} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
+import { Sparkles, ArrowRight, FileText, Briefcase, Shield, Check } from 'lucide-react';
 
 const CHART_NODES_DATA = [
   { cx: 40, cy: 130, date: 'May 21, 2026', info: 'Tooling Setup: Skill score +10' },

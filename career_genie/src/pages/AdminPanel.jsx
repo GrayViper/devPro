@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useJobs } from '../context/JobsContext';
-import { 
-  ShieldAlert, Users, Briefcase, FileText, Check, X, 
-  TrendingUp, Award, Activity, CheckCircle2, ShieldX 
-} from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import { useJobs } from '../context/useJobs';
+import { Users, Briefcase, FileText, Check, X, Activity, CheckCircle2 } from 'lucide-react';
 
 export default function AdminPanel() {
   const { user } = useAuth();

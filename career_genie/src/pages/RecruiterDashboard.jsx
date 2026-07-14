@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useJobs } from '../context/JobsContext';
-import { useApplications } from '../context/ApplicationsContext';
-import { 
-  Plus, Users, Briefcase, FileText, CheckCircle, XCircle, 
-  Clock, Mail, ArrowUpRight, Check, ChevronDown, ChevronUp, AlertCircle 
-} from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import { useJobs } from '../context/useJobs';
+import { useApplications } from '../context/useApplications';
+import { Plus, CheckCircle, ChevronUp, ChevronDown } from 'lucide-react';
 
 export default function RecruiterDashboard() {
   const { user } = useAuth();

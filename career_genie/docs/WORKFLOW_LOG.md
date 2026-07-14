@@ -54,6 +54,11 @@ Next recommended actions (non-blocking)
 - Decide whether to upgrade `vitest` to a newer major version for smooth coverage integration, or keep using `--legacy-peer-deps` for the coverage reporter.
 - Optionally add a small script or contribution guideline describing how and when to update this workflow log.
 
+2026-07-13: Added health, readiness, and metrics endpoints
+- Implemented `/health` (basic liveness), `/ready` (readiness check verifying data persistence and queue backlog heuristic), and `/metrics` (simple Prometheus-style metrics) in `server/mock-server.js` to support availability monitoring and runtime observability.
+- Updated `TODO.md` to mark the availability health endpoints task as completed.
+
+
 2026-07-13 (performance work):
 - Added async resume processing to `server/mock-server.js`: resume uploads now return a `jobId` and are processed in background (simulated 2-5s), with results cached in `data.json` under `resumeResults` and a polling endpoint `/api/resume/status/:jobId`.
 - Added a simple benchmark script `tools/benchmark_resume.js` and an npm script `benchmark` to simulate concurrent resume uploads and measure end-to-end analysis latency.
@@ -70,8 +75,32 @@ Next recommended actions (non-blocking)
 - Added security tests for middleware behavior, JWT algorithm enforcement, and secure headers.
 - Added explicit security tracker items in `TODO.md` for HTTPS enforcement, JWT rotation policy, bcrypt enforcement, and auth hardening.
 - Completed security hardening by enforcing production HTTPS/HSTS, validating production env secrets, supporting JWT secret rotation via `JWT_OLD_SECRET`, and expanding security coverage tests.
+- Completed `Tech: Authentication — JWT + Bcrypt` by wiring password-based register/login and validating bcrypt/JWT flows.
 - Updated `TODO.md` to move completed security tasks from Remaining into the Completed section.
 - Updated `SECURITY.md` to mark token exposure and secure storage guidance as reviewed and aligned with current Authorization header-based auth flow.
+
+2026-07-13: Added backup and restore utilities for mock data
+- Added `server/backup.js` providing `--create`, `--list`, and `--restore` operations for `server/data.json` backups.
+- Added npm scripts `backup`, `backup:list`, and `backup:restore` to `package.json` for convenient usage.
+- Marked the backup/recovery TODO item completed in `TODO.md`.
+
+2026-07-13: Added MongoDB migration guide and adapter
+- Added `docs/migration_to_mongodb.md` with step-by-step migration guidance and verification steps.
+- Added `server/mongo_adapter.js`, a CLI tool to import `server/data.json` into a MongoDB instance.
+- Added `mongodb` dependency to `package.json` to support the adapter and future DB integration.
+- Marked the persistence migration guidance TODO as completed in `TODO.md`.
+
+2026-07-13: Wire mock-server for optional MongoDB
+- Updated `server/mock-server.js` to use `MONGODB_URI` when present: read/write operations now use MongoDB collections (`users`, `jobs`, `applications`, `resumeResults`) with file fallback.
+- Added `server/mongo_client.js` to manage MongoDB connection lifecycle.
+- This prepares the mock server to run against a MongoDB instance when `MONGODB_URI` is set without changing endpoints.
+- Added graceful MongoDB connection shutdown when the mock server exits.
+- Completed MongoDB persistence integration and marked `Tech: Database — MongoDB` as done in TODO.
+
+2026-07-13: Added MongoDB index creation to migration adapter
+- Updated `server/mongo_adapter.js` to automatically create production-friendly indexes after migration (`users.email` unique, `jobs.status`, `jobs.tags`, `applications.studentId`, `applications.jobId`, `resumeResults.jobId` unique). Also added a `--create-indexes` mode and `npm run mongo:create-indexes` script.
+- 2026-07-13: Completed frontend tech improvements by standardizing React context hook modules, separating provider definitions from context values for fast refresh compatibility, and confirming the app passes `npm run lint`.
+
 
 Commands to run locally:
 ```bash
@@ -84,5 +113,18 @@ npm run benchmark
 
 If you want me to run the benchmark now, I can start the mock server and run `npm run benchmark` and append the results here.
 
+- 2026-07-13: Updated `README.md` with a project-specific frontend status note describing the completed React/Tailwind work and current lint status.
+
 Contact the agent
 - To request an immediate update to this log after manual edits, reply in the chat describing the change and I'll append a new timestamped entry.
+- 2026-07-13: Marked TODO completed: Scalability: Add load testing and capacity planning for the mock backend
+
+- 2026-07-13: Marked TODO completed: Scalability: Add database indexing or persistence strategy for production readiness
+- 2026-07-13: Added centralized async error handling and an Express error middleware in server/mock-server.js.
+- Updated TODO.md to mark the backend server task as complete.
+
+2026-07-13: Completed backend audit, health/readiness/metrics, JWT hardening, and MongoDB persistence support
+- Added backend audit and hardening work in `server/mock-server.js`, including secure headers, JWT auth improvements, and optional `MONGODB_URI` support.
+- Added a backend async error middleware test and verified with `npm test -- --run server/mock-server.test.js`.
+- Updated `TODO.md` to mark completed backend audit, backend health/metrics, JWT authentication hardening, and MongoDB persistence tasks.
+

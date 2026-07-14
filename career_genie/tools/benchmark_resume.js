@@ -23,7 +23,7 @@ async function start() {
     if (tokenJson && tokenJson.token) devToken = tokenJson.token;
     // use returned user id as base student id so uploads are authorized
     var baseStudentId = tokenJson && tokenJson.user && tokenJson.user.id ? tokenJson.user.id : 'usr_student';
-  } catch (e) {
+  } catch {
     console.warn('Could not get dev token, falling back to bench header');
     var baseStudentId = 'usr_student';
   }

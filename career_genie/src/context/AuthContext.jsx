@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-const AuthContext = createContext();
+import { useState, useEffect } from 'react';
+import { AuthContext } from './AuthContextValue';
 
 const MOCK_USERS = {
   student: {
@@ -74,7 +73,7 @@ export const AuthProvider = ({ children }) => {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role })
+        body: JSON.stringify({ email, password, role })
       });
       const data = await res.json();
       setLoading(false);
@@ -82,12 +81,16 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       if (data.token) localStorage.setItem('cg_token', data.token);
       return data.user;
-    } catch (err) {
+    } catch (error) {
       setLoading(false);
-      // Fallback to in-memory mock if server unreachable
+      const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
+      if (!isNetworkError) {
+        throw error;
+      }
+      // Fallback to in-memory mock if the auth server is unreachable
       const fallback = (email && email.toLowerCase() === 'david@stripe.com') ? MOCK_USERS.recruiter : (email && email.toLowerCase() === 'admin@careergenie.com' ? MOCK_USERS.admin : MOCK_USERS.student);
       setUser(fallback);
-      try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch(e){}
+      try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch {}
       return fallback;
     }
   };
@@ -95,10 +98,10 @@ export const AuthProvider = ({ children }) => {
   const signup = async (name, email, password, role) => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/api/auth/signup`, {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, role })
+        body: JSON.stringify({ name, email, password, role })
       });
       const data = await res.json();
       setLoading(false);
@@ -106,7 +109,7 @@ export const AuthProvider = ({ children }) => {
       setUser(data.user);
       if (data.token) localStorage.setItem('cg_token', data.token);
       return data.user;
-    } catch (err) {
+    } catch {
       setLoading(false);
       const newUser = {
         id: `usr_${Math.random().toString(36).substr(2, 9)}`,
@@ -117,7 +120,7 @@ export const AuthProvider = ({ children }) => {
         resumeUploaded: false
       };
       setUser(newUser);
-      try { localStorage.setItem('cg_token', btoa(JSON.stringify({ sub: newUser.id, role: newUser.role, name: newUser.name }))); } catch (e) {}
+      try { localStorage.setItem('cg_token', btoa(JSON.stringify({ sub: newUser.id, role: newUser.role, name: newUser.name }))); } catch {}
       return newUser;
     }
   };
@@ -159,7 +162,7 @@ export const AuthProvider = ({ children }) => {
         return data.user;
       }
       return null;
-    } catch (e) {
+    } catch {
       return null;
     }
   };
@@ -179,7 +182,7 @@ export const AuthProvider = ({ children }) => {
         return data.user;
       }
       return null;
-    } catch (e) {
+    } catch {
       // fallback to local update
       updateUserProfile(updates);
       return { ...user, ...updates };
@@ -214,7 +217,7 @@ export const AuthProvider = ({ children }) => {
             setUser({ id: payload.sub, name: payload.name || payload.sub, role: payload.role || 'student', email: `${payload.name || 'user'}@careergenie.com` });
           });
         }
-      } catch (e) {
+      } catch {
         // invalid token - ignore
       }
     }
@@ -230,10 +233,3 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};

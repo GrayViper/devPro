@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { 
   Upload, FileText, CheckCircle, Loader2, ArrowRight, Download, 
   Sparkles, ListChecks, Check, ShieldAlert 
@@ -107,7 +107,7 @@ export default function ResumeUpload() {
       setAtsSuggestions(sug);
       newProfile.atsScore = calc;
       newProfile.atsSuggestions = sug;
-    } catch (e) {
+    } catch {
       // ignore
     }
 
@@ -133,7 +133,7 @@ export default function ResumeUpload() {
             }
           }
         }).catch(() => {});
-      } catch (e) {
+      } catch {
         // ignore network errors
       }
     })();

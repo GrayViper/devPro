@@ -3,15 +3,15 @@ import { render, screen } from '@testing-library/react';
 import { vi, describe, it, expect } from 'vitest';
 
 // Mock contexts used by RecruiterDashboard
-vi.mock('../context/AuthContext', () => ({
+vi.mock('../context/useAuth', () => ({
   useAuth: () => ({ user: { id: 'usr_recruiter', name: 'David Miller', role: 'recruiter' } })
 }));
 
-vi.mock('../context/JobsContext', () => ({
+vi.mock('../context/useJobs', () => ({
   useJobs: () => ({ jobs: [], addJob: () => {}, fetchJobs: () => {} })
 }));
 
-vi.mock('../context/ApplicationsContext', () => ({
+vi.mock('../context/useApplications', () => ({
   useApplications: () => ({ applications: [] })
 }));
 

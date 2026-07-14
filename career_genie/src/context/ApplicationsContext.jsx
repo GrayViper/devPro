@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-const ApplicationsContext = createContext();
+import { useState, useEffect } from 'react';
+import { ApplicationsContext } from './ApplicationsContextValue';
 
 const INITIAL_APPLICATIONS = [
   {
@@ -81,7 +80,7 @@ export const ApplicationsProvider = ({ children }) => {
         if (res.ok && Array.isArray(data.applications)) {
           setApplications(data.applications);
         }
-      } catch (e) {
+      } catch {
         // ignore network errors and keep local state
       }
     };
@@ -134,7 +133,7 @@ export const ApplicationsProvider = ({ children }) => {
       });
 
       return { success: true };
-    } catch (e) {
+    } catch {
       const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const newApp = { id: `app_${Math.random().toString(36).substr(2, 9)}`, ...payload, date: todayStr, status: 'Applied' };
       setApplications(prev => [newApp, ...prev]);
@@ -173,12 +172,4 @@ export const ApplicationsProvider = ({ children }) => {
       {children}
     </ApplicationsContext.Provider>
   );
-};
-
-export const useApplications = () => {
-  const context = useContext(ApplicationsContext);
-  if (!context) {
-    throw new Error('useApplications must be used within an ApplicationsProvider');
-  }
-  return context;
 };

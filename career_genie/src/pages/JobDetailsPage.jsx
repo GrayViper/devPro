@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { useJobs } from '../context/JobsContext';
-import { useAuth } from '../context/AuthContext';
-import { useApplications } from '../context/ApplicationsContext';
+import { useJobs } from '../context/useJobs';
+import { useAuth } from '../context/useAuth';
+import { useApplications } from '../context/useApplications';
 import { 
-  ArrowLeft, MapPin, DollarSign, Calendar, Sparkles, 
-  CheckCircle, HelpCircle, ArrowRight, Loader2, Bookmark 
+  ArrowLeft, MapPin, DollarSign, Sparkles, 
+  CheckCircle, ArrowRight, Loader2, Bookmark 
 } from 'lucide-react';
 
 export default function JobDetailsPage() {

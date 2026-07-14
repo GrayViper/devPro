@@ -1,13 +1,23 @@
 # CareerGenie Project TODO
 
-## Completed
+## Remaining
+- [ ] Investigate/implement TCP server for background processing
+- [x] Tech: Frontend — React.js + Tailwind CSS
+- [x] Tech: Backend — Node.js + Express.js
+- [x] Tech: Database — MongoDB
+- [x] Tech: Database — MongoDB (indexes added)
+- [x] Tech: Authentication — JWT + Bcrypt
+- [ ] Tech: AI — Python NLP / OpenAI API integration
+- [ ] Tech: Deployment — Vercel + Render
+
+## Completed (all)
 
 - [x] Run lint
 - [x] Build project
 - [x] Run CI tests successfully
 - [x] Report results
 - [x] Install compatible coverage reporter
-- [x] Create and maintain workflow documentation file
+- [x] Create and maintain workflow documentation filead
 - [x] Add resume analysis benchmark suite
 - [x] Implement async resume processing and background caching
 - [x] Remove Redis dependency and keep in-process resume workflow
@@ -19,20 +29,15 @@
 - [x] Security: Verify JWT handling and implement secret rotation policy
 - [x] Security: Ensure password hashing (bcrypt) is enforced and add security tests
 - [x] Security: Harden CORS/origin restrictions, secure headers, and auth middleware
-
-## Remaining
-
-- [ ] Availability: Add health checks and runtime monitoring endpoints
-- [ ] Availability: Implement backup/recovery guidance for mock data persistence
-- [ ] Scalability: Add load testing and capacity planning for the mock backend
-- [ ] Scalability: Add database indexing or persistence strategy for production readiness
-- [ ] Investigate/implement TCP server for background processing
-- [ ] Tech: Frontend — React.js + Tailwind CSS
-- [ ] Tech: Backend — Node.js + Express.js
-- [ ] Tech: Database — MongoDB
-- [ ] Tech: Authentication — JWT + Bcrypt
-- [ ] Tech: AI — Python NLP / OpenAI API integration
-- [ ] Tech: Deployment — Vercel + Render
+- [x] Availability: Add health checks and runtime monitoring endpoints
+- [x] Availability: Implement backup/recovery guidance for mock data persistence
+- [x] Scalability: Add load testing and capacity planning for the mock backend
+- [x] Scalability: Add database indexing or persistence strategy for production readiness
+- [x] Add persistence migration guidance (MongoDB)
+- [x] Audit backend server
+- [x] Implement backend health and metrics
+- [x] Harden JWT authentication
+- [x] Add persistence/MongoDB support
 
 ## Notes
 

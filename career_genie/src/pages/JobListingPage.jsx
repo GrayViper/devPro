@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useJobs } from '../context/JobsContext';
-import { useAuth } from '../context/AuthContext';
-import { useApplications } from '../context/ApplicationsContext';
-import { Search, MapPin, DollarSign, Calendar, ChevronRight, Briefcase, Sparkles, Filter } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useJobs } from '../context/useJobs';
+import { useAuth } from '../context/useAuth';
+import { useApplications } from '../context/useApplications';
+import { Search, MapPin, DollarSign, Calendar, ChevronRight, Sparkles } from 'lucide-react';
 
 export default function JobListingPage() {
   const { jobs, calculateMatchScore } = useJobs();
   const { user } = useAuth();
   const { applications } = useApplications();
-  const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [roleType, setRoleType] = useState('All'); // All, Full-time, Internship

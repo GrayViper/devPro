@@ -1,16 +1,12 @@
 import request from 'supertest';
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { app, createApp } from './mock-server.js';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
 
-let authToken;
-
 describe('server security tests', () => {
-  beforeAll(async () => {
-    authToken = jwt.sign({ sub: 'usr_student', role: 'student' }, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' });
-  });
+ 
 
   it('rejects missing Authorization header', async () => {
     const res = await request(app).post('/api/jobs').send({ title: 'Test', company: 'TestCo' });
@@ -61,6 +57,52 @@ describe('server security tests', () => {
     }
   });
 
+  it('registers a new user and does not expose passwordHash', async () => {
+    const email = `newuser-${Date.now()}@careergenie.test`;
+    const res = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'New User', email, password: 'TestPass123!', role: 'student' });
+
+    expect(res.status).toBe(201);
+    expect(res.body.user).toBeDefined();
+    expect(res.body.user.email).toBe(email);
+    expect(res.body.user.passwordHash).toBeUndefined();
+    expect(res.body.token).toBeTruthy();
+  });
+
+  it('logs in with a registered user using bcrypt password', async () => {
+    const email = `loginuser-${Date.now()}@careergenie.test`;
+    const register = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'Login User', email, password: 'StrongPass!23', role: 'student' });
+    expect(register.status).toBe(201);
+
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ email, password: 'StrongPass!23' });
+
+    expect(loginRes.status).toBe(200);
+    expect(loginRes.body.user).toBeDefined();
+    expect(loginRes.body.user.email).toBe(email);
+    expect(loginRes.body.token).toBeTruthy();
+    expect(loginRes.body.user.passwordHash).toBeUndefined();
+  });
+
+  it('rejects login with wrong password', async () => {
+    const email = `failuser-${Date.now()}@careergenie.test`;
+    const register = await request(app)
+      .post('/api/auth/register')
+      .send({ name: 'Fail User', email, password: 'GoodPass!23', role: 'student' });
+    expect(register.status).toBe(201);
+
+    const loginRes = await request(app)
+      .post('/api/auth/login')
+      .send({ email, password: 'WrongPassword' });
+
+    expect(loginRes.status).toBe(401);
+    expect(loginRes.body.error).toBe('invalid credentials');
+  });
+
   it('sets secure response headers', async () => {
     const res = await request(app).get('/api/jobs');
     expect(res.headers['x-content-type-options']).toBe('nosniff');
@@ -88,5 +130,11 @@ describe('server security tests', () => {
       process.env.FRONTEND_ORIGIN = originalFrontendOrigin;
       process.env.JWT_SECRET = originalJwtSecret;
     }
+  });
+
+  it('returns 500 and error body for unexpected async errors', async () => {
+    const res = await request(app).get('/api/test/error');
+    expect(res.status).toBe(500);
+    expect(res.body).toEqual({ error: 'test async error' });
   });
 });

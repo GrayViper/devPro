@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useApplications } from '../context/ApplicationsContext';
-import { 
-  CheckSquare, Clock, ShieldCheck, Mail, ArrowRight, Check, 
-  ChevronRight, Calendar, Sparkles, MessageCircle, AlertTriangle 
-} from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import { useApplications } from '../context/useApplications';
 import { Link } from 'react-router-dom';
+import { Check, Calendar, CheckSquare } from 'lucide-react';
 
 export default function ApplicationTracker() {
   const { user } = useAuth();

@@ -1,6 +1,111 @@
 {
   "users": [
     {
+      "id": "usr_4fugz6p",
+      "name": "Fail User",
+      "email": "failuser-1784000635980@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$HwCjhJJY6MwZsJFeKtQVpO..rPOhWZ1aDh39HbsQyEfUaQXn5j.ZC"
+    },
+    {
+      "id": "usr_cnekvq5",
+      "name": "Login User",
+      "email": "loginuser-1784000634676@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$YLjNIOpuvW2W5lxHvY5v9O97nrg.kRZAPsSpnbef6hr7RCySyL62G"
+    },
+    {
+      "id": "usr_7tag72e",
+      "name": "New User",
+      "email": "newuser-1784000634016@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$ihrnLIL09qR3cK4WzNqUoO43PtZW8oXY63SEzA5HamIBF2rvhJ6TS"
+    },
+    {
+      "id": "usr_q8d541d",
+      "name": "Fail User",
+      "email": "failuser-1784000601913@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$HVuWV2.OUJ/h0BFkIQAI5u3xFfHNv6Ny13QuRme3/.hUtWdqG6fai"
+    },
+    {
+      "id": "usr_w0z50pa",
+      "name": "Login User",
+      "email": "loginuser-1784000600609@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$/yaAvgttm9OMVERC7rnObulmfat5B42eBVpLkqcxd.5f8ZzGhhuLG"
+    },
+    {
+      "id": "usr_h6k2wp6",
+      "name": "New User",
+      "email": "newuser-1784000599952@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$lr/fIERZKO.8zGqicsvlr.6gvZ./uB4jOJHfJZZrNWygi7syAjJja"
+    },
+    {
+      "id": "usr_0986kkl",
+      "name": "Fail User",
+      "email": "failuser-1784000340751@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$.SL4AbzlAMEaAZFEOuXGPeDBQ3MqGQz9whTvQdl4ldCBeKiHYVXJy"
+    },
+    {
+      "id": "usr_vw5kmye",
+      "name": "Login User",
+      "email": "loginuser-1784000340206@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$qi0h1rTaZ5VqzwNqrct8QOiytgjOrVQpsUjfmhUe/GgbeJdr5i.NO"
+    },
+    {
+      "id": "usr_9e75zxs",
+      "name": "New User",
+      "email": "newuser-1784000339938@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$GzDXD2W0PV5be1wsqr.50On8IXOX9ENA/4UnzkgTvjVckeNn1owDy"
+    },
+    {
+      "id": "usr_k9oaqtq",
+      "name": "Fail User",
+      "email": "failuser-1784000155527@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$Zm.ZUz5vhWoePILvNQqUn.1TafDoTAqPossQL5tK/S4iBcsT6VHTm"
+    },
+    {
+      "id": "usr_h2w4yb2",
+      "name": "Login User",
+      "email": "loginuser-1784000154971@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$1JZh4/m6ludfOdU1AH1qyOcA0gz7OUgpdLwfF8GyXBsJVqfSNE6ee"
+    },
+    {
+      "id": "usr_f2m55ln",
+      "name": "New User",
+      "email": "newuser-1784000154703@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$P9wI26q7BeaRo6esP5Y0uOfH.JKzrO.3BwVFtUVgBtzo3aQ3HJ..C"
+    },
+    {
+      "id": "usr_3kx0xt3",
+      "name": "Fail User",
+      "email": "failuser-1784000134255@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$IHusyN0VowXxMa3P1PIFkOGECpxsuv6PvtP/WdxIZT4GiEAqBHI0S"
+    },
+    {
+      "id": "usr_a4x3zis",
+      "name": "Login User",
+      "email": "loginuser-1784000133705@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$x36F0KLqGf/gECVIr.lpBO2i8GeYTMCfS9fMp1ERFvqo3SO7FYrfe"
+    },
+    {
+      "id": "usr_jhxfu4g",
+      "name": "New User",
+      "email": "newuser-1784000133430@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$h8VuFYUmBMPsFLkV9QLBNe9HRqMGSzlwNYqSi5jq4y./omZjeOyri"
+    },
+    {
       "id": "usr_student",
       "name": "Olivia Chen",
       "email": "olivia@gmail.com",
@@ -30,7 +135,7 @@
   ],
   "jobs": [
     {
-      "id": "job_uvt0t59",
+      "id": "job_ctrqzzg",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -46,39 +151,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_uvmtfu6",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_9kj5ybv",
-      "title": "Rotated Job",
-      "company": "RotateCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "R",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_7e0dhpv",
+      "id": "job_2sjokwd",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -94,23 +167,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_nolmyf6",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_v092gnv",
+      "id": "job_47r6yvg",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -126,7 +183,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_djtsapy",
+      "id": "job_sv3fbr4",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -142,7 +199,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_425qm0b",
+      "id": "job_xeohck6",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -158,7 +215,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_2nzqs95",
+      "id": "job_lfpg7pa",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -174,7 +231,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_t2rlrnx",
+      "id": "job_kur16vu",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -190,7 +247,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_chaoxji",
+      "id": "job_03vnc2q",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -206,7 +263,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_yqhh3t0",
+      "id": "job_jhrpi3r",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -222,7 +279,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_l91w4wt",
+      "id": "job_1b40vz6",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -238,7 +295,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_7d4h28i",
+      "id": "job_xk0clws",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -254,7 +311,23 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_8m8cm24",
+      "id": "job_6m0hn2x",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_99pngff",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -270,7 +343,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_re6lqaw",
+      "id": "job_4eop76g",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -286,23 +359,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_nrmrn8r",
-      "title": "Secure Job",
-      "company": "SecureCo",
-      "location": "Remote",
-      "type": "Full-time",
-      "tags": [],
-      "description": "",
-      "salary": "Competitive",
-      "deadline": "TBD",
-      "posterId": null,
-      "posterName": null,
-      "logo": "S",
-      "logoBg": "bg-slate-600",
-      "status": "pending_approval"
-    },
-    {
-      "id": "job_8bnoroa",
+      "id": "job_mtxixw2",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -318,7 +375,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_h3ny9wk",
+      "id": "job_5tvrong",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -334,7 +391,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_5on7vm0",
+      "id": "job_qghulbj",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -350,7 +407,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_esibv4j",
+      "id": "job_x6jfm59",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -366,7 +423,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_etvf5wo",
+      "id": "job_vdy2hmm",
       "title": "Rotated Job",
       "company": "RotateCo",
       "location": "Remote",
@@ -382,7 +439,7 @@
       "status": "pending_approval"
     },
     {
-      "id": "job_34v2e8a",
+      "id": "job_db85mza",
       "title": "Secure Job",
       "company": "SecureCo",
       "location": "Remote",
@@ -394,6 +451,310 @@
       "posterId": null,
       "posterName": null,
       "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_q6xri56",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_qna3y8v",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_u5o315l",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_h17zf6i",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_qor04xf",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_stvnopz",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_xh3k9nj",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_l46p3k8",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_02qqqmt",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_2obzc4g",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_t728em8",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_90wd1u6",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_uja2aw0",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_1e0h0cp",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_n5h9owx",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_0r7iy8m",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_nu8ro8m",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_a999zjs",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_g94qjj9",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
       "logoBg": "bg-slate-600",
       "status": "pending_approval"
     },

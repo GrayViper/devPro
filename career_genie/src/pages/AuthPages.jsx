@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { Sparkles, User, Briefcase, Shield, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
 
 export default function AuthPages() {
@@ -26,7 +26,7 @@ export default function AuthPages() {
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
-      } catch (err) {
+      } catch {
         setError('Invalid credentials. Please try again.');
       }
     } else {
@@ -39,7 +39,7 @@ export default function AuthPages() {
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
-      } catch (err) {
+      } catch {
         setError('Registration failed. Please check details.');
       }
     }

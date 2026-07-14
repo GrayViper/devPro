@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useJobs } from '../context/JobsContext';
-import { useApplications } from '../context/ApplicationsContext';
-import { 
-  FileText, Briefcase, Award, TrendingUp, AlertTriangle, 
-  ChevronRight, ArrowUpRight, Check, Plus, Trash2, Edit2
-} from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import { useJobs } from '../context/useJobs';
+import { useApplications } from '../context/useApplications';
+import { FileText, Briefcase, ChevronRight, ArrowUpRight, Plus, Trash2, Edit2, AlertTriangle } from 'lucide-react';
 
 export default function StudentDashboard() {
   const { user, updateUserProfile } = useAuth();

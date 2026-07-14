@@ -1,9 +1,8 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { act } from 'react';
 import { vi, describe, it, expect } from 'vitest';
 
-vi.mock('../context/AuthContext', () => ({
+vi.mock('../context/useAuth', () => ({
   useAuth: () => ({ user: { id: 'usr_student', name: 'Olivia Chen', role: 'student' }, updateUserProfile: () => {} })
 }));
 
@@ -13,7 +12,7 @@ global.fetch = vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resol
 // Mock FileReader used in the component
 class MockFileReader {
   constructor() { this.onload = null; this.result = null; }
-  readAsDataURL(file) {
+  readAsDataURL(_file) {
     this.result = 'data:application/pdf;base64,ZmFrZURhdGE=';
     if (this.onload) this.onload();
   }

@@ -1,6 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-
-const JobsContext = createContext();
+import { useState, useEffect } from 'react';
+import { JobsContext } from './JobsContextValue';
 
 const INITIAL_JOBS = [
   {
@@ -158,7 +157,7 @@ export const JobsProvider = ({ children }) => {
         }));
         setJobs(mapped);
       }
-    } catch (e) {
+    } catch {
       // network error - keep local jobs
     }
   };
@@ -225,10 +224,3 @@ export const JobsProvider = ({ children }) => {
   );
 };
 
-export const useJobs = () => {
-  const context = useContext(JobsContext);
-  if (!context) {
-    throw new Error('useJobs must be used within a JobsProvider');
-  }
-  return context;
-};
