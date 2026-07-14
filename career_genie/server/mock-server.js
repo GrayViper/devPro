@@ -295,21 +295,25 @@ function signToken(user) {
   return jwt.sign({ sub: user.id, role: user.role }, jwtSecret, { expiresIn: '7d', algorithm: 'HS256' });
 }
 
-function authMiddleware(req, res, next) {
+async function authMiddleware(req, res, next) {
   const h = req.headers.authorization || '';
   const m = h.match(/^Bearer (.+)$/);
   if (!m) return res.status(401).json({ error: 'missing token' });
+
+  const token = m[1];
   const { jwtSecret, jwtOldSecret } = getEnvSettings();
   const secrets = [jwtSecret, jwtOldSecret].filter(Boolean);
+
   for (const secret of secrets) {
     try {
-      const payload = jwt.verify(m[1], secret, { algorithms: ['HS256'] });
+      const payload = jwt.verify(token, secret, { algorithms: ['HS256'] });
       req.user = payload;
       return next();
     } catch {
       // try next secret if present
     }
   }
+
   return res.status(401).json({ error: 'invalid token' });
 }
 
@@ -482,6 +486,15 @@ function setupRoutes(app) {
   // Health and readiness endpoints
   app.get('/health', (req, res) => {
     return res.json({ status: 'ok', uptime: process.uptime(), timestamp: new Date().toISOString() });
+  });
+
+  app.get('/auth-status', (req, res) => {
+    res.json({
+      clerkConfigured: false,
+      jwtConfigured: Boolean(getEnvSettings().jwtSecret),
+      frontendOrigin: process.env.FRONTEND_ORIGIN || null,
+      mode: 'demo-jwt'
+    });
   });
 
   app.get('/ready', async (req, res) => {

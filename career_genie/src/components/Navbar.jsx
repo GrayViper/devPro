@@ -13,8 +13,8 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showRoleSwitcher, setShowRoleSwitcher] = useState(true);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
     setMobileMenuOpen(false);
   };
@@ -59,7 +59,7 @@ export default function Navbar() {
               Admin
             </button>
             <button 
-              onClick={() => { logout(); navigate('/'); }}
+              onClick={() => { void handleLogout(); }}
               className={`rounded-full px-2.5 py-1 transition ${!user ? 'bg-indigo-600 font-semibold text-white' : 'hover:bg-indigo-900/60'}`}
             >
               Guest

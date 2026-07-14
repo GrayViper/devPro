@@ -108,6 +108,12 @@ Next recommended actions (non-blocking)
 - Added a backend test verifying resume analysis job creation and status polling for the AI integration path.
 - Marked `Tech: AI — Python NLP / OpenAI API integration` complete in `TODO.md`.
 
+2026-07-14: Added Clerk-compatible auth session handling
+- Added `src/utils/clerk.js` and `src/utils/clerk.test.js` to normalize Clerk-style user payloads into the app's existing user shape.
+- Updated `src/context/AuthContext.jsx` to recognize a persisted Clerk session and restore it automatically.
+- Updated `src/pages/AuthPages.jsx` to expose a Clerk demo session path for local UI testing.
+- Fixed context hook imports in `src/context/useAuth.jsx`, `src/context/useJobs.jsx`, and `src/context/useApplications.jsx` so the app build succeeds.
+- Verified the new clerk utility test passes and the Vite production build succeeds.
 
 Commands to run locally:
 ```bash
@@ -119,6 +125,11 @@ npm run benchmark
 ```
 
 If you want me to run the benchmark now, I can start the mock server and run `npm run benchmark` and append the results here.
+
+2026-07-14: Added a local Clerk MCP server entrypoint
+- Added `server/mcp/clerk-mcp-server.js` implementing a minimal MCP server with `get_clerk_status` and `get_clerk_setup_hint` tools.
+- Added an npm script `npm run mcp:clerk` so the server can be launched locally through the workspace.
+- Updated `TODO.md` to reflect that the Clerk MCP server entrypoint is now available.
 
 - 2026-07-13: Updated `README.md` with a project-specific frontend status note describing the completed React/Tailwind work and current lint status.
 

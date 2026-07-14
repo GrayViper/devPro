@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useClerk } from '@clerk/react';
 import { AuthContext } from './AuthContextValue';
+import { clearClerkSessionStorage, normalizeClerkUser } from '../utils/clerk';
 
 const MOCK_USERS = {
   student: {
@@ -49,6 +51,8 @@ const MOCK_USERS = {
 };
 
 export const AuthProvider = ({ children }) => {
+  const { signOut, isLoaded: clerkLoaded } = useClerk();
+
   // Default to student for a seamless first-time preview of the dashboard
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('cg_user');
@@ -125,9 +129,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     setUser(null);
-    localStorage.removeItem('cg_token');
+    clearClerkSessionStorage();
+
+    if (clerkLoaded) {
+      try {
+        await signOut({ redirectUrl: '/' });
+      } catch {
+        // Keep local sign-out behavior intact even if Clerk sign-out is unavailable.
+      }
+    }
   };
 
   const switchRole = (role) => {
@@ -193,6 +205,19 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('cg_token');
     const saved = localStorage.getItem('cg_user');
+    const clerkSession = localStorage.getItem('clerk_session');
+
+    if (clerkSession) {
+      try {
+        const parsed = JSON.parse(clerkSession);
+        const normalized = normalizeClerkUser(parsed.user || parsed, parsed.role || 'student');
+        setUser(normalized);
+        return;
+      } catch {
+        localStorage.removeItem('clerk_session');
+      }
+    }
+
     if (!saved && token) {
       try {
         let payload = null;

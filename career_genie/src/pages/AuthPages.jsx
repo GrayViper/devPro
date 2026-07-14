@@ -1,13 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useUser, SignInButton, UserButton } from '@clerk/react';
 import { useAuth } from '../context/useAuth';
 import { Sparkles, User, Briefcase, Shield, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { clearClerkSessionStorage, normalizeClerkUser } from '../utils/clerk';
 
 export default function AuthPages() {
   const { login, signup, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === '/login';
+  const { isSignedIn, user, isLoaded } = useUser();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,6 +18,34 @@ export default function AuthPages() {
   const [role, setRole] = useState('student'); // student, recruiter, admin
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn || !user) return;
+
+    const clerkUser = normalizeClerkUser(user, user.publicMetadata?.role || role);
+    localStorage.setItem('clerk_session', JSON.stringify(clerkUser));
+    localStorage.setItem('cg_token', `clerk-${user.id}`);
+    localStorage.setItem('cg_user', JSON.stringify(clerkUser));
+
+    const nextPath = clerkUser.role === 'student' ? '/dashboard/student' : clerkUser.role === 'recruiter' ? '/dashboard/recruiter' : '/admin';
+    navigate(nextPath, { replace: true });
+  }, [isLoaded, isSignedIn, user, navigate, role]);
+
+  const handleClerkDemo = () => {
+    const demoUser = normalizeClerkUser({
+      id: 'clerk_demo',
+      firstName: 'Clerk',
+      lastName: 'User',
+      emailAddresses: [{ emailAddress: 'clerk@example.com' }],
+      publicMetadata: { role }
+    }, role);
+
+    clearClerkSessionStorage();
+    localStorage.setItem('clerk_session', JSON.stringify(demoUser));
+    localStorage.setItem('cg_token', `clerk-${demoUser.id}`);
+    localStorage.setItem('cg_user', JSON.stringify(demoUser));
+    window.location.href = role === 'student' ? '/dashboard/student' : role === 'recruiter' ? '/dashboard/recruiter' : '/admin';
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -165,6 +196,39 @@ export default function AuthPages() {
                 ))}
               </div>
             </div>
+
+            {!isLoaded ? (
+              <div className="flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-sm text-gray-300">
+                Loading Clerk auth...
+              </div>
+            ) : isSignedIn ? (
+              <div className="flex items-center justify-between rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+                <span>Signed in with Clerk</span>
+                <UserButton afterSignOutUrl="/" />
+              </div>
+            ) : (
+              <SignInButton
+                mode="modal"
+                forceRedirectUrl={role === 'student' ? '/dashboard/student' : role === 'recruiter' ? '/dashboard/recruiter' : '/admin'}
+              >
+                <button
+                  type="button"
+                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-indigo-400/30 bg-indigo-500/10 px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-indigo-300 shadow-lg shadow-indigo-600/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-500/20 sm:text-sm"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>Continue with Clerk</span>
+                </button>
+              </SignInButton>
+            )}
+
+            <button
+              type="button"
+              onClick={handleClerkDemo}
+              className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300 shadow-lg shadow-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/10 sm:text-sm"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Use demo session</span>
+            </button>
 
             {/* Submit Button */}
             <button

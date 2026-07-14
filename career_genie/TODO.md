@@ -1,7 +1,8 @@
 # CareerGenie Project TODO
 
 ## Remaining
-- [ ] Investigate/implement TCP server for background processing
+- [ ] Investigate/implement MCP server for background processing
+- [x] Add Clerk MCP server entrypoint for local tooling
 - [x] Tech: Frontend — React.js + Tailwind CSS
 - [x] Tech: Backend — Node.js + Express.js
 - [x] Tech: Database — MongoDB
@@ -9,6 +10,7 @@
 - [x] Tech: Authentication — JWT + Bcrypt
 - [x] Tech: AI — Python NLP / OpenAI API integration
 - [ ] Tech: Deployment — Vercel + Render
+- [ ] Integrate real Clerk API credentials and server-side session verification
 
 ## Completed (all)
 
@@ -38,6 +40,7 @@
 - [x] Implement backend health and metrics
 - [x] Harden JWT authentication
 - [x] Add persistence/MongoDB support
+- [x] Add Clerk-compatible auth session handling and demo fallback in the frontend
 
 ## Notes
 

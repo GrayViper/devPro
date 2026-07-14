@@ -111,6 +111,15 @@ describe('server security tests', () => {
     expect(res.headers['permissions-policy']).toContain('geolocation=()');
   });
 
+  it('reports the demo auth mode without requiring a secret key', async () => {
+    const res = await request(app).get('/auth-status');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('clerkConfigured');
+    expect(res.body.clerkConfigured).toBe(false);
+    expect(res.body).toHaveProperty('jwtConfigured');
+    expect(res.body.mode).toBe('demo-jwt');
+  });
+
   it('enforces HTTPS and sets HSTS in production mode', async () => {
     const originalNodeEnv = process.env.NODE_ENV;
     const originalFrontendOrigin = process.env.FRONTEND_ORIGIN;
