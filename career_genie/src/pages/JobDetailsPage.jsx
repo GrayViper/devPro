@@ -8,6 +8,7 @@ import {
   CheckCircle, ArrowRight, Loader2, Bookmark, BookmarkCheck 
 } from 'lucide-react';
 import { getDeadlineInsight, getSavedJobs, toggleSavedJob } from '../utils/studentJourney';
+import { hasStoredResume } from '../utils/resumeStorage';
 
 export default function JobDetailsPage() {
   const { id } = useParams();
@@ -62,7 +63,7 @@ export default function JobDetailsPage() {
   const matchScore = calculateMatchScore(job.skills, userSkills);
   const deadlineInsight = getDeadlineInsight(job.deadline);
   const saved = savedJobIds.includes(job.id);
-  const hasResume = Boolean(currentUser?.resumeUploaded);
+  const hasResume = Boolean(hasStoredResume(currentUser?.id) || currentUser?.resumeUploaded);
 
   // Check if student is already applied
   const isApplied = applications.some(app => app.jobId === job.id && app.studentId === currentUser?.id);
@@ -96,7 +97,7 @@ export default function JobDetailsPage() {
       return;
     }
 
-    if (!currentUser.resumeUploaded) {
+    if (!hasStoredResume(currentUser?.id) && !currentUser?.resumeUploaded) {
       setErrorMsg('Upload your resume before applying to jobs.');
       return;
     }

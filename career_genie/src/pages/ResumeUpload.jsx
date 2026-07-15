@@ -6,6 +6,7 @@ import {
   Sparkles, ListChecks, Check, ShieldAlert 
 } from 'lucide-react';
 import { calculateAtsScore, generateAtsSuggestions } from '../utils/resume';
+import { saveStoredResume } from '../utils/resumeStorage';
 
 export default function ResumeUpload() {
   const { user, updateUserProfile, getAuthToken } = useAuth();
@@ -102,9 +103,17 @@ export default function ResumeUpload() {
     setReport(feedback);
     setReportScore(feedback.score);
 
+    const storedResume = saveStoredResume(user?.id, {
+      fileName: file.name,
+      contentBase64: fileBase64,
+      mimeType: file.type || 'application/pdf',
+      size: file.size,
+      uploadedAt: new Date().toISOString()
+    });
+
     // Save in user profile context and attempt to persist to mock API
     const newProfile = {
-      resumeUploaded: true,
+      resumeUploaded: Boolean(storedResume),
       resumeName: file.name,
       resumeScore: feedback.score,
       skills: parsedSkills,

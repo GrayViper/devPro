@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
 import { ApplicationsContext } from './ApplicationsContextValue';
 
@@ -39,34 +39,82 @@ export const buildStatusChangeNotification = (application, newStatus, comment = 
 export const ApplicationsProvider = ({ children }) => {
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
-  const [applications, setApplications] = useState(() => {
-    const saved = localStorage.getItem('cg_applications');
-    return saved ? JSON.parse(saved) : INITIAL_APPLICATIONS;
-  });
+  const { user, getAuthToken } = useAuth();
+  const userId = user?.id;
 
-  const { getAuthToken } = useAuth();
+  const getStorageKey = (id) => `cg_applications${id ? `:${id}` : ''}`;
 
-  // fetch applications from mock API on mount
+  const [applications, setApplications] = useState(INITIAL_APPLICATIONS);
+
   useEffect(() => {
+    if (!userId) {
+      setApplications(INITIAL_APPLICATIONS);
+      localStorage.removeItem('cg_applications');
+      return;
+    }
+
     const fetchApps = async () => {
       try {
         const token = await getAuthToken();
         const res = await fetch(`${API_BASE}/api/applications`, { headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) } });
         const data = await res.json();
         if (res.ok && Array.isArray(data.applications)) {
-          setApplications(data.applications);
+          const filtered = data.applications.filter(app => app.studentId === userId);
+          setApplications(filtered);
+          localStorage.setItem(getStorageKey(userId), JSON.stringify(filtered));
+          localStorage.removeItem('cg_applications');
+          return;
         }
       } catch {
-        // ignore network errors and keep local state
+        // ignore network errors and fall back to a user's saved local applications only if present
       }
+
+      const storageKey = getStorageKey(userId);
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setApplications(parsed);
+            return;
+          }
+        } catch {
+          localStorage.removeItem(storageKey);
+        }
+      }
+
+      const legacy = localStorage.getItem('cg_applications');
+      if (legacy) {
+        try {
+          const parsed = JSON.parse(legacy);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const filtered = parsed.filter(app => app.studentId === userId);
+            localStorage.setItem(storageKey, JSON.stringify(filtered));
+            localStorage.removeItem('cg_applications');
+            setApplications(filtered);
+            return;
+          }
+        } catch {
+          localStorage.removeItem('cg_applications');
+        }
+      }
+
+      setApplications(INITIAL_APPLICATIONS);
+      localStorage.setItem(storageKey, JSON.stringify(INITIAL_APPLICATIONS));
     };
+
     fetchApps();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [API_BASE, getAuthToken, userId]);
 
   useEffect(() => {
-    localStorage.setItem('cg_applications', JSON.stringify(applications));
-  }, [applications]);
+    if (!userId) {
+      return;
+    }
+
+    const storageKey = getStorageKey(userId);
+    localStorage.setItem(storageKey, JSON.stringify(applications));
+    localStorage.removeItem('cg_applications');
+  }, [applications, userId]);
 
   const applyToJob = async (job, student, matchScore) => {
     const isAlreadyApplied = applications.some(app => app.jobId === job.id && app.studentId === student.id);

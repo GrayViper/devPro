@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { useApplications } from '../context/useApplications';
 import { Link, useNavigate } from 'react-router-dom';
-import { Check, Calendar, CheckSquare, Bell, Mail, CheckCheck } from 'lucide-react';
+import { Check, Calendar, CheckSquare, Bell, Mail, CheckCheck, Download } from 'lucide-react';
+import { getStoredResume, hasStoredResume } from '../utils/resumeStorage';
 
 export default function ApplicationTracker() {
   const { user, getAuthToken, fetchProfile } = useAuth();
@@ -124,7 +125,9 @@ export default function ApplicationTracker() {
     );
   }
 
-  if (currentUser.role === 'student' && !currentUser.resumeUploaded) {
+  const hasResume = Boolean(hasStoredResume(currentUser?.id) || currentUser?.resumeUploaded);
+
+  if (currentUser.role === 'student' && !hasResume) {
     return (
       <div className="py-20 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Resume required</h2>
@@ -143,6 +146,23 @@ export default function ApplicationTracker() {
   const visibleApps = currentUser.role === 'recruiter' ? recruiterApps : studentApps;
   const activeApp = visibleApps.find(app => app.id === selectedAppId) || visibleApps[0];
   const unreadCount = notifications.filter(item => !item.read).length;
+
+  const handleResumeDownload = (application) => {
+    const storedResume = getStoredResume(application.studentId);
+    if (!storedResume?.contentBase64) return;
+
+    const element = document.createElement('a');
+    const byteCharacters = atob(storedResume.contentBase64);
+    const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, index) => byteCharacters.charCodeAt(index));
+    const byteArray = new Uint8Array(byteNumbers);
+    const fileData = new Blob([byteArray], { type: storedResume.mimeType || 'application/pdf' });
+    element.href = URL.createObjectURL(fileData);
+    element.download = storedResume.fileName || `${application.studentName || 'resume'}.pdf`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+    URL.revokeObjectURL(element.href);
+  };
 
   // Map status names to stepper stages for visual representation
   const stages = ['Applied', 'Review', 'Interview', 'Outcome'];
@@ -341,6 +361,14 @@ export default function ApplicationTracker() {
                     <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
+                        onClick={() => handleResumeDownload(activeApp)}
+                        className="flex items-center gap-1 rounded-lg border border-indigo-500/20 bg-indigo-500/10 px-3 py-1.5 font-semibold text-indigo-300"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        Download Resume
+                      </button>
+                      <button
+                        type="button"
                         onClick={() => handleUpdateStatus(activeApp.id, 'Interview')}
                         className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-3 py-1.5 rounded-lg text-[10px]"
                       >
@@ -403,12 +431,12 @@ export default function ApplicationTracker() {
           <p className="text-xs leading-relaxed mb-6">
             {currentUser.role === 'recruiter'
               ? 'Review active candidates and move them through the hiring pipeline.'
-              : currentUser.resumeUploaded 
+              : hasResume 
                 ? 'Your resume is uploaded! Start exploring opportunities and submitting applications.' 
                 : 'Upload your resume, find opportunities, match your profile keywords, and apply to track updates.'}
           </p>
           <div className="flex gap-3 flex-wrap justify-center">
-            {currentUser.role === 'student' && !currentUser.resumeUploaded && (
+            {currentUser.role === 'student' && !hasResume && (
               <Link to="/resume" className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
                 Upload Resume
               </Link>

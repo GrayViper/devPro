@@ -17,6 +17,7 @@ import {
 	CheckCircle2
 } from 'lucide-react';
 import { getNextSteps, getSavedJobs } from '../utils/studentJourney';
+import { hasStoredResume } from '../utils/resumeStorage';
 
 export default function StudentDashboard() {
 	const { user, updateUserProfile } = useAuth();
@@ -48,9 +49,10 @@ export default function StudentDashboard() {
 	}
 
 	const studentApps = applications.filter((app) => app.studentId === user.id);
+	const hasResume = Boolean(hasStoredResume(user.id) || user.resumeUploaded);
 
 	const allActiveJobs = jobs.filter((job) => job.status === 'active');
-	const matchedJobs = user.resumeUploaded
+	const matchedJobs = hasResume
 		? allActiveJobs
 				.map((job) => ({
 					...job,
@@ -62,10 +64,10 @@ export default function StudentDashboard() {
 
 	const profileStrength = (!user.skills || user.skills.length === 0)
 		? 0
-		: Math.min(100, (user.resumeUploaded ? 38 : 0) + (user.skills?.length ? 24 : 0) + (studentApps.length ? 18 : 0) + 20);
-	const resumeScore = user.resumeUploaded ? (user.resumeScore || 78) : null;
+		: Math.min(100, (hasResume ? 38 : 0) + (user.skills?.length ? 24 : 0) + (studentApps.length ? 18 : 0) + 20);
+	const resumeScore = hasResume ? (user.resumeScore || 78) : null;
 	const savedJobsCount = getSavedJobs().length;
-	const nextSteps = getNextSteps({ resumeUploaded: user.resumeUploaded, skills: user.skills || [], applications: studentApps, savedJobsCount, notificationCount: 0 });
+	const nextSteps = getNextSteps({ resumeUploaded: hasResume, skills: user.skills || [], applications: studentApps, savedJobsCount, notificationCount: 0 });
 	const nextStepActions = {
 		resume: () => navigate('/resume'),
 		skills: () => setIsEditingProfile(true),
@@ -168,7 +170,7 @@ export default function StudentDashboard() {
 							{ label: 'Profile strength', value: `${profileStrength}%`, desc: 'Resume + skills + activity', icon: <Target className="h-4 w-4 text-indigo-400" /> },
 							{ label: 'Top match', value: `${matchedJobs[0]?.matchScore || 0}%`, desc: 'Best fit opportunity', icon: <TrendingUp className="h-4 w-4 text-cyan-400" /> },
 							{ label: 'Applications', value: studentApps.length, desc: 'In progress or pending', icon: <Briefcase className="h-4 w-4 text-purple-400" /> },
-							...(user.resumeUploaded ? [{ label: 'Resume score', value: `${resumeScore}%`, desc: 'Current readiness snapshot', icon: <FileText className="h-4 w-4 text-emerald-400" /> }] : [])
+							...(hasResume ? [{ label: 'Resume score', value: `${resumeScore}%`, desc: 'Current readiness snapshot', icon: <FileText className="h-4 w-4 text-emerald-400" /> }] : [])
 						].map((stat, index) => (
 							<div key={index} className="rounded-2xl border border-white/10 bg-white/5 p-4">
 								<div className="flex items-center justify-between">
@@ -333,7 +335,7 @@ export default function StudentDashboard() {
 								<div key={job.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
 									<div className="flex items-start justify-between">
 										<span className={`flex h-8 w-8 items-center justify-center rounded-xl text-[10px] font-black text-white ${job.logoBg}`}>{job.logo}</span>
-										{user.resumeUploaded ? (
+										{hasResume ? (
 											<span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${job.matchScore >= 80 ? 'bg-indigo-500/10 text-indigo-300' : job.matchScore >= 60 ? 'bg-purple-500/10 text-purple-300' : 'bg-cyan-500/10 text-cyan-300'}`}>{job.matchScore}%</span>
 										) : (
 											<span className="rounded-full bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold text-cyan-300">Internship</span>

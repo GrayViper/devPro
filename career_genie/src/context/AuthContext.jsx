@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useClerk as useClerkAuth } from '@clerk/react';
 import { AuthContext } from './AuthContextValue';
 import { clearClerkSessionStorage, normalizeClerkUser } from '../utils/clerk';
+import { normalizeResumeProfile } from '../utils/resumeStorage';
 
 const MOCK_USERS = {
   student: {
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }) => {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (!parsed?.demo) setUser(parsed);
+        if (!parsed?.demo) setUser(normalizeResumeProfile(parsed));
       } catch {
         // ignore parse errors
       }
@@ -172,7 +173,7 @@ export const AuthProvider = ({ children }) => {
   const updateUserProfile = (updatedFields) => {
     setUser(prev => {
       if (!prev) return null;
-      const nextUser = { ...prev, ...updatedFields };
+      const nextUser = normalizeResumeProfile({ ...prev, ...updatedFields });
       localStorage.setItem('cg_user', JSON.stringify(nextUser));
       return nextUser;
     });
