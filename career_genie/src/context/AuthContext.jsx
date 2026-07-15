@@ -83,7 +83,6 @@ export const AuthProvider = ({ children }) => {
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
   const login = async (email, password, role) => {
-    setLoading(true);
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
@@ -216,23 +215,6 @@ export const AuthProvider = ({ children }) => {
       return { ...user, ...updates };
     }
   };
-
-  // restore session from lightweight token if present (base64 JSON)
-  useEffect(() => {
-    // Only restore an explicit saved user (from a prior explicit sign-in).
-    // Do not attempt automatic network fetches or demo fallbacks on app load.
-    const saved = localStorage.getItem('cg_user');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        // do not restore demo sessions
-        if (!parsed?.demo) setUser(parsed);
-      } catch {
-        // ignore parse errors
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const isAuthenticated = !!user;
 

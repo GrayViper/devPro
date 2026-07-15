@@ -106,13 +106,13 @@ export default function JobDetailsPage() {
     setErrorMsg('');
 
     // Simulate submission delay
-    setTimeout(() => {
+    setTimeout(async () => {
       setApplying(false);
-      const res = applyToJob(job, currentUser, matchScore);
-      if (res.success) {
+      const res = await applyToJob(job, currentUser, matchScore);
+      if (res && res.success) {
         setApplySuccess(true);
       } else {
-        setErrorMsg(res.message);
+        setErrorMsg(res?.message || 'Something went wrong. Please try again.');
       }
     }, 1200);
   };

@@ -6,54 +6,12 @@ import { Check, Calendar, CheckSquare, Bell, Mail, CheckCheck, Download } from '
 import { getStoredResume, hasStoredResume } from '../utils/resumeStorage';
 
 export default function ApplicationTracker() {
-  const { user, getAuthToken, fetchProfile } = useAuth();
+  const { user, getAuthToken } = useAuth();
   const { applications, updateApplicationStatus } = useApplications();
   const navigate = useNavigate();
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const [isReady, setIsReady] = useState(false);
-  const [currentUser, setCurrentUser] = useState(user);
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
-
-  // Update currentUser when user context changes
-  useEffect(() => {
-    if (user) {
-      setCurrentUser(user);
-      setIsReady(true);
-    }
-  }, [user]);
-
-  // Restore user from localStorage if needed
-  useEffect(() => {
-    const restoreUser = async () => {
-      if (!currentUser) {
-        const token = localStorage.getItem('cg_token');
-        const savedUser = localStorage.getItem('cg_user');
-        
-        if (!token && !savedUser) {
-          // No session data at all, redirect to login
-          setIsReady(true);
-          return;
-        }
-
-        if (token && savedUser) {
-          try {
-            const parsed = JSON.parse(savedUser);
-            if (parsed?.id) {
-              const restored = await fetchProfile(parsed.id);
-              if (restored) {
-                setCurrentUser(restored);
-              }
-            }
-          } catch (e) {
-            // ignore parse errors
-          }
-        }
-      }
-      setIsReady(true);
-    };
-    void restoreUser();
-  }, []);
 
   const handleUpdateStatus = (appId, newStatus) => {
     let comment = '';
@@ -65,7 +23,7 @@ export default function ApplicationTracker() {
   };
 
   const fetchNotifications = async () => {
-    if (!currentUser?.id) return;
+    if (!user?.id) return;
     try {
       const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/api/notifications`, {
@@ -87,7 +45,7 @@ export default function ApplicationTracker() {
     }, 15000);
 
     return () => window.clearInterval(interval);
-  }, [API_BASE, getAuthToken, currentUser?.id]);
+  }, [API_BASE, getAuthToken, user?.id]);
 
   const markNotificationRead = async (notificationId) => {
     try {
@@ -105,15 +63,7 @@ export default function ApplicationTracker() {
     }
   };
 
-  if (!isReady) {
-    return (
-      <div className="py-20 text-center">
-        <p className="text-gray-400">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!currentUser || (currentUser.role !== 'student' && currentUser.role !== 'recruiter')) {
+  if (!user || (user.role !== 'student' && user.role !== 'recruiter')) {
     return (
       <div className="py-20 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
@@ -125,9 +75,9 @@ export default function ApplicationTracker() {
     );
   }
 
-  const hasResume = Boolean(hasStoredResume(currentUser?.id) || currentUser?.resumeUploaded);
+  const hasResume = Boolean(hasStoredResume(user?.id) || user?.resumeUploaded);
 
-  if (currentUser.role === 'student' && !hasResume) {
+  if (user.role === 'student' && !hasResume) {
     return (
       <div className="py-20 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Resume required</h2>
@@ -139,11 +89,11 @@ export default function ApplicationTracker() {
     );
   }
 
-  const studentApps = applications.filter(app => app.studentId === currentUser.id);
-  const recruiterApps = currentUser.role === 'recruiter'
-    ? applications.filter(app => app.company === currentUser.company)
+  const studentApps = applications.filter(app => app.studentId === user.id);
+  const recruiterApps = user.role === 'recruiter'
+    ? applications.filter(app => app.company === user.company)
     : [];
-  const visibleApps = currentUser.role === 'recruiter' ? recruiterApps : studentApps;
+  const visibleApps = user.role === 'recruiter' ? recruiterApps : studentApps;
   const activeApp = visibleApps.find(app => app.id === selectedAppId) || visibleApps[0];
   const unreadCount = notifications.filter(item => !item.read).length;
 
@@ -228,7 +178,7 @@ export default function ApplicationTracker() {
           
           {/* Left Panel: Applications List */}
           <div className="lg:col-span-1 space-y-4">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">{currentUser.role === 'recruiter' ? `Candidate Pipeline (${visibleApps.length})` : `Submitted Applications (${visibleApps.length})`}</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">{user.role === 'recruiter' ? `Candidate Pipeline (${visibleApps.length})` : `Submitted Applications (${visibleApps.length})`}</span>
             
             <div className="flex flex-col gap-3">
               {visibleApps.map((app) => {
@@ -248,10 +198,10 @@ export default function ApplicationTracker() {
                         <span className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white text-[9px] ${app.logoBg}`}>
                           {app.logo}
                         </span>
-                        <h4 className="font-semibold text-white truncate max-w-[130px]">{currentUser.role === 'recruiter' ? app.studentName : app.jobTitle}</h4>
+                        <h4 className="font-semibold text-white truncate max-w-[130px]">{user.role === 'recruiter' ? app.studentName : app.jobTitle}</h4>
                       </div>
-                      <p className="text-gray-400 font-medium">{currentUser.role === 'recruiter' ? app.jobTitle : app.company}</p>
-                      <p className="text-[10px] text-gray-500">{currentUser.role === 'recruiter' ? `Applied: ${app.date}` : `Applied: ${app.date}`}</p>
+                      <p className="text-gray-400 font-medium">{user.role === 'recruiter' ? app.jobTitle : app.company}</p>
+                      <p className="text-[10px] text-gray-500">{user.role === 'recruiter' ? `Applied: ${app.date}` : `Applied: ${app.date}`}</p>
                     </div>
 
                     <div className="text-right flex flex-col items-end gap-1.5">
@@ -355,7 +305,7 @@ export default function ApplicationTracker() {
                   </div>
                 </div>
 
-                {currentUser.role === 'recruiter' && (
+                {user.role === 'recruiter' && (
                   <div className="space-y-4 pt-4 border-t border-white/5 text-xs">
                     <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Advance Candidate</span>
                     <div className="flex flex-wrap gap-2">
@@ -397,7 +347,7 @@ export default function ApplicationTracker() {
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Status History Logs</span>
                   
                   <div className="flex flex-col gap-4 pl-4 relative before:absolute before:left-[7px] before:top-2 before:bottom-2 before:w-0.5 before:bg-white/5">
-                    {activeApp.history.map((log, i) => (
+                    {(activeApp.history || []).map((log, i) => (
                       <div key={i} className="flex items-start gap-4 relative">
                         {/* Dot indicator */}
                         <div className="w-4 h-4 rounded-full bg-slate-900 border-2 border-indigo-500 flex-shrink-0 flex items-center justify-center z-10">
@@ -425,25 +375,29 @@ export default function ApplicationTracker() {
 
         </div>
       ) : (
-        <div className="glass-panel p-16 rounded-3xl border border-white/5 text-center flex flex-col justify-center items-center max-w-md mx-auto text-gray-500">
-          <CheckSquare className="w-12 h-12 mb-4 opacity-30" />
-          <p className="text-sm font-semibold mb-1 text-gray-400">No Applications Submitted</p>
-          <p className="text-xs leading-relaxed mb-6">
-            {currentUser.role === 'recruiter'
-              ? 'Review active candidates and move them through the hiring pipeline.'
-              : hasResume 
-                ? 'Your resume is uploaded! Start exploring opportunities and submitting applications.' 
-                : 'Upload your resume, find opportunities, match your profile keywords, and apply to track updates.'}
+        <div className="rounded-3xl border border-white/10 bg-slate-900/60 p-16 text-center flex flex-col justify-center items-center max-w-lg mx-auto">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-500/10 mb-5">
+            <CheckSquare className="w-8 h-8 text-indigo-400 opacity-70" />
+          </div>
+          <h3 className="text-lg font-bold text-white mb-2">No applications yet</h3>
+          <p className="text-sm leading-relaxed mb-8 text-gray-400 max-w-sm">
+            {user.role === 'recruiter'
+              ? 'No candidates have applied yet. Once students submit applications, they will appear here for review.'
+              : hasResume
+                ? 'Your resume is ready. Browse open roles, find a great match, and hit Apply — your applications will show up here.'
+                : 'Upload your resume first, then explore job listings and apply. Each application you submit will be tracked here.'}
           </p>
           <div className="flex gap-3 flex-wrap justify-center">
-            {currentUser.role === 'student' && !hasResume && (
-              <Link to="/resume" className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
+            {user.role === 'student' && !hasResume && (
+              <Link to="/resume" className="rounded-full bg-purple-600 hover:bg-purple-500 text-white font-semibold px-6 py-2.5 text-sm transition">
                 Upload Resume
               </Link>
             )}
-            <Link to="/jobs" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
-              Explore Opportunities
-            </Link>
+            {user.role === 'student' && (
+              <Link to="/jobs" className="rounded-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-2.5 text-sm transition">
+                Browse Jobs
+              </Link>
+            )}
           </div>
         </div>
       )}

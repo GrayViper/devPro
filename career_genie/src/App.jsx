@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { JobsProvider } from './context/JobsContext';
 import { ApplicationsProvider } from './context/ApplicationsContext';
@@ -21,6 +21,22 @@ import ApplicationTracker from './pages/ApplicationTracker';
 import AdminPanel from './pages/AdminPanel';
 import WebComingSoon from './pages/WebComingSoon';
 
+// Guards authenticated routes — waits for session restore before redirecting
+function ProtectedRoute({ children }) {
+  const { user, isReady } = useAuth();
+  if (!isReady) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading session...
+      </div>
+    );
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -40,13 +56,13 @@ export default function App() {
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/login" element={<AuthPages />} />
                   <Route path="/signup" element={<AuthPages />} />
-                  <Route path="/dashboard/student" element={<StudentDashboard />} />
-                  <Route path="/dashboard/recruiter" element={<RecruiterDashboard />} />
-                  <Route path="/resume" element={<ResumeUpload />} />
+                  <Route path="/dashboard/student" element={<ProtectedRoute><StudentDashboard /></ProtectedRoute>} />
+                  <Route path="/dashboard/recruiter" element={<ProtectedRoute><RecruiterDashboard /></ProtectedRoute>} />
+                  <Route path="/resume" element={<ProtectedRoute><ResumeUpload /></ProtectedRoute>} />
                   <Route path="/jobs" element={<JobListingPage />} />
                   <Route path="/jobs/:id" element={<JobDetailsPage />} />
-                  <Route path="/applications" element={<ApplicationTracker />} />
-                  <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/applications" element={<ProtectedRoute><ApplicationTracker /></ProtectedRoute>} />
+                  <Route path="/admin" element={<ProtectedRoute><AdminPanel /></ProtectedRoute>} />
                   <Route path="/web" element={<WebComingSoon />} />
                 </Routes>
               </main>

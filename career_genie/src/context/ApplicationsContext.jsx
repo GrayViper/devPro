@@ -138,7 +138,14 @@ export const ApplicationsProvider = ({ children }) => {
       id: `app_${Math.random().toString(36).substr(2, 9)}`,
       ...payload,
       date: todayStr,
-      status: 'Applied'
+      status: 'Applied',
+      history: [
+        {
+          status: 'Applied',
+          date: todayStr,
+          comment: 'Application submitted successfully.'
+        }
+      ]
     });
 
     try {
@@ -151,8 +158,14 @@ export const ApplicationsProvider = ({ children }) => {
 
       if (res.ok) {
         const data = await res.json();
-        setApplications(prev => [data.application, ...prev]);
-        return { success: true, application: data.application };
+        const app = {
+          ...data.application,
+          history: data.application?.history?.length
+            ? data.application.history
+            : [{ status: 'Applied', date: todayStr, comment: 'Application submitted successfully.' }]
+        };
+        setApplications(prev => [app, ...prev]);
+        return { success: true, application: app };
       }
 
       const newApp = createLocalApplication();
@@ -178,7 +191,7 @@ export const ApplicationsProvider = ({ children }) => {
           ...app,
           status: newStatus,
           history: [
-            ...app.history,
+            ...(app.history || []),
             {
               status: newStatus,
               date: todayStr,
