@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
 import { 
   Upload, FileText, CheckCircle, Loader2, ArrowRight, Download, 
@@ -8,6 +9,7 @@ import { calculateAtsScore, generateAtsSuggestions } from '../utils/resume';
 
 export default function ResumeUpload() {
   const { user, updateUserProfile, getAuthToken } = useAuth();
+  const navigate = useNavigate();
   
   const [file, setFile] = useState(null);
   const [fileBase64, setFileBase64] = useState(null);
@@ -27,6 +29,8 @@ export default function ResumeUpload() {
   ];
 
   const handleFileChange = (e) => {
+    // prevent file selection if profile is incomplete
+    if (!isProfileComplete()) return;
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
       setReport(null); // Clear previous reports
@@ -40,6 +44,14 @@ export default function ResumeUpload() {
       };
       reader.readAsDataURL(e.target.files[0]);
     }
+  };
+
+  const isProfileComplete = () => {
+    if (!user) return false;
+    const hasMajor = !!(user.major && String(user.major).trim());
+    const hasGrad = !!(user.graduationYear && Number(user.graduationYear) > 1900);
+    const hasSkills = Array.isArray(user.skills) && user.skills.length > 0;
+    return hasMajor && hasGrad && hasSkills;
   };
 
   const handleUploadSubmit = (e) => {
@@ -167,13 +179,13 @@ export default function ResumeUpload() {
             <h3 className="font-display font-bold text-lg text-white">Upload Resume</h3>
             
             <form onSubmit={handleUploadSubmit} className="space-y-4 text-xs">
-              <div className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-indigo-500/50 transition cursor-pointer relative bg-slate-900/10">
+              <div className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center text-center transition relative bg-slate-900/10">
                 <input 
                   type="file" 
                   accept=".pdf"
                   onChange={handleFileChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                  disabled={parsing}
+                  className={`absolute inset-0 opacity-0 ${!isProfileComplete() || parsing ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  disabled={!isProfileComplete() || parsing}
                 />
                 <Upload className="w-10 h-10 text-gray-500 mb-3" />
                 <span className="text-white font-semibold block mb-1">
@@ -184,9 +196,20 @@ export default function ResumeUpload() {
                 </span>
               </div>
 
+              {!isProfileComplete() && (
+                <div className="rounded-lg border border-amber-400/20 bg-amber-400/5 p-3 text-sm text-amber-200">
+                  <div className="mb-1 font-semibold">Complete your profile to upload a resume</div>
+                  <div className="text-xs text-amber-100/80 mb-3">Please add your major, expected graduation year, and at least one skill in your profile.</div>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => navigate('/dashboard/student')} className="rounded-full bg-amber-400/70 px-3 py-1 text-sm font-semibold text-slate-900">Complete profile</button>
+                    <button type="button" onClick={() => { updateUserProfile({}); }} className="rounded-full border border-amber-400/20 px-3 py-1 text-sm text-amber-100">Remind me later</button>
+                  </div>
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={!file || parsing}
+                disabled={!file || parsing || !isProfileComplete()}
                 className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-gray-600 text-white font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 {parsing ? (

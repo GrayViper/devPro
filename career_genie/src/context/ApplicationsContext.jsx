@@ -2,67 +2,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/useAuth';
 import { ApplicationsContext } from './ApplicationsContextValue';
 
-const INITIAL_APPLICATIONS = [
-  {
-    id: 'app_stripe_01',
-    studentId: 'usr_student',
-    studentName: 'Olivia Chen',
-    studentEmail: 'olivia@gmail.com',
-    studentSkills: ['React', 'JavaScript', 'HTML/CSS', 'UX Design', 'Figma', 'Python'],
-    jobId: 'job_stripe_spd',
-    jobTitle: 'Sr. Product Designer',
-    company: 'Stripe',
-    logo: 'S',
-    logoBg: 'bg-indigo-600',
-    date: 'Jul 12, 2026',
-    status: 'Interview', // Applied, Review, Interview, Offer, Rejected
-    matchScore: 84,
-    history: [
-      { status: 'Applied', date: 'Jul 12, 2026', comment: 'Application submitted successfully with resume Olivia_Chen_Resume_2026.pdf.' },
-      { status: 'Review', date: 'Jul 13, 2026', comment: 'Resume parser completed. Match rating: 84%. Forwarded to hiring team.' },
-      { status: 'Interview', date: 'Jul 14, 2026', comment: 'Portfolio review interview scheduled with design panel.' }
-    ]
-  },
-  {
-    id: 'app_figma_01',
-    studentId: 'usr_student',
-    studentName: 'Olivia Chen',
-    studentEmail: 'olivia@gmail.com',
-    studentSkills: ['React', 'JavaScript', 'HTML/CSS', 'UX Design', 'Figma', 'Python'],
-    jobId: 'job_figma_uxl',
-    jobTitle: 'UX Lead',
-    company: 'Figma',
-    logo: 'F',
-    logoBg: 'bg-black',
-    date: 'Jul 10, 2026',
-    status: 'Offer',
-    matchScore: 78,
-    history: [
-      { status: 'Applied', date: 'Jul 10, 2026', comment: 'Application submitted.' },
-      { status: 'Review', date: 'Jul 11, 2026', comment: 'Under review by design team leader.' },
-      { status: 'Interview', date: 'Jul 12, 2026', comment: 'Technical panel and team-fit rounds completed.' },
-      { status: 'Offer', date: 'Jul 13, 2026', comment: 'Official job offer extended. Base salary: $185,000 + equity.' }
-    ]
-  },
-  {
-    id: 'app_google_01',
-    studentId: 'usr_student',
-    studentName: 'Olivia Chen',
-    studentEmail: 'olivia@gmail.com',
-    studentSkills: ['React', 'JavaScript', 'HTML/CSS', 'UX Design', 'Figma', 'Python'],
-    jobId: 'job_google_swe',
-    jobTitle: 'Software Engineering Intern',
-    company: 'Google',
-    logo: 'G',
-    logoBg: 'bg-red-500',
-    date: 'Jul 13, 2026',
-    status: 'Applied',
-    matchScore: 40,
-    history: [
-      { status: 'Applied', date: 'Jul 13, 2026', comment: 'Resume submitted. Dynamic match rate: 40% (missing C++, Algorithms keywords).' }
-    ]
-  }
-];
+// Start with an empty applications list by default so users don't see demo data
+// unless they've actually applied. Demo data was removed to avoid confusing users.
+const INITIAL_APPLICATIONS = [];
 
 export const ApplicationsProvider = ({ children }) => {
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';

@@ -39,5 +39,29 @@
     "role": "student",
     "password": "$2a$08$wIzSDlrTrR2IOZb1bvWR9uGrTJTwfEHAZznN6wKUKTBASbV0l8i4.",
     "createdAt": "2026-07-15T04:11:09.216Z"
+  },
+  {
+    "id": "usr_671po0q2y",
+    "name": "nintendo",
+    "email": "anilcpjn@gmail.com",
+    "role": "student",
+    "password": "$2a$08$dr8snJ4P6Z4uH/clzlteBOL5F3wYmB/vI3SfRhzyPkFOXzS8FNp62",
+    "createdAt": "2026-07-15T06:00:10.468Z"
+  },
+  {
+    "id": "usr_p4gcduvt3",
+    "name": "Test User",
+    "email": "testuser@example.com",
+    "role": "student",
+    "password": "$2a$08$96645u6dYtNl/0EumhCVVeE/mLuzRDd191DHqT7OoI7u4IyzZGYTK",
+    "createdAt": "2026-07-15T06:01:54.658Z"
+  },
+  {
+    "id": "usr_pzqhf65yo",
+    "name": "krishn",
+    "email": "anilcpkjn@gmail.com",
+    "role": "student",
+    "password": "$2a$08$i.SSk8djc/d9RYW7VERvtuKjcAc8jE.FX.GfMvGUcqtPntLkB4tcK",
+    "createdAt": "2026-07-15T06:17:12.394Z"
   }
 ]

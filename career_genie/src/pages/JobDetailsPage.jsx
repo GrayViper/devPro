@@ -13,13 +13,29 @@ export default function JobDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { getJobById, calculateMatchScore } = useJobs();
-  const { user } = useAuth();
+  const { user, fetchProfile } = useAuth();
   const { applications, applyToJob } = useApplications();
 
   const [applying, setApplying] = useState(false);
   const [applySuccess, setApplySuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [savedJobIds, setSavedJobIds] = useState(() => getSavedJobs());
+
+  // Ensure user is available; if not but token exists, try to restore profile
+  React.useEffect(() => {
+    if (!user && localStorage.getItem('cg_token') && localStorage.getItem('cg_user')) {
+      try {
+        const saved = JSON.parse(localStorage.getItem('cg_user'));
+        if (saved?.id) {
+          fetchProfile(saved.id).catch(() => {
+            // User restore failed, let handleApply redirect to login
+          });
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+  }, [user, fetchProfile]);
 
   const job = getJobById(id);
 
@@ -51,11 +67,23 @@ export default function JobDetailsPage() {
   const missingSkillsList = job.skills.filter(s => !matchedSkillsList.includes(s));
 
   const handleApply = () => {
-    if (!user) {
+    // Restore user from localStorage if not in state but token exists
+    let currentUser = user;
+    if (!currentUser && localStorage.getItem('cg_token') && localStorage.getItem('cg_user')) {
+      try {
+        currentUser = JSON.parse(localStorage.getItem('cg_user'));
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+
+    // Check if user is authenticated
+    if (!currentUser) {
       navigate('/login');
       return;
     }
-    if (user.role !== 'student') {
+    
+    if (currentUser.role !== 'student') {
       alert('Only student profiles can apply for listings.');
       return;
     }
@@ -66,7 +94,7 @@ export default function JobDetailsPage() {
     // Simulate submission delay
     setTimeout(() => {
       setApplying(false);
-      const res = applyToJob(job, user, matchScore);
+      const res = applyToJob(job, currentUser, matchScore);
       if (res.success) {
         setApplySuccess(true);
       } else {
