@@ -56,6 +56,7 @@ export const AuthProvider = ({ children }) => {
   // Default to no user (require explicit signin). Do not auto-restore from saved localStorage.
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -64,6 +65,19 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('cg_user');
     }
   }, [user]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('cg_user');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (!parsed?.demo) setUser(parsed);
+      } catch {
+        // ignore parse errors
+      }
+    }
+    setIsReady(true);
+  }, []);
 
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
@@ -83,23 +97,7 @@ export const AuthProvider = ({ children }) => {
       return data.user;
     } catch (error) {
       setLoading(false);
-      const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
-      if (isNetworkError) {
-        // Only enable fallback demo users when explicitly allowed via env flag
-        const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
-        if (allowDemo) {
-          const fallback = {
-            ...((email && email.toLowerCase() === 'david@stripe.com') ? MOCK_USERS.recruiter : (email && email.toLowerCase() === 'admin@careergenie.com' ? MOCK_USERS.admin : MOCK_USERS.student)),
-            demo: true
-          };
-          setUser(fallback);
-          try { const demoToken = btoa(JSON.stringify({ sub: fallback.id, role: fallback.role, name: fallback.name, iat: Date.now() })); localStorage.setItem('cg_token', demoToken); } catch {}
-          return fallback;
-        }
-        // otherwise surface network error to caller so no silent demo login occurs
-        throw new Error('Network error: unable to reach auth server');
-      }
-      // Re-throw non-network errors with the original message
+      // Surface the original error to caller. Do not perform demo/silent fallback here.
       throw error;
     }
   };
@@ -120,29 +118,7 @@ export const AuthProvider = ({ children }) => {
       return data.user;
     } catch (error) {
       setLoading(false);
-      const isNetworkError = error instanceof TypeError || (typeof error.message === 'string' && error.message.toLowerCase().includes('failed to fetch'));
-      // For network errors, only create a fallback when demo mode is explicitly enabled
-      const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
-      if (isNetworkError && allowDemo) {
-        const newUser = {
-          id: `usr_${Math.random().toString(36).substr(2, 9)}`,
-          name,
-          email,
-          role,
-          skills: role === 'student' ? ['JavaScript', 'HTML/CSS'] : [],
-          resumeUploaded: false,
-          demo: true,
-          // include any academic details if provided
-          major: extra.major || null,
-          graduationYear: extra.graduationYear || null,
-          institution: extra.institution || null
-        };
-        setUser(newUser);
-        try { localStorage.setItem('cg_token', btoa(JSON.stringify({ sub: newUser.id, role: newUser.role, name: newUser.name }))); } catch {}
-        return newUser;
-      }
-
-      // For any other error, surface the original error so caller can handle it
+      // Surface the original error to caller. Do not perform demo/silent fallback here.
       throw error;
     }
   };
@@ -184,6 +160,13 @@ export const AuthProvider = ({ children }) => {
         skills: role === 'student' ? ['JavaScript'] : []
       });
     }
+  };
+
+  const demoSignIn = (role = 'student') => {
+    // sign the user in as a demo account locally (marked as demo)
+    const demo = MOCK_USERS[role] ? { ...MOCK_USERS[role], demo: true } : { id: `usr_${role}`, name: `Demo ${role}`, email: `${role}@demo.careergenie`, role, demo: true };
+    setUser(demo);
+    // do not persist demo sessions for auto-restore on app load (restore logic ignores demo flag)
   };
 
   const updateUserProfile = (updatedFields) => {
@@ -233,71 +216,16 @@ export const AuthProvider = ({ children }) => {
 
   // restore session from lightweight token if present (base64 JSON)
   useEffect(() => {
-    const token = localStorage.getItem('cg_token');
+    // Only restore an explicit saved user (from a prior explicit sign-in).
+    // Do not attempt automatic network fetches or demo fallbacks on app load.
     const saved = localStorage.getItem('cg_user');
-    const clerkSession = localStorage.getItem('clerk_session');
-
-    const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
-    const parseJson = (value) => {
+    if (saved) {
       try {
-        return JSON.parse(value);
+        const parsed = JSON.parse(saved);
+        // do not restore demo sessions
+        if (!parsed?.demo) setUser(parsed);
       } catch {
-        return null;
-      }
-    };
-
-    const savedUser = saved ? parseJson(saved) : null;
-    const clerkSessionData = clerkSession ? parseJson(clerkSession) : null;
-    const clerkSessionIsDemo = clerkSessionData?.demo === true;
-    const savedUserIsDemo = savedUser?.demo === true;
-
-    if (!allowDemo && (savedUserIsDemo || clerkSessionIsDemo)) {
-      localStorage.removeItem('cg_user');
-      localStorage.removeItem('cg_token');
-      localStorage.removeItem('clerk_session');
-    }
-
-    if (clerkLoaded && clerkSignedIn && clerkUser) {
-      const normalized = normalizeClerkUser(clerkUser, clerkUser.publicMetadata?.role || 'student');
-      setUser(normalized);
-      localStorage.setItem('clerk_session', JSON.stringify(normalized));
-      localStorage.setItem('cg_user', JSON.stringify(normalized));
-      return;
-    }
-
-    if (clerkSessionData && (!clerkSessionIsDemo || allowDemo)) {
-      const normalized = normalizeClerkUser(clerkSessionData.user || clerkSessionData, clerkSessionData.role || 'student');
-      setUser(normalized);
-      return;
-    }
-
-    if (!saved && token) {
-      try {
-        let payload = null;
-        if (token.includes('.')) {
-          // JWT - decode payload (middle segment)
-          const parts = token.split('.');
-          if (parts.length >= 2) {
-            const decoded = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
-            payload = JSON.parse(decoded);
-          }
-        } else {
-          payload = JSON.parse(atob(token));
-        }
-        if (payload && payload.sub) {
-          // try to fetch a full profile from the mock API
-          // Do NOT fallback to the token payload automatically — this prevents silent demo logins.
-          fetchProfile(payload.sub).then((fetched) => {
-            if (fetched) {
-              setUser(fetched);
-            }
-            // if no profile is fetched, do nothing and require explicit sign-in
-          }).catch(() => {
-            // ignore errors and require explicit sign-in
-          });
-        }
-      } catch {
-        // invalid token - ignore
+        // ignore parse errors
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -306,9 +234,13 @@ export const AuthProvider = ({ children }) => {
   const isAuthenticated = !!user;
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, switchRole, updateUserProfile, fetchProfile, saveProfile, getAuthToken, loading }}>
-      {children}
+    <AuthContext.Provider value={{ user, isAuthenticated, login, signup, logout, switchRole, demoSignIn, updateUserProfile, fetchProfile, saveProfile, getAuthToken, loading, isReady }}>
+      {isReady ? children : <div className="min-h-screen flex items-center justify-center text-white">Loading session...</div>}
     </AuthContext.Provider>
   );
 };
+
+// re-export the context and hook for compatibility with existing imports
+export { AuthContext } from './AuthContextValue';
+export { useAuth } from './useAuth';
 

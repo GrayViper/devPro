@@ -1,114 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/useAuth';
+import { useAuth } from '../context/AuthContext';
 import { 
   Menu, X, LogOut, User, Briefcase, FileText, 
-  CheckSquare, Shield, Sparkles, Bell 
+  CheckSquare, Shield, Sparkles, RefreshCw 
 } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, logout, switchRole, getAuthToken } = useAuth();
+  const { user, logout, switchRole } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(0);
-  const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
-  const [showRoleSwitcher, setShowRoleSwitcher] = useState(allowDemo);
-  const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
-  const handleLogout = async () => {
-    await logout();
+  const handleLogout = () => {
+    logout();
     navigate('/');
     setMobileMenuOpen(false);
   };
 
   const handleRoleChange = (role) => {
+    // set a preview/demo role but do not auto-navigate
     switchRole(role);
     setMobileMenuOpen(false);
-    if (role === 'student') navigate('/dashboard/student');
-    else if (role === 'recruiter') navigate('/dashboard/recruiter');
-    else if (role === 'admin') navigate('/admin');
   };
 
   const isActive = (path) => location.pathname === path;
 
-  useEffect(() => {
-    const fetchNotificationCount = async () => {
-      if (!user?.id || user.role !== 'student') {
-        setNotificationCount(0);
-        return;
-      }
-
-      try {
-        const token = await getAuthToken();
-        const res = await fetch(`${API_BASE}/api/notifications`, {
-          headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) }
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setNotificationCount(typeof data.unreadCount === 'number' ? data.unreadCount : 0);
-        }
-      } catch {
-        setNotificationCount(0);
-      }
-    };
-
-    void fetchNotificationCount();
-    const interval = window.setInterval(() => {
-      void fetchNotificationCount();
-    }, 15000);
-
-    return () => window.clearInterval(interval);
-  }, [API_BASE, getAuthToken, user?.id, user?.role]);
-
   return (
     <>
-      {/* Floating Demo Role Switcher Bar */}
-      {allowDemo && showRoleSwitcher && (
-        <div className="sticky top-0 z-50 flex items-center justify-between border-b border-indigo-500/20 bg-indigo-950/85 px-4 py-1.5 text-[11px] text-indigo-200 backdrop-blur-xl">
-          <div className="flex items-center gap-1.5 font-medium">
-            <Sparkles className="h-3.5 w-3.5 animate-pulse text-indigo-400" />
-            <span>Demo Mode: You are viewing as <strong className="capitalize text-white">{user?.role || 'Guest'}</strong></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="hidden opacity-75 sm:inline">Switch role:</span>
-            <button 
-              onClick={() => handleRoleChange('student')}
-              className={`rounded-full px-2.5 py-1 transition ${user?.role === 'student' ? 'bg-indigo-600 font-semibold text-white' : 'hover:bg-indigo-900/60'}`}
-            >
-              Student
-            </button>
-            <button 
-              onClick={() => handleRoleChange('recruiter')}
-              className={`rounded-full px-2.5 py-1 transition ${user?.role === 'recruiter' ? 'bg-indigo-600 font-semibold text-white' : 'hover:bg-indigo-900/60'}`}
-            >
-              Recruiter
-            </button>
-            <button 
-              onClick={() => handleRoleChange('admin')}
-              className={`rounded-full px-2.5 py-1 transition ${user?.role === 'admin' ? 'bg-indigo-600 font-semibold text-white' : 'hover:bg-indigo-900/60'}`}
-            >
-              Admin
-            </button>
-            <button 
-              onClick={() => { void handleLogout(); }}
-              className={`rounded-full px-2.5 py-1 transition ${!user ? 'bg-indigo-600 font-semibold text-white' : 'hover:bg-indigo-900/60'}`}
-            >
-              Guest
-            </button>
-            <button 
-              onClick={() => setShowRoleSwitcher(false)}
-              className="ml-1 rounded-full p-1 opacity-60 transition hover:bg-white/10 hover:opacity-100"
-              title="Hide switcher"
-            >
-              <X className="h-3 w-3" />
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Demo header removed; View Demo now handled via landing button */}
 
       {/* Main Navbar */}
-      <header className={`glass-navbar sticky z-40 w-full shadow-lg shadow-black/10 ${showRoleSwitcher ? 'top-[33px]' : 'top-0'} transition-all`}>
+      <header className={`glass-navbar sticky z-40 w-full shadow-lg shadow-black/10 top-0 transition-all`}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             
@@ -126,9 +49,9 @@ export default function Navbar() {
             <nav className="hidden space-x-1 md:flex">
               {!user ? (
                 <>
-                  <a href="#features" className="rounded-full px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white">Features</a>
-                  <a href="#pricing" className="rounded-full px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white">Pricing</a>
-                  <a href="#about" className="rounded-full px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white">About</a>
+                  <Link to="/signup?role=student" className="rounded-full px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white">Student</Link>
+                  <Link to="/signup?role=recruiter" className="rounded-full px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white">Recruiter</Link>
+                  <Link to="/signup?role=admin" className="rounded-full px-3 py-2 text-sm font-medium text-gray-300 transition-colors hover:bg-white/5 hover:text-white">Admin</Link>
                 </>
               ) : user.role === 'student' ? (
                 <>
@@ -159,18 +82,6 @@ export default function Navbar() {
                   >
                     <CheckSquare className="w-4 h-4" />
                     Applications
-                  </Link>
-                  <Link 
-                    to="/applications" 
-                    className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-500/10 px-3 py-2 text-sm font-medium text-emerald-200 transition-colors hover:bg-emerald-500/20"
-                  >
-                    <Bell className="w-4 h-4" />
-                    Alerts
-                    {notificationCount > 0 && (
-                      <span className="rounded-full bg-emerald-400 px-2 py-0.5 text-[10px] font-semibold text-slate-950">
-                        {notificationCount}
-                      </span>
-                    )}
                   </Link>
                 </>
               ) : user.role === 'recruiter' ? (
@@ -254,9 +165,9 @@ export default function Navbar() {
           <div className="border-b border-white/10 bg-slate-950/95 px-2 pb-3 pt-2 shadow-2xl shadow-black/20 md:hidden">
             {!user ? (
               <>
-                <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Features</a>
-                <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Pricing</a>
-                <a href="#about" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <Link to="/signup?role=student" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Student</Link>
+                <Link to="/signup?role=recruiter" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Recruiter</Link>
+                <Link to="/signup?role=admin" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Admin</Link>
                 <div className="pt-4 pb-2 border-t border-white/5 flex flex-col gap-2 px-3">
                   <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="text-center text-gray-300 hover:text-white py-2 rounded-md text-base font-medium">
                     Login
@@ -274,17 +185,6 @@ export default function Navbar() {
                     <Link to="/resume" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Resume AI</Link>
                     <Link to="/jobs" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Find Jobs</Link>
                     <Link to="/applications" onClick={() => setMobileMenuOpen(false)} className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Applications</Link>
-                    <Link to="/applications" onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between rounded-md px-3 py-2 text-base font-medium text-emerald-200">
-                      <span className="flex items-center gap-2">
-                        <Bell className="h-4 w-4" />
-                        Alerts
-                      </span>
-                      {notificationCount > 0 && (
-                        <span className="rounded-full bg-emerald-400 px-2 py-0.5 text-[10px] font-semibold text-slate-950">
-                          {notificationCount}
-                        </span>
-                      )}
-                    </Link>
                   </>
                 )}
                 {user.role === 'recruiter' && (

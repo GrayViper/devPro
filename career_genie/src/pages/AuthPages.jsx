@@ -1,55 +1,88 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-import { useUser, SignInButton, UserButton } from '@clerk/react';
-import { useAuth } from '../context/useAuth';
-import { Sparkles, User, Briefcase, Shield, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react';
-import { clearClerkSessionStorage, normalizeClerkUser } from '../utils/clerk';
+import { useAuth } from '../context/AuthContext';
+import { Sparkles, User, Briefcase, Shield, Mail, Lock, Eye, EyeOff, Loader2, Trash2 } from 'lucide-react';
 
 export default function AuthPages() {
   const { login, signup, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const isLogin = location.pathname === '/login';
-  const { isSignedIn, user, isLoaded } = useUser();
-  const allowDemo = import.meta.env.VITE_ALLOW_DEMO === 'true';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [role, setRole] = useState('student'); // student, recruiter, admin
-  const [major, setMajor] = useState('');
-  const [institution, setInstitution] = useState('');
-  const [graduationYear, setGraduationYear] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [savedCredentials, setSavedCredentials] = useState({});
 
-  useEffect(() => {
-    if (!isLoaded || !isSignedIn || !user) return;
+  const credentialStorageKey = 'cg_saved_credentials';
 
-    const clerkUser = normalizeClerkUser(user, user.publicMetadata?.role || role);
-    localStorage.setItem('clerk_session', JSON.stringify(clerkUser));
-    localStorage.setItem('cg_user', JSON.stringify(clerkUser));
+  const loadSavedCredentialsForRole = (selectedRole) => {
+    const saved = localStorage.getItem(credentialStorageKey);
+    if (!saved) {
+      setSavedCredentials({});
+      setRememberMe(false);
+      setEmail('');
+      setPassword('');
+      return;
+    }
 
-    const nextPath = clerkUser.role === 'student' ? '/dashboard/student' : clerkUser.role === 'recruiter' ? '/dashboard/recruiter' : '/admin';
-    navigate(nextPath, { replace: true });
-  }, [isLoaded, isSignedIn, user, navigate, role]);
+    try {
+      const parsed = JSON.parse(saved);
+      setSavedCredentials(parsed || {});
+      const roleCreds = parsed?.[selectedRole];
+      if (roleCreds?.email && roleCreds?.password) {
+        setEmail(roleCreds.email);
+        setPassword(roleCreds.password);
+        setRememberMe(true);
+      } else {
+        setEmail('');
+        setPassword('');
+        setRememberMe(false);
+      }
+    } catch {
+      localStorage.removeItem(credentialStorageKey);
+      setSavedCredentials({});
+      setRememberMe(false);
+      setEmail('');
+      setPassword('');
+    }
+  };
 
-  const handleClerkDemo = () => {
-    if (!allowDemo) return;
+  const saveCredentialsForRole = (selectedRole, currentEmail, currentPassword) => {
+    const saved = localStorage.getItem(credentialStorageKey);
+    const parsed = saved ? JSON.parse(saved) : {};
+    parsed[selectedRole] = { email: currentEmail, password: currentPassword };
+    localStorage.setItem(credentialStorageKey, JSON.stringify(parsed));
+    setSavedCredentials(parsed);
+  };
 
-    const demoUser = normalizeClerkUser({
-      id: 'clerk_demo',
-      firstName: 'Clerk',
-      lastName: 'User',
-      emailAddresses: [{ emailAddress: 'clerk@example.com' }],
-      publicMetadata: { role },
-      demo: true
-    }, role);
+  const removeSavedCredentialsForRole = (selectedRole) => {
+    const saved = localStorage.getItem(credentialStorageKey);
+    if (!saved) return;
+    try {
+      const parsed = JSON.parse(saved);
+      delete parsed[selectedRole];
+      localStorage.setItem(credentialStorageKey, JSON.stringify(parsed));
+      setSavedCredentials(parsed);
+      if (selectedRole === role) {
+        setEmail('');
+        setPassword('');
+        setRememberMe(false);
+      }
+    } catch {
+      localStorage.removeItem(credentialStorageKey);
+      setSavedCredentials({});
+      setRememberMe(false);
+    }
+  };
 
-    clearClerkSessionStorage();
-    localStorage.setItem('clerk_session', JSON.stringify(demoUser));
-    localStorage.setItem('cg_user', JSON.stringify(demoUser));
-    window.location.href = role === 'student' ? '/dashboard/student' : role === 'recruiter' ? '/dashboard/recruiter' : '/admin';
+  const handleRoleChange = (newRole) => {
+    setRole(newRole);
+    loadSavedCredentialsForRole(newRole);
   };
 
   const handleSubmit = async (e) => {
@@ -57,43 +90,43 @@ export default function AuthPages() {
     setError('');
 
     if (isLogin) {
-      if (!email.trim() || !password.trim()) {
-        setError('Email and password are required.');
-        return;
-      }
       try {
         const u = await login(email, password, role);
+        if (rememberMe) {
+          saveCredentialsForRole(role, email, password);
+        }
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
       } catch (err) {
-        const errorMsg = err.message || 'Invalid credentials';
-        if (errorMsg.toLowerCase().includes('not found') || errorMsg.toLowerCase().includes('unregistered')) {
-          setError('Account not found. Please sign up first or try with a demo account.');
-        } else {
-          setError('Invalid credentials. Try using the demo session or sign up.');
-        }
+        setError('Invalid credentials. Please try again.');
       }
     } else {
       if (!name.trim()) {
         setError('Please enter your name.');
         return;
       }
-      if (!email.trim() || !password.trim()) {
-        setError('Email and password are required.');
-        return;
-      }
       try {
-        const extra = role === 'student' ? { major: major || null, institution: institution || null, graduationYear: graduationYear || null } : {};
-        const u = await signup(name, email, password, role, extra);
+        const u = await signup(name, email, password, role);
+        if (rememberMe) {
+          saveCredentialsForRole(role, email, password);
+        }
         if (u.role === 'student') navigate('/dashboard/student');
         else if (u.role === 'recruiter') navigate('/dashboard/recruiter');
         else if (u.role === 'admin') navigate('/admin');
       } catch (err) {
-        const errorMsg = err.message || 'Registration failed';
-        setError(`Sign up failed: ${errorMsg}. You can use the demo session to explore.`);
+        setError('Registration failed. Please check details.');
       }
     }
+  };
+
+  useEffect(() => {
+    loadSavedCredentialsForRole(role);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const clearSavedCredentials = () => {
+    removeSavedCredentialsForRole(role);
   };
 
   return (
@@ -141,42 +174,12 @@ export default function AuthPages() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Example: Olivia Chan"
+                    placeholder="Olivia Chen"
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
                   />
                 </div>
               </div>
             )}
-
-                  {/* Academic details for students */}
-                  {!isLogin && role === 'student' && (
-                    <div className="space-y-3">
-                      <label className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Academic Details</label>
-                      <div className="grid grid-cols-1 gap-2">
-                        <input
-                          type="text"
-                          value={institution}
-                          onChange={(e) => setInstitution(e.target.value)}
-                          placeholder="Institution (e.g., University of XYZ)"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
-                        />
-                        <input
-                          type="text"
-                          value={major}
-                          onChange={(e) => setMajor(e.target.value)}
-                          placeholder="Major (e.g., Computer Science)"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
-                        />
-                        <input
-                          type="number"
-                          value={graduationYear}
-                          onChange={(e) => setGraduationYear(e.target.value)}
-                          placeholder="Graduation Year (e.g., 2026)"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
-                        />
-                      </div>
-                    </div>
-                  )}
 
             {/* Email Field */}
             <div className="space-y-1.5">
@@ -247,40 +250,33 @@ export default function AuthPages() {
               </div>
             </div>
 
-            {!isLoaded ? (
-              <div className="flex w-full items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-sm text-gray-300">
-                Loading Clerk auth...
+            {/* Save credentials toggle */}
+            <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-gray-300">
+              <label className="inline-flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="h-4 w-4 rounded border-white/10 bg-slate-900 text-indigo-500 focus:ring-indigo-500"
+                />
+                Remember credentials for this role
+              </label>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="text-xs text-gray-400">
+                  {savedCredentials[role] ? 'Saved for current role' : 'No saved credentials for this role yet.'}
+                </span>
+                {savedCredentials[role] && (
+                  <button
+                    type="button"
+                    onClick={clearSavedCredentials}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900 px-3 py-1 text-xs text-gray-400 transition hover:border-white/20 hover:text-white"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Clear saved
+                  </button>
+                )}
               </div>
-            ) : isSignedIn ? (
-              <div className="flex items-center justify-between rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-                <span>Signed in with Clerk</span>
-                <UserButton afterSignOutUrl="/" />
-              </div>
-            ) : (
-              <SignInButton
-                mode="modal"
-                forceRedirectUrl={role === 'student' ? '/dashboard/student' : role === 'recruiter' ? '/dashboard/recruiter' : '/admin'}
-              >
-                <button
-                  type="button"
-                  className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-indigo-400/30 bg-indigo-500/10 px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-indigo-300 shadow-lg shadow-indigo-600/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-indigo-500/20 sm:text-sm"
-                >
-                  <Sparkles className="w-4 h-4" />
-                  <span>Continue with Clerk</span>
-                </button>
-              </SignInButton>
-            )}
-
-            {allowDemo && (
-              <button
-                type="button"
-                onClick={handleClerkDemo}
-                className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-300 shadow-lg shadow-black/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/10 sm:text-sm"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>Use demo session</span>
-              </button>
-            )}
+            </div>
 
             {/* Submit Button */}
             <button

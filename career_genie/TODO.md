@@ -1,6 +1,16 @@
 # CareerGenie Project TODO
 
 ## Remaining
+- [ ] Authentication implementation and JWT login/signup flow
+- [ ] Resume upload and AI analysis workflow
+- [ ] Job matching algorithm and job recommendations
+- [ ] Job posting creation, editing, and listing
+- [ ] Dashboards for student, recruiter, and admin
+- [ ] Application tracking workflow and status updates
+- [ ] Notifications system for students and recruiters
+- [ ] Admin panel access control and metrics view
+
+## Completed (all)
 - [x] Investigate/implement MCP server for background processing
 - [x] Add Clerk MCP server entrypoint for local tooling
 - [x] Tech: Frontend — React.js + Tailwind CSS
@@ -11,10 +21,7 @@
 - [x] Tech: AI — Python NLP / OpenAI API integration
 - [x] Tech: Deployment — Vercel + Render
 - [x] Tech: CI/CD — GitHub Actions
-
-## Completed (all)
 - [x] Integrate real Clerk API credentials and server-side session verification
-
 - [x] Run lint
 - [x] Build project
 - [x] Run CI tests successfully

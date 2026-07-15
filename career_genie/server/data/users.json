@@ -1,0 +1,43 @@
+[
+  {
+    "id": "usr_student",
+    "name": "Olivia Chen",
+    "email": "olivia@gmail.com",
+    "role": "student",
+    "password": "$2a$08$L/wjdDZbw1juClYTh/qny.1n.SRx2.9kBv6VaztGhaAmlMXEuFKrC",
+    "createdAt": "2026-07-14T19:25:03.663Z"
+  },
+  {
+    "id": "usr_recruiter",
+    "name": "David Miller",
+    "email": "david@stripe.com",
+    "role": "recruiter",
+    "company": "Stripe",
+    "password": "$2a$08$CqS3NF.Xm9cdNwO2QRDrHeWGikoRznM5tSFH6xqx5IbGz5ooL8EP2",
+    "createdAt": "2026-07-14T19:25:03.663Z"
+  },
+  {
+    "id": "usr_admin",
+    "name": "Alex Mercer",
+    "email": "admin@careergenie.com",
+    "role": "admin",
+    "password": "$2a$08$wCOYZnAe.A4RTKKoSzxASOQUuUTiHyJvUx2gO./EbV4ZKoDq0INF2",
+    "createdAt": "2026-07-14T19:25:03.663Z"
+  },
+  {
+    "id": "usr_0k07r2m6c",
+    "name": "Krishna",
+    "email": "anilcpkjn@gmail.com",
+    "role": "admin",
+    "password": "$2a$08$.sVbouNuroqgJqGIYJdIneQZSZtZQvc34GUNE0J6FF3qPhWumFvza",
+    "createdAt": "2026-07-14T20:54:45.617Z"
+  },
+  {
+    "id": "usr_0y0mnh670",
+    "name": "Nintendo",
+    "email": "chakkaanil6@gmail.com",
+    "role": "student",
+    "password": "$2a$08$wIzSDlrTrR2IOZb1bvWR9uGrTJTwfEHAZznN6wKUKTBASbV0l8i4.",
+    "createdAt": "2026-07-15T04:11:09.216Z"
+  }
+]

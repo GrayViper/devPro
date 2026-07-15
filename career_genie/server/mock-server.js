@@ -75,7 +75,8 @@ function getInitialData() {
     ],
     applications: [],
     resumeResults: {},
-    notifications: []
+    notifications: [],
+    loginEmails: ['olivia@gmail.com', 'david@stripe.com']
   };
 }
 
@@ -157,6 +158,7 @@ async function processInprocJob(job) {
     await new Promise(r => setTimeout(r, delay));
     const analysis = await tryAnalyzeResume(contentBase64, fileName);
     const score = Number.isFinite(analysis.score) ? analysis.score : 70;
+    const atsScore = Number.isFinite(analysis.atsScore) ? analysis.atsScore : Math.round(score * 0.95);
 
     const d = await readData();
     const user = d.users.find(u => u.id === studentId);
@@ -171,9 +173,7 @@ async function processInprocJob(job) {
         weaknesses: analysis.weaknesses || ['Add Docker'],
         suggestions: analysis.suggestions || ['Add testing examples']
       };
-      user.atsScore = Number.isFinite(analysis.atsScore)
-        ? analysis.atsScore
-        : Math.round((user.resumeScore || 0) * 0.95);
+      user.atsScore = atsScore;
     }
     d.resumeResults = d.resumeResults || {};
     d.resumeResults[jobId] = {
@@ -181,7 +181,14 @@ async function processInprocJob(job) {
       studentId,
       fileName,
       score,
+      atsScore,
       finishedAt: new Date().toISOString(),
+      startedAt: d.resumeResults[jobId]?.startedAt || uploadedAt,
+      contentBase64: d.resumeResults[jobId]?.contentBase64 || contentBase64,
+      studentEmail: student?.email || null,
+      studentRole: student?.role || 'student',
+      uploaderId: d.resumeResults[jobId]?.uploaderId || studentId,
+      uploaderRole: d.resumeResults[jobId]?.uploaderRole || 'student',
       analysis: {
         skills: analysis.skills || [],
         strengths: analysis.strengths || [],
@@ -460,35 +467,29 @@ function setupRoutes(app) {
     if (!email && !role) return res.status(400).json({ error: 'email or role required' });
     const data = await readData();
     const emailValue = (email || '').toLowerCase();
-    const user = data.users.find(u => u.email && u.email.toLowerCase() === emailValue);
+    let user = data.users.find(u => u.email && u.email.toLowerCase() === emailValue);
+
+    const { isProduction, allowDevAuth } = getEnvSettings();
 
     if (user && user.passwordHash && password) {
       const ok = await bcrypt.compare(password, user.passwordHash);
       if (!ok) return res.status(401).json({ error: 'invalid credentials' });
-      const token = signToken(user);
-      const safe = { ...user }; delete safe.passwordHash;
-      return res.json({ user: safe, token });
+    } else if (!isProduction && allowDevAuth && role) {
+      user = data.users.find(u => u.role === role);
+      if (!user) return res.status(401).json({ error: 'invalid credentials' });
+    } else if (!user) {
+      return res.status(401).json({ error: 'invalid credentials' });
     }
 
-    const { isProduction, allowDevAuth } = getEnvSettings();
-    
-    // Dev-mode fallback: allow login by role without password when explicitly enabled
-    // This helps with demoing and testing different roles
-    if (!isProduction && allowDevAuth) {
-      const fallbackUser = role ? data.users.find(u => u.role === role) : null;
-      if (fallbackUser) {
-        const token = signToken(fallbackUser);
-        const safe = { ...fallbackUser }; delete safe.passwordHash;
-        return res.json({ user: safe, token });
-      }
+    if (emailValue && !data.loginEmails) data.loginEmails = [];
+    if (emailValue && !data.loginEmails.includes(emailValue)) {
+      data.loginEmails.push(emailValue);
+      await writeData(data);
     }
 
-    // In dev mode without ALLOW_DEV_AUTH, provide helpful error
-    if (!isProduction && !allowDevAuth && email) {
-      return res.status(401).json({ error: 'account not found; please sign up or use demo session' });
-    }
-
-    return res.status(401).json({ error: 'invalid credentials' });
+    const token = signToken(user);
+    const safe = { ...user }; delete safe.passwordHash;
+    return res.json({ user: safe, token });
   }));
 
   // Jobs list
@@ -621,12 +622,25 @@ function setupRoutes(app) {
   app.post('/api/resume', authMiddleware, asyncHandler(async (req, res) => {
     const { studentId, fileName, contentBase64 } = req.body || {};
     if (!studentId || !fileName || !contentBase64) return res.status(400).json({ error: 'studentId, fileName and contentBase64 required' });
-    if (req.user.role !== 'admin' && req.user.sub !== studentId) return res.status(403).json({ error: 'forbidden' });
+    if (req.user.role !== 'admin' && req.user.role !== 'recruiter' && req.user.sub !== studentId) return res.status(403).json({ error: 'forbidden' });
 
     const jobId = generateId('scan');
     const data = await readData();
+    const student = data.users.find(u => u.id === studentId);
+    const uploadedAt = new Date().toISOString();
+
     data.resumeResults = data.resumeResults || {};
-    data.resumeResults[jobId] = { status: 'pending', studentId, fileName, startedAt: new Date().toISOString() };
+    data.resumeResults[jobId] = {
+      status: 'pending',
+      studentId,
+      fileName,
+      startedAt: uploadedAt,
+      studentEmail: student?.email || null,
+      studentRole: student?.role || 'student',
+      uploaderId: req.user.sub,
+      uploaderRole: req.user.role,
+      contentBase64
+    };
     await writeData(data);
     const job = { jobId, studentId, fileName, contentBase64 };
     await backgroundJobStore.enqueueJob({ type: 'resume-analysis', payload: { jobId, studentId, fileName } }, async (queuedJob) => {
@@ -657,6 +671,64 @@ function setupRoutes(app) {
     const job = results[jobId];
     if (!job) return res.status(404).json({ error: 'job not found' });
     return res.json({ job });
+  }));
+
+  app.get('/api/admin/resumes', authMiddleware, asyncHandler(async (req, res) => {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'forbidden' });
+    const data = await readData();
+    const resumes = Object.entries(data.resumeResults || {}).map(([jobId, entry]) => {
+      const student = data.users.find(u => u.id === entry.studentId);
+      return {
+        jobId,
+        fileName: entry.fileName,
+        status: entry.status,
+        uploadedAt: entry.startedAt,
+        finishedAt: entry.finishedAt || null,
+        studentId: entry.studentId,
+        studentName: student?.name || 'Unknown',
+        studentEmail: student?.email || entry.studentEmail || null,
+        studentRole: student?.role || entry.studentRole || 'student',
+        uploaderRole: entry.uploaderRole || 'student',
+        aiScore: entry.aiScore || entry.score || 0,
+        atsScore: entry.atsScore || 0,
+        score: entry.score || 0,
+        analysis: entry.analysis || {},
+        downloadAvailable: Boolean(entry.contentBase64)
+      };
+    });
+    const avgAiScore = resumes.length ? Math.round(resumes.reduce((sum, item) => sum + (item.aiScore || 0), 0) / resumes.length) : 0;
+    const totalResumes = resumes.length;
+    const pendingResumes = resumes.filter((item) => item.status === 'pending').length;
+    return res.json({ resumes, total: totalResumes, avgAiScore, pendingResumes });
+  }));
+
+  app.get('/api/admin/analytics', authMiddleware, asyncHandler(async (req, res) => {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'forbidden' });
+    const data = await readData();
+    const loginEmails = Array.isArray(data.loginEmails) ? data.loginEmails : [];
+    const totalUsers = Array.isArray(data.users)
+      ? data.users.filter((user) => ['student', 'recruiter'].includes(user.role) && user.email && loginEmails.includes(user.email.toLowerCase())).length
+      : 0;
+    const totalJobs = Array.isArray(data.jobs) ? data.jobs.length : 0;
+    const resumeEntries = Object.values(data.resumeResults || {});
+    const resumeUploads = resumeEntries.length;
+    const avgResumeScore = resumeUploads ? Math.round(resumeEntries.reduce((sum, entry) => sum + (entry.score || 0), 0) / resumeUploads) : 0;
+    const avgAtsScore = resumeUploads ? Math.round(resumeEntries.reduce((sum, entry) => sum + (entry.atsScore || 0), 0) / resumeUploads) : 0;
+    const pendingJobs = Array.isArray(data.jobs) ? data.jobs.filter((job) => job.status === 'pending_approval').length : 0;
+
+    return res.json({ totalUsers, totalJobs, resumeUploads, avgResumeScore, avgAtsScore, pendingJobs, loginEmails, systemPerformance: 'Healthy', apiResponseMs: 120 });
+  }));
+
+  app.get('/api/admin/resumes/:jobId/download', authMiddleware, asyncHandler(async (req, res) => {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'forbidden' });
+    const jobId = req.params.jobId;
+    const data = await readData();
+    const entry = (data.resumeResults || {})[jobId];
+    if (!entry || !entry.contentBase64) return res.status(404).json({ error: 'resume not found' });
+    const buffer = Buffer.from(entry.contentBase64, 'base64');
+    res.setHeader('Content-Disposition', `attachment; filename="${entry.fileName}"`);
+    res.setHeader('Content-Type', 'application/pdf');
+    return res.send(buffer);
   }));
 
   app.get('/api/users/:id', async (req, res) => {

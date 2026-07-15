@@ -121,6 +121,14 @@ Files modified:
 - **Conversion funnel design**: Landing page now naturally guides users from learning about features → seeing pricing → reading testimonials → signing up.
 - **Mobile responsive**: All new sections tested and working on mobile viewports.
 - **Tests**: All 25 tests continue to pass (7 test files).- 2026-07-14: Synchronized `TODO.md` with actual Clerk integration status and documented required Clerk environment variables in `README.md`.
+
+2026-07-15 (pricing update):
+- Updated `src/pages/LandingPage.jsx` so both `Professional` and `Enterprise` redirect to `/web`.
+- Moved the `Most Popular` badge from `Professional` to the `Free Plan` card to match the latest UX direction.
+
+2026-07-15 (task tracking):
+- Added an MVP scope task to `TODO.md`: Authentication, resume analysis, job matching, job posting, dashboards, application tracking, notifications, and admin panel.
+
 Architecture:
 - Landing page now serves as the entry point for all unauthenticated users.
 - Authenticated users are routed to their respective dashboards (student/recruiter/admin).

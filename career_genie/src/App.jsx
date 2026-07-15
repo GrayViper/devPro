@@ -5,6 +5,9 @@ import { JobsProvider } from './context/JobsContext';
 import { ApplicationsProvider } from './context/ApplicationsContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 
 // Pages
 import LandingPage from './pages/LandingPage';
@@ -16,6 +19,7 @@ import JobListingPage from './pages/JobListingPage';
 import JobDetailsPage from './pages/JobDetailsPage';
 import ApplicationTracker from './pages/ApplicationTracker';
 import AdminPanel from './pages/AdminPanel';
+import WebComingSoon from './pages/WebComingSoon';
 
 export default function App() {
   return (
@@ -28,6 +32,8 @@ export default function App() {
               <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_top_left,rgba(129,140,248,0.14),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(34,211,238,0.12),transparent_28%)]"></div>
               
               <Navbar />
+              {/* Demo trigger listener: listens for global demo events and signs in as demo */}
+              <DemoTrigger />
               
               <main className="relative z-10 flex-grow">
                 <Routes>
@@ -41,6 +47,7 @@ export default function App() {
                   <Route path="/jobs/:id" element={<JobDetailsPage />} />
                   <Route path="/applications" element={<ApplicationTracker />} />
                   <Route path="/admin" element={<AdminPanel />} />
+                  <Route path="/web" element={<WebComingSoon />} />
                 </Routes>
               </main>
 
@@ -51,4 +58,34 @@ export default function App() {
       </JobsProvider>
     </AuthProvider>
   );
+}
+
+function DemoTrigger() {
+  const navigate = useNavigate();
+  const { demoSignIn } = useAuth();
+
+  useEffect(() => {
+    const handler = (e) => {
+      const role = (e?.detail && e.detail.role) || 'student';
+      if (typeof demoSignIn === 'function') demoSignIn(role);
+      if (role === 'student') navigate('/dashboard/student');
+      else if (role === 'recruiter') navigate('/dashboard/recruiter');
+      else if (role === 'admin') navigate('/admin');
+    };
+
+    // expose a global trigger function used by LandingPage and Navbar
+    window.__demo_view_trigger = (role = 'student') => {
+      const ev = new CustomEvent('cg-view-demo', { detail: { role } });
+      window.dispatchEvent(ev);
+    };
+
+    window.addEventListener('cg-view-demo', handler);
+    return () => {
+      window.removeEventListener('cg-view-demo', handler);
+      try { delete window.__demo_view_trigger; } catch {}
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return null;
 }

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/useAuth';
-import { Sparkles, ArrowRight, FileText, Briefcase, Shield, Check, ChevronDown } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { 
+  Sparkles, Shield, Briefcase, FileText, ArrowRight, Check, Award, ArrowUpRight 
+} from 'lucide-react';
 
 const CHART_NODES_DATA = [
   { cx: 40, cy: 130, date: 'May 21, 2026', info: 'Tooling Setup: Skill score +10' },
@@ -17,8 +19,15 @@ export default function LandingPage() {
   const navigate = useNavigate();
   const [hoveredNode, setHoveredNode] = useState(null);
   const [activeTab, setActiveTab] = useState('Dashboard');
-  const [activeSection, setActiveSection] = useState('hero');
-  const [openFAQ, setOpenFAQ] = useState(0);
+  const testimonialDelays = ['animate-delay-1', 'animate-delay-2', 'animate-delay-3'];
+  const logoDelays = ['animate-delay-2', 'animate-delay-3', 'animate-delay-4', 'animate-delay-5', 'animate-delay-6'];
+  const partnerLogos = [
+    { name: 'Stripe', initials: 'S', bg: 'bg-sky-500', textColor: 'text-white', labelColor: 'text-slate-100' },
+    { name: 'Figma', initials: 'F', bg: 'bg-gradient-to-r from-fuchsia-500 via-violet-500 to-cyan-400', textColor: 'text-white', labelColor: 'text-slate-100' },
+    { name: 'Google', initials: 'G', bg: 'bg-white', textColor: 'text-slate-950', labelColor: 'text-slate-100', border: 'border border-slate-200/10' },
+    { name: 'Airbnb', initials: 'A', bg: 'bg-rose-500', textColor: 'text-white', labelColor: 'text-slate-100' },
+    { name: 'State Univ', initials: 'U', bg: 'bg-slate-900/95', textColor: 'text-white', labelColor: 'text-slate-100' }
+  ];
 
   const handleStartGrowth = () => {
     if (user) {
@@ -31,36 +40,12 @@ export default function LandingPage() {
   };
 
   const handleViewDemo = () => {
-    const el = document.getElementById('demo-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // sign in as a demo student and redirect to the demo dashboard
+    if (typeof window !== 'undefined' && window.__demo_view_trigger) {
+      window.__demo_view_trigger('student');
     }
+    navigate('/dashboard/student');
   };
-
-  const scrollToSection = (id) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  // observe sections to update activeSection when scrolling
-  React.useEffect(() => {
-    const ids = ['hero', 'demo-section', 'features', 'about', 'pricing'];
-    const elements = ids.map((id) => document.getElementById(id)).filter(Boolean);
-    if (!elements.length) return;
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, { root: null, rootMargin: '0px', threshold: 0.45 });
-
-    elements.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div className="relative min-h-screen">
@@ -71,30 +56,8 @@ export default function LandingPage() {
       <div className="absolute top-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blob-purple opacity-60 blur-3xl pointer-events-none"></div>
       <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blob-blue opacity-50 blur-3xl pointer-events-none"></div>
 
-      {/* Top Section Nav */}
-      <div className="z-20 sticky top-16 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-center gap-3 py-3">
-          {[
-            { id: 'hero', label: 'Home' },
-            { id: 'demo-section', label: 'Demo' },
-            { id: 'features', label: 'Features' },
-            { id: 'about', label: 'About' },
-            { id: 'pricing', label: 'Pricing' }
-          ].map((s) => (
-            <button
-              key={s.id}
-              onClick={() => { scrollToSection(s.id); setActiveSection(s.id); }}
-              className={`px-3 py-1.5 rounded-full text-sm font-semibold transition ${activeSection === s.id ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white/5 text-gray-300 hover:bg-white/10'}`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* Hero Section */}
       <section className="relative z-10 mx-auto max-w-7xl px-4 pb-16 pt-24 text-center sm:px-6 lg:px-8">
-        <div id="hero" />
         <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-indigo-300">
           <Sparkles className="h-3.5 w-3.5" />
           <span>NEW: AI-POWERED RESUME ANALYZER</span>
@@ -139,181 +102,47 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Interactive Mockup Dashboard Section */}
-      <section id="demo-section" className="py-12 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 z-10 relative">
-        <div className="glass-panel-card p-2 rounded-2xl border border-white/10 shadow-2xl bg-slate-950/40">
-          <div className="rounded-xl overflow-hidden bg-slate-950 border border-white/5 shadow-inner">
-            
-            {/* Window bar */}
-            <div className="bg-slate-900 px-4 py-3 flex items-center gap-6 border-b border-white/5">
-              <div className="flex gap-1.5">
-                <span className="w-3 h-3 rounded-full bg-rose-500 block"></span>
-                <span className="w-3 h-3 rounded-full bg-amber-500 block"></span>
-                <span className="w-3 h-3 rounded-full bg-emerald-500 block"></span>
-              </div>
-              <div className="bg-slate-950/80 rounded-md py-1 px-4 text-xs text-gray-500 border border-white/5 flex-grow max-w-md mx-auto text-center font-mono">
-                careergenie.com/dashboard/student
+      {/* Testimonials Section (replaces mock dashboard) */}
+      <section id="testimonials" className="py-12 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 z-10 relative animate-fade-in">
+        <div className="mx-auto max-w-5xl text-center">
+          <h2 className="font-display text-3xl font-bold text-white mb-4">Trusted by Recruiters and Students</h2>
+          <p className="text-gray-400 mb-8">Universities and hiring teams rely on CareerGenie to surface the best-fit candidates and help students showcase verified skills.</p>
+
+          <div className="grid gap-6 sm:grid-cols-3 mb-10">
+            <div className={`glass-panel-card p-6 rounded-2xl border border-white/5 animate-fade-up ${testimonialDelays[0]}`}>
+              <p className="text-gray-300 italic">“CareerGenie's resume analyzer helped our students increase interview invites by 3x.”</p>
+              <div className="mt-4 text-left">
+                <div className="font-bold text-white">Prof. Maya Lopez</div>
+                <div className="text-xs text-gray-400">Career Services, State University</div>
               </div>
             </div>
 
-            {/* Simulated Desktop Window Workspace */}
-            <div className="flex min-h-[450px] flex-col lg:flex-row">
-              {/* Mock Sidebar */}
-              <aside className="w-full lg:w-60 bg-slate-950 border-r border-white/5 p-4 flex flex-col gap-4">
-                <div className="flex items-center gap-2 px-2 text-white font-bold text-sm">
-                  <div className="w-5 h-5 bg-indigo-500 rounded text-xs flex items-center justify-center">G</div>
-                  <span>CAREERGENIE</span>
-                </div>
-                <nav className="flex flex-col gap-1">
-                  {['Dashboard', 'My Profile', 'Job Search', 'Applications', 'Skills & Certs', 'Settings'].map((item) => (
-                    <button
-                      key={item}
-                      onClick={() => setActiveTab(item)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-between ${
-                        activeTab === item ? 'bg-indigo-600/10 text-indigo-400' : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                      }`}
-                    >
-                      <span>{item}</span>
-                      {item === 'Applications' && <span className="bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded-full text-[9px]">3</span>}
-                    </button>
-                  ))}
-                </nav>
-              </aside>
-
-              {/* Mock Main Panel */}
-              <main className="flex-grow bg-slate-950/80 p-6 flex flex-col gap-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div>
-                      <h2 className="text-xl font-bold text-white">{user && user.name ? `Welcome back, ${user.name.split(' ')[0]}!` : 'Welcome to CareerGenie'}</h2>
-                      <p className="text-xs text-gray-400">{user ? 'Your mock student profile is loaded. Check out your career progress.' : 'Create an account or view the demo to explore career tools.'}</p>
-                    </div>
-                  <button 
-                    onClick={() => navigate('/resume')}
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition"
-                  >
-                    Analyze New Resume
-                  </button>
-                </div>
-
-                {/* Dashboard Stats Grid */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  {[
-                    { label: 'Job Applications', val: '3 Active', desc: '1 Interview scheduled' },
-                    { label: 'Skills Development', val: '6 Verified', desc: 'React, Figma, Python' },
-                    { label: 'Resume Score', val: '84 / 100', desc: 'Instant AI review' },
-                    { label: 'Job Match Rate', val: '84% Match', desc: 'For Stripe Product role' }
-                  ].map((stat, i) => (
-                    <div key={i} className="glass-panel p-4 rounded-xl border border-white/5 text-left">
-                      <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">{stat.label}</span>
-                      <span className="text-white text-lg font-bold block">{stat.val}</span>
-                      <span className="text-gray-500 text-[10px] block">{stat.desc}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Chart Card & Applications Table */}
-                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-                  {/* Skill Growth Line Chart */}
-                  <div className="glass-panel p-4 rounded-xl border border-white/5 text-left flex flex-col gap-4 relative">
-                    <div>
-                      <h3 className="text-xs font-bold text-white uppercase tracking-wider">Skill Growth Trajectory</h3>
-                      <p className="text-[10px] text-gray-500">Hover over chart nodes to see timeline updates.</p>
-                    </div>
-
-                    <div className="relative h-44 bg-slate-900/40 rounded-lg p-2 flex items-center justify-center">
-                      <svg className="w-full h-full max-h-40" viewBox="0 0 540 180" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                          <linearGradient id="chart-grad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.25"/>
-                            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0"/>
-                          </linearGradient>
-                        </defs>
-                        
-                        {/* Grid Lines */}
-                        <line x1="40" y1="20" x2="520" y2="20" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                        <line x1="40" y1="60" x2="520" y2="60" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                        <line x1="40" y1="100" x2="520" y2="100" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                        <line x1="40" y1="140" x2="520" y2="140" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-                        
-                        {/* X-Axis Labels */}
-                        <text x="40" y="165" fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="middle">May</text>
-                        <text x="136" y="165" fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="middle">Jun</text>
-                        <text x="232" y="165" fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="middle">Jul</text>
-                        <text x="328" y="165" fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="middle">Aug</text>
-                        <text x="424" y="165" fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="middle">Sep</text>
-                        <text x="520" y="165" fill="rgba(255,255,255,0.3)" fontSize="10" textAnchor="middle">Oct</text>
-                        
-                        {/* Area gradient under path */}
-                        <path d="M 40 140 L 40 130 Q 88 120 136 90 T 232 105 T 328 60 T 424 50 T 520 25 L 520 140 Z" fill="url(#chart-grad)" />
-                        
-                        {/* Interactive Line Path */}
-                        <path d="M 40 130 Q 88 120 136 90 T 232 105 T 328 60 T 424 50 T 520 25" fill="none" stroke="#6366f1" strokeWidth="3" strokeLinecap="round" />
-                        
-                        {/* Nodes */}
-                        {CHART_NODES_DATA.map((node, i) => (
-                          <g 
-                            key={i} 
-                            className="cursor-pointer"
-                            onMouseEnter={() => setHoveredNode(node)}
-                            onMouseLeave={() => setHoveredNode(null)}
-                          >
-                            <circle cx={node.cx} cy={node.cy} r="6" fill="#6366f1" className="hover:scale-125 transition-transform" />
-                            <circle cx={node.cx} cy={node.cy} r="3" fill="#ffffff" />
-                          </g>
-                        ))}
-                      </svg>
-
-                      {/* Tooltip Overlay */}
-                      {hoveredNode && (
-                        <div 
-                          className="absolute glass-panel p-2.5 rounded-lg border border-indigo-500/30 text-left bg-slate-900 pointer-events-none shadow-xl"
-                          style={{
-                            left: `${(hoveredNode.cx / 540) * 100}%`,
-                            top: `${(hoveredNode.cy / 180) * 100 - 30}%`,
-                            transform: 'translate(-50%, -50%)',
-                          }}
-                        >
-                          <div className="text-[9px] font-bold text-indigo-400">{hoveredNode.date}</div>
-                          <div className="text-[10px] font-semibold text-white whitespace-nowrap">{hoveredNode.info}</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Applications List */}
-                  <div className="glass-panel p-4 rounded-xl border border-white/5 text-left">
-                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3">Recent Mock Applications</h3>
-                    <div className="flex flex-col gap-2">
-                      {[
-                        { company: 'Stripe', role: 'Sr. Product Designer', score: '84%', status: 'Interview', bg: 'bg-indigo-600' },
-                        { company: 'Figma', role: 'UX Lead', score: '78%', status: 'Offer', bg: 'bg-black border border-white/10' },
-                        { company: 'Google', role: 'SWE Intern', score: '40%', status: 'Applied', bg: 'bg-red-500' }
-                      ].map((app, i) => (
-                        <div key={i} className="flex justify-between items-center p-2 rounded-lg bg-white/3 border border-white/5 text-xs">
-                          <div className="flex items-center gap-2">
-                            <div className={`w-6 h-6 rounded flex items-center justify-center font-bold text-white text-[10px] ${app.bg}`}>
-                              {app.company[0]}
-                            </div>
-                            <div>
-                              <div className="font-semibold text-white">{app.role}</div>
-                              <div className="text-[10px] text-gray-500">{app.company} • Match score: {app.score}</div>
-                            </div>
-                          </div>
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-semibold ${
-                            app.status === 'Offer' ? 'bg-emerald-500/10 text-emerald-400' :
-                            app.status === 'Interview' ? 'bg-purple-500/10 text-purple-400' :
-                            'bg-blue-500/10 text-blue-400'
-                          }`}>
-                            {app.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </main>
+            <div className={`glass-panel-card p-6 rounded-2xl border border-white/5 animate-fade-up ${testimonialDelays[1]}`}>
+              <p className="text-gray-300 italic">“We reduced screening time by 60% using AI match scores — great for campus hiring.”</p>
+              <div className="mt-4 text-left">
+                <div className="font-bold text-white">David Miller</div>
+                <div className="text-xs text-gray-400">Senior Recruiter, Stripe</div>
+              </div>
             </div>
-            
+
+            <div className={`glass-panel-card p-6 rounded-2xl border border-white/5 animate-fade-up ${testimonialDelays[2]}`}>
+              <p className="text-gray-300 italic">“The skill-gap suggestions were actionable and improved my application success.”</p>
+              <div className="mt-4 text-left">
+                <div className="font-bold text-white">Olivia Chen</div>
+                <div className="text-xs text-gray-400">Product Design Candidate</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            {partnerLogos.map((logo, i) => (
+              <div key={i} className={`flex flex-col items-center justify-center min-w-[126px] h-16 rounded-2xl shadow-lg shadow-black/20 animate-fade-up ${logoDelays[i]} ${logo.border || ''}`}>
+                <div className={`flex h-10 w-10 items-center justify-center rounded-full ${logo.bg}`}>
+                  <span className={`text-lg font-bold ${logo.textColor}`}>{logo.initials}</span>
+                </div>
+                <span className={`mt-2 text-[10px] font-semibold ${logo.labelColor}`}>{logo.name}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -432,14 +261,14 @@ export default function LandingPage() {
               price: '$0',
               desc: 'For individuals starting out',
               bullets: ['Basic AI Resume review (score-only)', '3 Job applications per month', 'Standard skills matching index'],
-              featured: false
+              featured: true
             },
             {
               name: 'Professional',
               price: '$19',
               desc: 'For serious job seekers',
               bullets: ['Unlimited AI resume parsing & suggestions', 'Unlimited job matching applications', 'Actionable skill gap training index', 'Mock interview sandbox & priority scoring'],
-              featured: true
+              featured: false
             },
             {
               name: 'Enterprise',
@@ -479,14 +308,14 @@ export default function LandingPage() {
               </div>
 
               <button 
-                onClick={plan.price === 'Custom' ? () => alert('Contacting sales at sales@careergenie.com') : handleStartGrowth}
+                onClick={plan.name === 'Professional' || plan.name === 'Enterprise' ? () => window.location.href = '/web' : handleStartGrowth}
                 className={`w-full py-3 rounded-xl text-xs font-bold transition duration-300 ${
                   plan.featured 
                     ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/20' 
                     : 'bg-white/5 hover:bg-white/10 text-white border border-white/10'
                 }`}
               >
-                {plan.price === 'Custom' ? 'Contact Sales' : 'Get Started'}
+                {plan.name === 'Professional' || plan.name === 'Enterprise' ? 'Visit Web' : 'Get Started'}
               </button>
             </div>
           ))}
@@ -509,131 +338,6 @@ export default function LandingPage() {
             className="relative bg-white hover:bg-gray-100 text-slate-950 font-bold px-8 py-4 rounded-xl text-xs sm:text-sm tracking-wider uppercase transition shadow-xl"
           >
             Create Free Account
-          </button>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-center z-10 relative">
-        <p className="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-2">SUCCESS STORIES</p>
-        <h2 className="font-display font-bold text-3xl sm:text-5xl text-white mb-12">
-          Loved by students and recruiters.
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              quote: "CareerGenie's AI analysis helped me improve my resume score from 62 to 92 in just two weeks. I got interviews at Google and Stripe!",
-              author: "Olivia Chen",
-              role: "Recent Grad, Software Engineer",
-              avatar: "OC"
-            },
-            {
-              quote: "As a recruiter, I love how the platform instantly matches qualified candidates. We've cut hiring time by 40% and found amazing talent faster.",
-              author: "David Miller",
-              role: "Hiring Manager, Figma",
-              avatar: "DM"
-            },
-            {
-              quote: "The placement dashboard gives us complete visibility into student-to-role mapping. Game changer for placement coordination.",
-              author: "Alex Mercer",
-              role: "Admin, University Career Center",
-              avatar: "AM"
-            }
-          ].map((testimonial, i) => (
-            <div key={i} className="glass-panel-card p-8 rounded-2xl border border-white/5 flex flex-col">
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, j) => (
-                  <span key={j} className="text-lg">⭐</span>
-                ))}
-              </div>
-              <p className="text-gray-300 italic text-sm leading-relaxed mb-6 flex-grow">
-                "{testimonial.quote}"
-              </p>
-              <div className="flex items-center gap-3 pt-6 border-t border-white/5">
-                <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">
-                  {testimonial.avatar}
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold text-white text-sm">{testimonial.author}</div>
-                  <div className="text-gray-500 text-xs">{testimonial.role}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section id="faq" className="py-20 px-4 max-w-4xl mx-auto sm:px-6 lg:px-8 z-10 relative">
-        <p className="text-xs uppercase tracking-wider text-indigo-400 font-bold mb-2 text-center">FAQ</p>
-        <h2 className="font-display font-bold text-3xl sm:text-5xl text-white mb-12 text-center">
-          Frequently asked questions.
-        </h2>
-        <div className="space-y-4">
-          {[
-            {
-              question: "How does the AI resume analyzer work?",
-              answer: "Our proprietary NLP engine parses your resume to extract skills, experience, and qualifications. It then benchmarks your profile against job descriptions and industry standards, providing a comprehensive score and actionable improvement suggestions."
-            },
-            {
-              question: "Is my data secure and private?",
-              answer: "Yes, absolutely. We use enterprise-grade encryption (AES-256) for all data at rest and TLS 1.3 for data in transit. We never share your resume or personal information with third parties without your explicit consent."
-            },
-            {
-              question: "Can recruiters see my resume?",
-              answer: "Only if you opt-in! You have complete control over your profile visibility. You can choose to be discoverable to recruiters, or keep your profile private while searching for jobs independently."
-            },
-            {
-              question: "What if I'm not a student?",
-              answer: "CareerGenie works for anyone building their career! Whether you're a recent grad, career changer, or experienced professional, our platform adapts to your skill level and helps you find your next opportunity."
-            },
-            {
-              question: "How often is the job market updated?",
-              answer: "We pull real-time job postings from 500+ employers and aggregators. New opportunities appear on your dashboard as soon as they're posted and match your profile."
-            },
-            {
-              question: "Do you offer bulk organization accounts?",
-              answer: "Yes! Universities and enterprises can reach out to our sales team at sales@careergenie.com for custom plans, SSO integration, and dedicated account management."
-            }
-          ].map((item, i) => (
-            <div key={i} className="glass-panel border border-white/5 rounded-lg overflow-hidden">
-              <button
-                onClick={() => setOpenFAQ(openFAQ === i ? -1 : i)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-white/5 transition"
-              >
-                <span className="font-semibold text-white text-left text-sm">{item.question}</span>
-                <ChevronDown className={`w-5 h-5 text-indigo-400 flex-shrink-0 transition ${openFAQ === i ? 'rotate-180' : ''}`} />
-              </button>
-              {openFAQ === i && (
-                <div className="px-6 py-4 border-t border-white/5 bg-white/3">
-                  <p className="text-gray-400 text-sm leading-relaxed">{item.answer}</p>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer CTA Section */}
-      <section className="py-20 px-4 max-w-7xl mx-auto sm:px-6 lg:px-8 text-center z-10 relative border-t border-white/5">
-        <h2 className="font-display font-black text-3xl sm:text-5xl text-white mb-6">
-          Your career starts here.
-        </h2>
-        <p className="text-gray-400 text-base sm:text-lg mb-8 max-w-2xl mx-auto">
-          Get started with a free account and see your AI resume analysis in minutes.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button 
-            onClick={handleStartGrowth}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl transition shadow-lg shadow-indigo-600/30"
-          >
-            Sign Up Free
-          </button>
-          <button 
-            onClick={() => scrollToSection('faq')}
-            className="border border-white/20 hover:border-white/40 text-white font-semibold px-8 py-4 rounded-xl transition"
-          >
-            Learn More
           </button>
         </div>
       </section>

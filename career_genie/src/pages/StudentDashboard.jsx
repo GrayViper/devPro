@@ -31,19 +31,28 @@ export default function StudentDashboard() {
 
   const studentApps = applications.filter((app) => app.studentId === user.id);
 
-  const matchedJobs = jobs
-    .filter((job) => job.status === 'active')
-    .map((job) => ({
-      ...job,
-      matchScore: calculateMatchScore(job.skills, user.skills)
-    }))
-    .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, 3);
+  const allActiveJobs = jobs.filter((job) => job.status === 'active');
+  const matchedJobs = user.resumeUploaded
+    ? allActiveJobs
+        .map((job) => ({
+          ...job,
+          matchScore: calculateMatchScore(job.skills, user.skills)
+        }))
+        .sort((a, b) => b.matchScore - a.matchScore)
+        .slice(0, 3)
+    : allActiveJobs.filter((job) => job.type?.toLowerCase().includes('intern')).slice(0, 3);
 
   const profileStrength = Math.min(100, (user.resumeUploaded ? 38 : 0) + (user.skills?.length ? 24 : 0) + (studentApps.length ? 18 : 0) + 20);
-  const resumeScore = user.resumeScore || 78;
+  const resumeScore = user.resumeUploaded ? (user.resumeScore || 78) : null;
   const savedJobsCount = getSavedJobs().length;
   const nextSteps = getNextSteps({ resumeUploaded: user.resumeUploaded, skills: user.skills || [], applications: studentApps, savedJobsCount, notificationCount: 0 });
+  const nextStepActions = {
+    resume: () => navigate('/resume'),
+    skills: () => setIsEditingProfile(true),
+    'saved-jobs': () => navigate('/jobs'),
+    applications: () => navigate('/applications'),
+    alerts: () => navigate('/dashboard/student')
+  };
 
   const handleSaveProfile = (e) => {
     e.preventDefault();
@@ -99,7 +108,7 @@ export default function StudentDashboard() {
             { label: 'Profile strength', value: `${profileStrength}%`, desc: 'Resume + skills + activity', icon: <Target className="h-4 w-4 text-indigo-400" /> },
             { label: 'Top match', value: `${matchedJobs[0]?.matchScore || 0}%`, desc: 'Best fit opportunity', icon: <TrendingUp className="h-4 w-4 text-cyan-400" /> },
             { label: 'Applications', value: studentApps.length, desc: 'In progress or pending', icon: <Briefcase className="h-4 w-4 text-purple-400" /> },
-            { label: 'Resume score', value: `${resumeScore}%`, desc: 'Current readiness snapshot', icon: <FileText className="h-4 w-4 text-emerald-400" /> }
+            ...(user.resumeUploaded ? [{ label: 'Resume score', value: `${resumeScore}%`, desc: 'Current readiness snapshot', icon: <FileText className="h-4 w-4 text-emerald-400" /> }] : [])
           ].map((stat, index) => (
             <div key={index} className="rounded-2xl border border-white/10 bg-white/5 p-4">
               <div className="flex items-center justify-between">
@@ -199,9 +208,15 @@ export default function StudentDashboard() {
                 <div key={job.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
                   <div className="flex items-start justify-between">
                     <span className={`flex h-8 w-8 items-center justify-center rounded-xl text-[10px] font-black text-white ${job.logoBg}`}>{job.logo}</span>
-                    <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${job.matchScore >= 80 ? 'bg-indigo-500/10 text-indigo-300' : job.matchScore >= 60 ? 'bg-purple-500/10 text-purple-300' : 'bg-cyan-500/10 text-cyan-300'}`}>
-                      {job.matchScore}%
-                    </span>
+                    {user.resumeUploaded ? (
+                      <span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${job.matchScore >= 80 ? 'bg-indigo-500/10 text-indigo-300' : job.matchScore >= 60 ? 'bg-purple-500/10 text-purple-300' : 'bg-cyan-500/10 text-cyan-300'}`}>
+                        {job.matchScore}%
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-cyan-500/10 px-2 py-1 text-[10px] font-semibold text-cyan-300">
+                        Internship
+                      </span>
+                    )}
                   </div>
                   <div className="mt-3">
                     <div className="text-sm font-semibold text-white">{job.title}</div>
@@ -263,15 +278,22 @@ export default function StudentDashboard() {
             </div>
             <div className="mt-4 space-y-3">
               {nextSteps.map((step) => (
-                <div key={step.id} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
-                  <div className={`mt-0.5 rounded-full p-1 ${step.completed ? 'bg-emerald-500/10 text-emerald-300' : 'bg-white/10 text-gray-400'}`}>
-                    <CheckCircle2 className="h-3.5 w-3.5" />
+                <button
+                  key={step.id}
+                  type="button"
+                  onClick={() => nextStepActions[step.id]?.()}
+                  className="group w-full rounded-2xl border border-white/10 bg-white/5 p-3 text-left transition hover:border-indigo-500/30 hover:bg-indigo-500/10"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`mt-0.5 rounded-full p-1 ${step.completed ? 'bg-emerald-500/10 text-emerald-300' : 'bg-white/10 text-gray-400'}`}>
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-white">{step.title}</div>
+                      <div className="text-xs text-gray-400">{step.detail}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-sm font-semibold text-white">{step.title}</div>
-                    <div className="text-xs text-gray-400">{step.detail}</div>
-                  </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
