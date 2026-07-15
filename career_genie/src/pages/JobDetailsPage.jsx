@@ -51,14 +51,22 @@ export default function JobDetailsPage() {
     );
   }
 
-  const userSkills = user?.role === 'student' ? user.skills : [];
+  const currentUser = user || (() => {
+    try {
+      return JSON.parse(localStorage.getItem('cg_user') || 'null');
+    } catch {
+      return null;
+    }
+  })();
+  const userSkills = currentUser?.role === 'student' ? currentUser.skills : [];
   const matchScore = calculateMatchScore(job.skills, userSkills);
   const deadlineInsight = getDeadlineInsight(job.deadline);
   const saved = savedJobIds.includes(job.id);
+  const hasResume = Boolean(currentUser?.resumeUploaded);
 
   // Check if student is already applied
-  const isApplied = applications.some(app => app.jobId === job.id && app.studentId === user?.id);
-  const appliedApp = applications.find(app => app.jobId === job.id && app.studentId === user?.id);
+  const isApplied = applications.some(app => app.jobId === job.id && app.studentId === currentUser?.id);
+  const appliedApp = applications.find(app => app.jobId === job.id && app.studentId === currentUser?.id);
 
   // Find matching and missing skills
   const matchedSkillsList = job.skills.filter(s => 
@@ -85,6 +93,11 @@ export default function JobDetailsPage() {
     
     if (currentUser.role !== 'student') {
       alert('Only student profiles can apply for listings.');
+      return;
+    }
+
+    if (!currentUser.resumeUploaded) {
+      setErrorMsg('Upload your resume before applying to jobs.');
       return;
     }
 
@@ -254,8 +267,8 @@ export default function JobDetailsPage() {
                 </button>
                 <button
                   onClick={handleApply}
-                  disabled={applying}
-                  className="flex-grow bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-indigo-600/10"
+                  disabled={applying || !hasResume}
+                  className={`flex-grow font-bold py-3.5 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-lg ${hasResume ? 'bg-indigo-600 hover:bg-indigo-500 text-white cursor-pointer shadow-indigo-600/10' : 'bg-slate-800 text-gray-400 cursor-not-allowed shadow-none'}`}
                 >
                   {applying ? (
                     <>
@@ -264,7 +277,7 @@ export default function JobDetailsPage() {
                     </>
                   ) : (
                     <>
-                      <span>Apply Now</span>
+                      <span>{hasResume ? 'Apply Now' : 'Upload Resume to Apply'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}

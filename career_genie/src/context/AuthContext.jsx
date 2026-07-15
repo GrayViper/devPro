@@ -172,7 +172,9 @@ export const AuthProvider = ({ children }) => {
   const updateUserProfile = (updatedFields) => {
     setUser(prev => {
       if (!prev) return null;
-      return { ...prev, ...updatedFields };
+      const nextUser = { ...prev, ...updatedFields };
+      localStorage.setItem('cg_user', JSON.stringify(nextUser));
+      return nextUser;
     });
   };
 

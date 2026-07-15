@@ -6,23 +6,43 @@ import { Check, Calendar, CheckSquare, Bell, Mail, CheckCheck } from 'lucide-rea
 
 export default function ApplicationTracker() {
   const { user, getAuthToken, fetchProfile } = useAuth();
-  const { applications } = useApplications();
+  const { applications, updateApplicationStatus } = useApplications();
   const navigate = useNavigate();
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [isReady, setIsReady] = useState(false);
+  const [currentUser, setCurrentUser] = useState(user);
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
+  // Update currentUser when user context changes
+  useEffect(() => {
+    if (user) {
+      setCurrentUser(user);
+      setIsReady(true);
+    }
+  }, [user]);
+
+  // Restore user from localStorage if needed
   useEffect(() => {
     const restoreUser = async () => {
-      if (!user) {
+      if (!currentUser) {
         const token = localStorage.getItem('cg_token');
         const savedUser = localStorage.getItem('cg_user');
+        
+        if (!token && !savedUser) {
+          // No session data at all, redirect to login
+          setIsReady(true);
+          return;
+        }
+
         if (token && savedUser) {
           try {
             const parsed = JSON.parse(savedUser);
             if (parsed?.id) {
-              await fetchProfile(parsed.id);
+              const restored = await fetchProfile(parsed.id);
+              if (restored) {
+                setCurrentUser(restored);
+              }
             }
           } catch (e) {
             // ignore parse errors
@@ -34,8 +54,17 @@ export default function ApplicationTracker() {
     void restoreUser();
   }, []);
 
+  const handleUpdateStatus = (appId, newStatus) => {
+    let comment = '';
+    if (newStatus === 'Interview') comment = 'Technical review and team interview scheduled by recruiter.';
+    else if (newStatus === 'Offer') comment = 'Mock offer extended. Please check email for details.';
+    else if (newStatus === 'Rejected') comment = 'Application reviewed. Thank you for your interest.';
+
+    updateApplicationStatus(appId, newStatus, comment);
+  };
+
   const fetchNotifications = async () => {
-    if (!user?.id) return;
+    if (!currentUser?.id) return;
     try {
       const token = await getAuthToken();
       const res = await fetch(`${API_BASE}/api/notifications`, {
@@ -57,7 +86,7 @@ export default function ApplicationTracker() {
     }, 15000);
 
     return () => window.clearInterval(interval);
-  }, [API_BASE, getAuthToken, user?.id]);
+  }, [API_BASE, getAuthToken, currentUser?.id]);
 
   const markNotificationRead = async (notificationId) => {
     try {
@@ -83,11 +112,11 @@ export default function ApplicationTracker() {
     );
   }
 
-  if (!user || user.role !== 'student') {
+  if (!currentUser || (currentUser.role !== 'student' && currentUser.role !== 'recruiter')) {
     return (
       <div className="py-20 text-center">
         <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
-        <p className="text-gray-400 mb-6">Please log in as a student to track applications.</p>
+        <p className="text-gray-400 mb-6">Please log in as a student or recruiter to view application progress.</p>
         <button onClick={() => navigate('/login')} className="rounded-full bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-500 transition">
           Go to Login
         </button>
@@ -95,8 +124,24 @@ export default function ApplicationTracker() {
     );
   }
 
-  const studentApps = applications.filter(app => app.studentId === user.id);
-  const activeApp = studentApps.find(app => app.id === selectedAppId) || studentApps[0];
+  if (currentUser.role === 'student' && !currentUser.resumeUploaded) {
+    return (
+      <div className="py-20 text-center">
+        <h2 className="text-2xl font-bold text-white mb-4">Resume required</h2>
+        <p className="text-gray-400 mb-6">Upload your resume before you can view your application tracker or apply for jobs.</p>
+        <button onClick={() => navigate('/resume')} className="rounded-full bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-500 transition">
+          Upload Resume
+        </button>
+      </div>
+    );
+  }
+
+  const studentApps = applications.filter(app => app.studentId === currentUser.id);
+  const recruiterApps = currentUser.role === 'recruiter'
+    ? applications.filter(app => app.company === currentUser.company)
+    : [];
+  const visibleApps = currentUser.role === 'recruiter' ? recruiterApps : studentApps;
+  const activeApp = visibleApps.find(app => app.id === selectedAppId) || visibleApps[0];
   const unreadCount = notifications.filter(item => !item.read).length;
 
   // Map status names to stepper stages for visual representation
@@ -158,15 +203,15 @@ export default function ApplicationTracker() {
         </div>
       )}
 
-      {studentApps.length > 0 ? (
+      {visibleApps.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
           {/* Left Panel: Applications List */}
           <div className="lg:col-span-1 space-y-4">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Submitted Applications ({studentApps.length})</span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">{currentUser.role === 'recruiter' ? `Candidate Pipeline (${visibleApps.length})` : `Submitted Applications (${visibleApps.length})`}</span>
             
             <div className="flex flex-col gap-3">
-              {studentApps.map((app) => {
+              {visibleApps.map((app) => {
                 const isActive = activeApp?.id === app.id;
                 return (
                   <div
@@ -183,10 +228,10 @@ export default function ApplicationTracker() {
                         <span className={`w-5 h-5 rounded flex items-center justify-center font-bold text-white text-[9px] ${app.logoBg}`}>
                           {app.logo}
                         </span>
-                        <h4 className="font-semibold text-white truncate max-w-[130px]">{app.jobTitle}</h4>
+                        <h4 className="font-semibold text-white truncate max-w-[130px]">{currentUser.role === 'recruiter' ? app.studentName : app.jobTitle}</h4>
                       </div>
-                      <p className="text-gray-400 font-medium">{app.company}</p>
-                      <p className="text-[10px] text-gray-500">Applied: {app.date}</p>
+                      <p className="text-gray-400 font-medium">{currentUser.role === 'recruiter' ? app.jobTitle : app.company}</p>
+                      <p className="text-[10px] text-gray-500">{currentUser.role === 'recruiter' ? `Applied: ${app.date}` : `Applied: ${app.date}`}</p>
                     </div>
 
                     <div className="text-right flex flex-col items-end gap-1.5">
@@ -290,6 +335,35 @@ export default function ApplicationTracker() {
                   </div>
                 </div>
 
+                {currentUser.role === 'recruiter' && (
+                  <div className="space-y-4 pt-4 border-t border-white/5 text-xs">
+                    <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider block">Advance Candidate</span>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateStatus(activeApp.id, 'Interview')}
+                        className="bg-purple-600 hover:bg-purple-500 text-white font-semibold px-3 py-1.5 rounded-lg text-[10px]"
+                      >
+                        Schedule Interview
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateStatus(activeApp.id, 'Offer')}
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-3 py-1.5 rounded-lg text-[10px]"
+                      >
+                        Extend Offer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateStatus(activeApp.id, 'Rejected')}
+                        className="bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 font-semibold px-3 py-1.5 rounded-lg border border-rose-500/20 text-[10px]"
+                      >
+                        Reject Candidate
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Tracking Logs History */}
                 <div className="space-y-4 pt-4 border-t border-white/5 text-xs">
                   <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Status History Logs</span>
@@ -327,11 +401,22 @@ export default function ApplicationTracker() {
           <CheckSquare className="w-12 h-12 mb-4 opacity-30" />
           <p className="text-sm font-semibold mb-1 text-gray-400">No Applications Submitted</p>
           <p className="text-xs leading-relaxed mb-6">
-            Find technical opportunities, match your resume profile keywords, and apply to track updates.
+            {currentUser.role === 'recruiter'
+              ? 'Review active candidates and move them through the hiring pipeline.'
+              : currentUser.resumeUploaded 
+                ? 'Your resume is uploaded! Start exploring opportunities and submitting applications.' 
+                : 'Upload your resume, find opportunities, match your profile keywords, and apply to track updates.'}
           </p>
-          <Link to="/jobs" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
-            Explore Opportunities
-          </Link>
+          <div className="flex gap-3 flex-wrap justify-center">
+            {currentUser.role === 'student' && !currentUser.resumeUploaded && (
+              <Link to="/resume" className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
+                Upload Resume
+              </Link>
+            )}
+            <Link to="/jobs" className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2.5 rounded-xl text-xs transition">
+              Explore Opportunities
+            </Link>
+          </div>
         </div>
       )}
     </div>

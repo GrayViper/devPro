@@ -6,6 +6,36 @@ import { ApplicationsContext } from './ApplicationsContextValue';
 // unless they've actually applied. Demo data was removed to avoid confusing users.
 const INITIAL_APPLICATIONS = [];
 
+export const buildStatusChangeNotification = (application, newStatus, comment = '') => {
+  const normalizedStatus = String(newStatus || 'updated').toLowerCase();
+  const message = [
+    `Your application for ${application.jobTitle || 'this role'} at ${application.company || 'the company'} is now ${normalizedStatus}.`,
+    comment || `Recruiter updated your application status to ${newStatus}.`
+  ].filter(Boolean).join(' ');
+
+  return {
+    id: `notif_${Math.random().toString(36).slice(2, 9)}`,
+    type: 'application_status_update',
+    recipientId: application.studentId,
+    recipientEmail: application.studentEmail,
+    jobId: application.jobId,
+    jobTitle: application.jobTitle,
+    company: application.company,
+    message,
+    subject: `Update on your application for ${application.jobTitle || 'this role'}`,
+    delivery: {
+      channel: 'in-app',
+      status: 'queued',
+      provider: 'local',
+      sentAt: new Date().toISOString(),
+      to: application.studentEmail || application.studentId,
+      messageId: null
+    },
+    createdAt: new Date().toISOString(),
+    read: false
+  };
+};
+
 export const ApplicationsProvider = ({ children }) => {
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
 
@@ -87,7 +117,7 @@ export const ApplicationsProvider = ({ children }) => {
     }
   };
 
-  const updateApplicationStatus = (applicationId, newStatus, comment = '') => {
+  const updateApplicationStatus = async (applicationId, newStatus, comment = '') => {
     const todayStr = new Date().toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -111,6 +141,20 @@ export const ApplicationsProvider = ({ children }) => {
       }
       return app;
     }));
+
+    try {
+      const token = await getAuthToken();
+      await fetch(`${API_BASE}/api/applications/${applicationId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ status: newStatus, comment })
+      });
+    } catch {
+      // keep local UI responsive even if the server is temporarily unavailable
+    }
   };
 
   return (

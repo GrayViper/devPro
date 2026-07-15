@@ -30,7 +30,12 @@ function writeUsers(users) {
 
 function sanitizeUser(u) {
   const { password, ...rest } = u;
-  return rest;
+  return {
+    ...rest,
+    resumeUploaded: Boolean(rest.resumeUploaded),
+    resumeScore: rest.resumeScore ?? 0,
+    atsScore: rest.atsScore ?? 0
+  };
 }
 
 // initialise default users if none exist
@@ -45,6 +50,11 @@ function ensureDefaultUsers() {
         email: 'olivia@gmail.com',
         role: 'student',
         password: bcrypt.hashSync('password123', 8),
+        resumeUploaded: true,
+        resumeName: 'Olivia_Chen_Resume_2026.pdf',
+        resumeScore: 84,
+        atsScore: 84,
+        skills: ['React', 'JavaScript', 'HTML/CSS', 'UX Design', 'Figma', 'Python'],
         createdAt: now
       },
       {
@@ -99,7 +109,7 @@ app.post('/api/auth/register', (req, res) => {
   if (exists) return res.status(400).json({ error: 'User already exists' });
   const id = `usr_${Math.random().toString(36).substr(2, 9)}`;
   const hashed = bcrypt.hashSync(password, 8);
-  const user = { id, name, email: email.toLowerCase(), role, password: hashed, createdAt: new Date().toISOString() };
+  const user = { id, name, email: email.toLowerCase(), role, password: hashed, resumeUploaded: false, resumeScore: 0, atsScore: 0, createdAt: new Date().toISOString() };
   users.push(user);
   writeUsers(users);
   const token = jwt.sign({ sub: id, role, name }, JWT_SECRET, { expiresIn: '7d' });
@@ -147,4 +157,8 @@ app.put('/api/users/:id', authMiddleware, (req, res) => {
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
-app.listen(PORT, () => console.log(`Auth server listening on http://localhost:${PORT}`));
+if (process.env.NODE_ENV !== 'test' && process.env.VITEST !== 'true') {
+  app.listen(PORT, () => console.log(`Auth server listening on http://localhost:${PORT}`));
+}
+
+export { app };

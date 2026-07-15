@@ -1,6 +1,55 @@
 {
   "users": [
     {
+      "id": "usr_bd7avcm",
+      "name": "Read Notify User",
+      "email": "readnotify-1784121551183@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$V5MT1uFjleZiPcTzgxoW8eYRRm1/G39Ly4lcDBiQRAhRFut43X2Sm"
+    },
+    {
+      "id": "usr_1xhwqfs",
+      "name": "Notify User",
+      "email": "notifyuser-1784121550712@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$ncqp07OeeHeKAWoFFfg1oOMnX9T/9CUmj.zD8/dm4klGgxL7N2Tyi"
+    },
+    {
+      "id": "usr_k9e7cgi",
+      "name": "Background User",
+      "email": "bguser-1784121550383@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$VM4YdlqI.mjfNoQKf9N8a.ZhvCzgehngIOlwk65Bk1Dmg2ANLrt7G"
+    },
+    {
+      "id": "usr_6s41ulo",
+      "name": "AI User",
+      "email": "aiuser-1784121548927@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$KY342xGbaOQVDEltP91hwO2HE0oCsuj/4d1ao8FNqgQVaL64HL0R6"
+    },
+    {
+      "id": "usr_07y7vpn",
+      "name": "Fail User",
+      "email": "failuser-1784121548317@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$87ukmBkGTEPVY6TZIs5GXuBz/RIhmry.viCfhBN1b7ziNeeL77Sba"
+    },
+    {
+      "id": "usr_3du6o1h",
+      "name": "Login User",
+      "email": "loginuser-1784121547728@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$vgYk.o9GVA8n7SZtXbcGMuLFJxKkK8PhfLdlewuUwZ4O67340fVDi"
+    },
+    {
+      "id": "usr_2ldc7ff",
+      "name": "New User",
+      "email": "newuser-1784121547406@careergenie.test",
+      "role": "student",
+      "passwordHash": "$2a$12$P7c7bE0GVO8g8ZDyaQg4CeIOSBOrZepDDyTkNGWIzBtnzk7IV3YU2"
+    },
+    {
       "id": "usr_7wzo8se",
       "name": "Read Notify User",
       "email": "readnotify-1784054416298@careergenie.test",
@@ -243,6 +292,70 @@
   ],
   "jobs": [
     {
+      "id": "job_2slj73e",
+      "title": "Read Receipt Job",
+      "company": "NotifyCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "Needs approval",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "status": "active"
+    },
+    {
+      "id": "job_bsjbdxr",
+      "title": "Approved Job",
+      "company": "NotifyCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "Needs approval",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "status": "active"
+    },
+    {
+      "id": "job_esbbdrx",
+      "title": "Rotated Job",
+      "company": "RotateCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "R",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
+      "id": "job_13t9v7f",
+      "title": "Secure Job",
+      "company": "SecureCo",
+      "location": "Remote",
+      "type": "Full-time",
+      "tags": [],
+      "description": "",
+      "salary": "Competitive",
+      "deadline": "TBD",
+      "posterId": null,
+      "posterName": null,
+      "logo": "S",
+      "logoBg": "bg-slate-600",
+      "status": "pending_approval"
+    },
+    {
       "id": "job_61jf98w",
       "title": "Read Receipt Job",
       "company": "NotifyCo",
@@ -464,6 +577,50 @@
     }
   ],
   "applications": [
+    {
+      "id": "app_vmood7z",
+      "studentId": "usr_bd7avcm",
+      "studentName": "Read Notify User",
+      "studentEmail": "readnotify-1784121551183@careergenie.test",
+      "studentSkills": [],
+      "jobId": "job_2slj73e",
+      "jobTitle": "Read Receipt Job",
+      "company": "NotifyCo",
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "date": "Jul 15, 2026",
+      "status": "Applied",
+      "matchScore": 0,
+      "history": [
+        {
+          "status": "Applied",
+          "date": "Jul 15, 2026",
+          "comment": "Application submitted."
+        }
+      ]
+    },
+    {
+      "id": "app_ypblsaa",
+      "studentId": "usr_1xhwqfs",
+      "studentName": "Notify User",
+      "studentEmail": "notifyuser-1784121550712@careergenie.test",
+      "studentSkills": [],
+      "jobId": "job_bsjbdxr",
+      "jobTitle": "Approved Job",
+      "company": "NotifyCo",
+      "logo": "N",
+      "logoBg": "bg-slate-600",
+      "date": "Jul 15, 2026",
+      "status": "Applied",
+      "matchScore": 0,
+      "history": [
+        {
+          "status": "Applied",
+          "date": "Jul 15, 2026",
+          "comment": "Application submitted."
+        }
+      ]
+    },
     {
       "id": "app_09i1ds8",
       "studentId": "usr_7wzo8se",
@@ -759,6 +916,23 @@
       "studentId": "usr_7wzo8se",
       "fileName": "CSE121CV.pdf",
       "startedAt": "2026-07-14T18:46:39.708Z"
+    },
+    "scan_nqyvvnn": {
+      "status": "error",
+      "error": "processing error",
+      "detail": "student is not defined",
+      "finishedAt": "2026-07-15T13:19:10.347Z"
+    },
+    "scan_bsu3wfd": {
+      "status": "pending",
+      "studentId": "usr_k9e7cgi",
+      "fileName": "resume_background.pdf",
+      "startedAt": "2026-07-15T13:19:10.690Z",
+      "studentEmail": "bguser-1784121550383@careergenie.test",
+      "studentRole": "student",
+      "uploaderId": "usr_k9e7cgi",
+      "uploaderRole": "student",
+      "contentBase64": "QmFja2dyb3VuZCBqb2IgY29udGVudA=="
     }
   },
   "notifications": [
@@ -891,6 +1065,51 @@
       },
       "createdAt": "2026-07-14T18:40:16.926Z",
       "read": true
+    },
+    {
+      "id": "notif_0qetbxr",
+      "type": "job_approved",
+      "recipientId": "usr_1xhwqfs",
+      "recipientEmail": "notifyuser-1784121550712@careergenie.test",
+      "jobId": "job_bsjbdxr",
+      "jobTitle": "Approved Job",
+      "company": "NotifyCo",
+      "message": "Your application for Approved Job at NotifyCo has been approved.",
+      "subject": "Your application for Approved Job has been approved",
+      "delivery": {
+        "channel": "email",
+        "status": "queued",
+        "provider": "mock",
+        "sentAt": "2026-07-15T13:19:11.171Z",
+        "to": "notifyuser-1784121550712@careergenie.test",
+        "messageId": null
+      },
+      "createdAt": "2026-07-15T13:19:11.171Z",
+      "read": false
+    },
+    {
+      "id": "notif_o52gm01",
+      "type": "job_approved",
+      "recipientId": "usr_bd7avcm",
+      "recipientEmail": "readnotify-1784121551183@careergenie.test",
+      "jobId": "job_2slj73e",
+      "jobTitle": "Read Receipt Job",
+      "company": "NotifyCo",
+      "message": "Your application for Read Receipt Job at NotifyCo has been approved.",
+      "subject": "Your application for Read Receipt Job has been approved",
+      "delivery": {
+        "channel": "email",
+        "status": "queued",
+        "provider": "mock",
+        "sentAt": "2026-07-15T13:19:11.535Z",
+        "to": "readnotify-1784121551183@careergenie.test",
+        "messageId": null
+      },
+      "createdAt": "2026-07-15T13:19:11.535Z",
+      "read": true
     }
+  ],
+  "loginEmails": [
+    "loginuser-1784121547728@careergenie.test"
   ]
 }

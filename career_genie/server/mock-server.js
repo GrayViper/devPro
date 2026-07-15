@@ -349,21 +349,26 @@ async function sendApprovalEmailNotification({ recipientEmail, jobTitle, company
   return { status: 'sent', provider: 'resend', messageId: data.id || null };
 }
 
-async function createNotificationRecord({ recipientId, recipientEmail, jobId, jobTitle, company, message }) {
+async function createNotificationRecord({ recipientId, recipientEmail, jobId, jobTitle, company, message, type = 'job_approved', subject, deliveryChannel = 'email' }) {
   const now = new Date().toISOString();
-  const deliveryResult = await sendApprovalEmailNotification({ recipientEmail, jobTitle, company, message });
+  const deliveryResult = deliveryChannel === 'email'
+    ? await sendApprovalEmailNotification({ recipientEmail, jobTitle, company, message })
+    : { status: 'queued', provider: 'local', message: 'Notification stored locally.' };
+
   return {
     id: generateId('notif'),
-    type: 'job_approved',
+    type,
     recipientId,
     recipientEmail,
     jobId,
     jobTitle,
     company,
     message,
-    subject: `Your application for ${jobTitle} has been approved`,
+    subject: subject || (type === 'application_status_update'
+      ? `Update on your application for ${jobTitle}`
+      : `Your application for ${jobTitle} has been approved`),
     delivery: {
-      channel: 'email',
+      channel: deliveryChannel,
       status: deliveryResult.status,
       provider: deliveryResult.provider,
       sentAt: now,
@@ -616,6 +621,46 @@ function setupRoutes(app) {
     data.applications.unshift(appObj);
     await writeData(data);
     res.status(201).json({ application: appObj });
+  }));
+
+  app.put('/api/applications/:applicationId/status', authMiddleware, asyncHandler(async (req, res) => {
+    const { applicationId } = req.params;
+    const { status, comment } = req.body || {};
+    if (!req.user || (req.user.role !== 'recruiter' && req.user.role !== 'admin')) return res.status(403).json({ error: 'forbidden' });
+    if (!status) return res.status(400).json({ error: 'status required' });
+
+    const data = await readData();
+    const application = data.applications.find((item) => item.id === applicationId);
+    if (!application) return res.status(404).json({ error: 'application not found' });
+
+    const updatedAt = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    application.status = status;
+    application.history = [
+      ...(application.history || []),
+      {
+        status,
+        date: updatedAt,
+        comment: comment || `Status updated to ${status}.`
+      }
+    ];
+
+    data.applications = data.applications.map((item) => (item.id === applicationId ? application : item));
+    const notificationMessage = `Your application for ${application.jobTitle} at ${application.company} is now ${String(status).toLowerCase()}. ${comment || ''}`.trim();
+    const notification = await createNotificationRecord({
+      recipientId: application.studentId,
+      recipientEmail: application.studentEmail,
+      jobId: application.jobId,
+      jobTitle: application.jobTitle,
+      company: application.company,
+      message: notificationMessage,
+      type: 'application_status_update',
+      subject: `Update on your application for ${application.jobTitle}`,
+      deliveryChannel: 'in-app'
+    });
+    data.notifications = [...(data.notifications || []), notification];
+    await writeData(data);
+
+    res.json({ application, notification });
   }));
 
   // Resume upload
