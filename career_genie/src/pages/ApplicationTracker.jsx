@@ -1,15 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/useAuth';
 import { useApplications } from '../context/useApplications';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Check, Calendar, CheckSquare, Bell, Mail, CheckCheck } from 'lucide-react';
 
 export default function ApplicationTracker() {
-  const { user, getAuthToken } = useAuth();
+  const { user, getAuthToken, fetchProfile } = useAuth();
   const { applications } = useApplications();
+  const navigate = useNavigate();
   const [selectedAppId, setSelectedAppId] = useState(null);
   const [notifications, setNotifications] = useState([]);
+  const [isReady, setIsReady] = useState(false);
   const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5178';
+
+  useEffect(() => {
+    const restoreUser = async () => {
+      if (!user) {
+        const token = localStorage.getItem('cg_token');
+        const savedUser = localStorage.getItem('cg_user');
+        if (token && savedUser) {
+          try {
+            const parsed = JSON.parse(savedUser);
+            if (parsed?.id) {
+              await fetchProfile(parsed.id);
+            }
+          } catch (e) {
+            // ignore parse errors
+          }
+        }
+      }
+      setIsReady(true);
+    };
+    void restoreUser();
+  }, []);
 
   const fetchNotifications = async () => {
     if (!user?.id) return;
@@ -52,11 +75,22 @@ export default function ApplicationTracker() {
     }
   };
 
+  if (!isReady) {
+    return (
+      <div className="py-20 text-center">
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    );
+  }
+
   if (!user || user.role !== 'student') {
     return (
-      <div className="py-20 text-center text-xs">
-        <h2 className="text-xl font-bold text-white mb-2">Access Denied</h2>
+      <div className="py-20 text-center">
+        <h2 className="text-2xl font-bold text-white mb-4">Access Denied</h2>
         <p className="text-gray-400 mb-6">Please log in as a student to track applications.</p>
+        <button onClick={() => navigate('/login')} className="rounded-full bg-indigo-600 px-6 py-2 font-semibold text-white hover:bg-indigo-500 transition">
+          Go to Login
+        </button>
       </div>
     );
   }
